@@ -3,7 +3,7 @@
 **Valuation / Comparison Date:** September 3, 2026  
 **Candidate Peers:** Core Scientific, Inc. (CORZ), Applied Digital Corporation (APLD)  
 **Policy Exclusion Benchmark:** Equinix, Inc. (EQIX)  
-**Student:** Elliott  
+**Student:** Elliot
 **Course:** FIN 43900 (AI Finance Applications, Purdue University)  
 **Date:** September 17, 2026  
 
