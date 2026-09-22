@@ -1,7 +1,7 @@
 # FIN 439 Lab 09 — Pro-Forma Financial Modeling I: Build the Base Case
 **Target Company:** Asbury Automotive Group, Inc. (NYSE: ABG)  
 **Valuation / Projection Horizon:** FY2026E – FY2030E (Five-Year Explicit Forecast)  
-**Student:** Elliott  
+**Student:** Elliot    
 **Course:** FIN 43900 (AI Finance Applications, Purdue University)  
 **Date:** September 22, 2026  
 
