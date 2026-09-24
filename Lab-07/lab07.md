@@ -1,6 +1,6 @@
 # FIN 439 Lab 07 — Comparable-Company Policy and Implied Range
 **Case Study:** Asbury Automotive Group (ABG) and Candidate Peers (AutoNation, Group 1 Automotive)  
-**Student:** Elliott  
+**Student:** Elliot    
 **Course:** FIN 439  
 **Date:** September 2026  
 
