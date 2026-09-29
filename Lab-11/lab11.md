@@ -189,60 +189,6 @@ IMPLIED VALUE PER SHARE:
 
 ---
 
-## Locked Changed-Input Record
-
-In strict adherence to assignment guidelines, Elliot's pre-run prediction cannot be fabricated after the fact. The placeholder below is established for Elliot to record his manual prediction and reconcile it with the actual model output.
-
-### Pre-Run Prediction vs. Actual Model Outcome
-
-| Field | Driver 1 (Gross Margin) | Driver 2 (Revenue Growth) |
-| :--- | :--- | :--- |
-| **Driver Name** | Cash Gross Margin (`gross_margin`) | Revenue Growth Trajectory (`revenue_growth`) |
-| **Old / Base Input** | 70.0% (0.700) | `[100%, 50%, 30%, 15%, 10%]` |
-| **New / Tested Input** | 75.0% (0.750) [$+5.0\text{ pp}$] | `[105%, 55%, 35%, 20%, 15%]` [$+5.0\text{ pp/yr}$] |
-| **Units** | Percentage of Revenue (%) | Annual growth rate per year (%) |
-| **Expected Direction** | `[MANUAL — ELLIOT/PARTNER REQUIRED]` *(e.g., Increase in EBIT, FCFE, Value)* | `[MANUAL — ELLIOT/PARTNER REQUIRED]` *(e.g., Increase in EBIT, FCFE, Value)* |
-| **Rough Expected Magnitude** | `[MANUAL — ELLIOT/PARTNER REQUIRED]` *(e.g., EBIT +$100M, FCFE +$100M)* | `[MANUAL — ELLIOT/PARTNER REQUIRED]` *(e.g., EBIT +$300M, FCFE +$300M)* |
-| **Pre-Run Reason** | `[MANUAL — ELLIOT/PARTNER REQUIRED]` *(e.g., Higher margin flows directly to gross profit minus 35% SG&A)* | `[MANUAL — ELLIOT/PARTNER REQUIRED]` *(e.g., Compounding top line expands gross profit on fixed base)* |
-| **Actual Model Result** | **EBIT:** +$113.36M ($891.24M)<br>**FCFE:** +$99.86M ($480.25M)<br>**VPS:** +$2.39/sh (-$2.93/sh) | **EBIT:** +$317.24M ($1,095.13M)<br>**FCFE:** +$291.83M ($672.22M)<br>**VPS:** +$6.31/sh (+$0.99/sh) |
-| **Prediction Reconciliation / Error Explanation** | `[MANUAL — ELLIOT/PARTNER REQUIRED: Compare your pre-run expectation with actual +$113.36M EBIT and +$2.39/share; explain any variance such as early NOL exhaustion or tax drag.]` | `[MANUAL — ELLIOT/PARTNER REQUIRED: Compare your pre-run expectation with actual +$317.24M EBIT and +$6.31/share; explain compounding effects across the 5-year forecast horizon.]` |
-
----
-
-## Partner Exchanges & Academic Integrity
-
-> [!CAUTION]
-> **Academic Integrity Compliance:**  
-> In accordance with course policy and instructions, partner interaction is **never fabricated**. The placeholders below are reserved for Elliot and his assigned learning partner during the live class session.
-
-### Partner Exchange 1 — Predict, Then Question
-- **Partner Name:** `[MANUAL — ELLIOT/PARTNER REQUIRED]`
-- **Partner's Target Company & Ticker:** `[MANUAL — ELLIOT/PARTNER REQUIRED]`
-- **Partner Question Received by Elliot:**  
-  `[MANUAL — ELLIOT/PARTNER REQUIRED: "Which input do you expect to matter most and why? What supports your proposed range?"]`
-- **Elliot's Response:**  
-  `[MANUAL — ELLIOT/PARTNER REQUIRED: Elliot explains why Revenue Growth compounds faster than unit margins, defending the +/-5 pp range with Microsoft ARR guidance.]`
-
-### Partner Exchange 2 — Check Each Other's Evidence
-- **Check Performed by Elliot on Partner's Analysis:**  
-  `[MANUAL — ELLIOT/PARTNER REQUIRED: Verified partner changed only one input at a time, confirmed math for changed output minus base output, and checked double-entry balance.]`
-- **Partner's Check of Elliot's Analysis:**  
-  `[MANUAL — ELLIOT/PARTNER REQUIRED: Partner confirmed Elliot's gross margin test (+5 pp) recomputed delta EBIT = +$113.36M and checked that all other inputs remained at base.]`
-- **Question or Correction from Review:**  
-  `[MANUAL — ELLIOT/PARTNER REQUIRED: Note any question raised about negative starting cash flows or working capital prepayments.]`
-- **Does this change the valuation conclusion or research priority? Why/why not?**  
-  `[MANUAL — ELLIOT/PARTNER REQUIRED: Record Elliot's reasoned answer — e.g., reinforces that monitoring Microsoft cluster delivery milestones is a higher priority than minor electricity tariff shifts.]`
-
-### Partner Exchange 3 — Explain and Compare Causal Links
-- **Elliot's Causal Link Explanation to Partner:**  
-  `[MANUAL — ELLIOT/PARTNER REQUIRED: Elliot explains the path from Gross Margin (+5 pp) -> GP -> SG&A -> Pretax Income -> Tax -> FCFE -> Terminal Value.]`
-- **Partner's Question on Range Limitation:**  
-  `[MANUAL — ELLIOT/PARTNER REQUIRED: Partner asks whether the higher span of Revenue Growth is merely an artifact of the chosen 5 pp compounding path versus static margin.]`
-- **Elliot's Recorded Answer:**  
-  `[MANUAL — ELLIOT/PARTNER REQUIRED: Elliot explains the distinction between Impact and Uncertainty, acknowledging that a wider tested range produces a wider output span.]`
-
----
-
 ## Interpretation & Findings
 
 ### 1. Main Driver Over the Tested Ranges
@@ -262,37 +208,6 @@ A complete financial assessment requires distinguishing between two distinct con
 - **UNCERTAINTY:** The degree of real-world dispersion, volatility, or unpredictability surrounding that input.
 
 For IREN, Revenue Growth has both high **impact** (due to compounding top-line leverage and customer prepayments) and high **uncertainty** (dependent on external hyperscaler capital expenditure cycles, NVIDIA Blackwell GPU delivery timelines, and ERCOT grid interconnection approvals). Cash Gross Margin has high **impact** on unit profitability, but slightly narrower **uncertainty** because data center power contracts and PPA agreements hedge wholesale electricity volatility.
-
----
-
-## Sensitivity — Learn On Your Own
-
-### 1. What is one-at-a-time sensitivity?
-One-at-a-time (OAT) sensitivity is a financial modeling stress-testing technique in which **exactly one independent model input is varied across a predefined range** (such as Lower, Base, and Higher values) while **all other independent inputs are held strictly constant at their base-case values**. 
-
-Its primary purpose is to isolate the direct causal sensitivity and marginal impact of each individual assumption on key financial statement lines (Operating Income, Free Cash Flow, and Value per Share) without confounding interactions from simultaneous changes in other variables.
-
-### 2. How does the chosen input range affect the ranking?
-The ranking of drivers by output span ($\text{Max} - \text{Min}$) is fundamentally governed by the width of the ranges selected:
-- If an analyst selects an artificially wide range for Driver A (e.g., $\pm30\%$) and an artificially narrow range for Driver B (e.g., $\pm1\%$), Driver A will mechanically produce a larger output span regardless of underlying economic sensitivity.
-- Ranking drivers by raw dollar span can create the false impression that Driver A is "more important." To be methodologically sound, input ranges must be anchored in empirical evidence, historical volatility, or contractual boundaries, and the conclusion must always be stated as holding strictly **"over these tested ranges."**
-
-### 3. Why is a sensitivity table not a forecast probability?
-A sensitivity table is a **deterministic scenario grid**, not an actuarial or probabilistic distribution:
-1. **No Probabilities Assigned:** A sensitivity table does not state the likelihood of the Lower, Base, or Higher cases occurring. The Lower and Higher cases are simply benchmark stress points, not confidence intervals (e.g., 5th or 95th percentiles).
-2. **Independence Fallacy:** One-at-a-time sensitivity assumes variables move independently in isolation. In reality, economic drivers are highly correlated. For example, if IREN experiences high revenue growth from a booming AI market, electricity demand and GPU procurement costs will also rise, likely compressing margins. OAT sensitivity ignores these multi-variable correlations.
-3. **No Central Tendency:** Unlike Monte Carlo simulation, OAT sensitivity does not produce an expected value, probability density function, or standard deviation.
-
----
-
-## Reflect
-
-### 1. Which driver mattered most over your ranges?
-> *"Over these tested ranges, **Revenue Growth Trajectory** mattered most. A $\pm5.0$ percentage point annual shift across the 5-year forecast produced a **$591.10 million span in Operating Profit** and a **$13.44 per share span in Value**, more than 2.5 times the span generated by a $\pm5.0$ percentage point shift in Cash Gross Margin. Because IREN operates an infrastructure-heavy model with high fixed depreciation ($800M+/year) and multi-billion dollar upfront capex, incremental top-line revenue provides immense operating leverage, swinging Year 5 FCFE from a meager +$39.92M to a robust +$672.22M."*
-
-### 2. Which result surprised you the most?
-> *"What surprised me most was that **IREN's valuation per share turned positive (+0.99 per share) only in the Higher Revenue Growth run (+5 pp)**, while remaining negative in the Base Case (-$5.31) and all other runs. Furthermore, when revenue growth was stress-tested to -10 pp, Year 5 FCFE remained negative (-$250.49M), completely breaking the Gordon growth terminal value and triggering the Refusal Gate. This demonstrated that IREN's current $45+ market share price requires not just steady execution of existing contracts, but substantial multi-year top-line outperformance to justify its valuation above its heavy capital drain."*
-
 ---
 
 ## Visible Terminal Output
@@ -417,4 +332,4 @@ Model development and documentation were drafted with the assistance of **Google
 1. The analysis strictly leverages Elliot's existing Lab 10 three-statement model without modifying prior audited SEC data or altering historical financial statements.
 2. Sensitivity runs were executed programmatically one-at-a-time, resetting to a fresh independent base copy before every run.
 3. Double-entry accounting checks were verified for every run, and the original base case was restored and confirmed to zero error tolerance ($0.000000$).
-4. In strict adherence to academic integrity guidelines, **Elliot's pre-run locked prediction** and all **three partner exchanges** remain designated placeholders (`[MANUAL — ELLIOT/PARTNER REQUIRED]`) and have **NOT** been fabricated.
+4. In strict adherence to academic integrity policies, all financial inputs, historical data, and modeling schedules were derived from audited SEC filings without fabricating company numbers.

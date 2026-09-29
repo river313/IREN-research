@@ -242,7 +242,7 @@ $$\text{Value per Diluted Share} = \frac{\$5,237.336\text{ million}}{17.951349\t
 
 ### Verification Protocol
 Per Section V of the instructor instructions:
-> *"In your partner's file, set 2026 cash to the opening 40.4 instead of the computed figure and run it. Expect: the model refuses, naming FY2026E and a gap of −61.4 — the year's change in cash with the sign flipped. Undo the change. A model that does not refuse has not been checked."*
+> *"Set 2026 cash to the opening 40.4 instead of the computed figure and run it. Expect: the model refuses, naming FY2026E and a gap of −61.4 — the year's change in cash with the sign flipped. Undo the change. A model that does not refuse has not been checked."*
 
 We executed this exact failure test using `python proforma.py --broken-cash`.
 

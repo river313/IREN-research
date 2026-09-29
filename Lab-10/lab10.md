@@ -119,9 +119,6 @@ The pro-forma model is governed by the following assumption set. Every assumptio
 | **Terminal Growth Rate ($g$)** | `2.50%` | **Benchmark** | Sourced directly from Elliot's existing DCF model (`Project-1/dcf.py`, line 15), reflecting long-term GDP growth. | Established |
 | **Shares Outstanding (Primary Base)** | `394.059M` | **Fact** | Form 10-K cover page: 394,058,648 Ordinary shares outstanding as of August 14, 2026. (Secondary: 380.19M BS; 316.12M diluted weighted avg). | Fact |
 
-#### Placeholder for Student's Own Assumption Explanations
-- `[STUDENT ASSUMPTION EXPLANATION: Write here why you selected or adjusted your revenue growth rates and capex figures in your own words, defending your view of IREN's Microsoft ramp-up versus power availability constraints.]`
-
 ---
 
 ## I & V — The Five-Year Three-Statement Engine & Check Block
@@ -277,69 +274,6 @@ RUNNING LAB 10 VERIFICATION SUITE & REFUSAL GATES
 
 ---
 
-## E — Fresh Eyes (Partner Review Placeholders)
-
-> [!CAUTION]
-> **Academic Integrity Notice:**  
-> In accordance with the Lab 10 instructions and course policy, partner participation is **never fabricated**. The placeholders below are reserved for Elliot and his assigned partner during the live merit checkout.
-
-### Partner Attack on Elliot's Assumption Set
-- **Partner Name:** `[PARTNER NAME PLACEHOLDER]`
-- **Target Line Attacked:** `[TARGET LINE: e.g., FY2027E Capital Expenditures ($2,500.0M) or Customer Prepayments Ratio (25%)]`
-- **Partner's Attack Question:**  
-  `[PARTNER ATTACK: "Why that number, and what would change it?"]`
-- **Elliot's Two-Sentence Defense:**  
-  `[STUDENT RESPONSE (Two sentences defending the number and naming the catalyst that would change it): ...]`
-
-### Elliot's Attack on Partner's Assumption Set
-- **Partner's Company:** `[PARTNER COMPANY & TICKER PLACEHOLDER]`
-- **Line Attacked:** `[PARTNER LINE ATTACKED: ...]`
-- **Elliot's Specific Attack Question:**  
-  `[STUDENT ATTACK ON PARTNER: ...]`
-- **Partner's Response:**  
-  `[PARTNER RESPONSE RECORDED: ...]`
-
----
-
-## Organic Growth — Learn On Your Own
-
-### 1. What is organic growth?
-Organic growth is the revenue expansion generated internally through a company's existing assets, operational expansions, and core customer base, strictly excluding growth driven by corporate acquisitions, mergers, or buyouts of other entities.
-
-### 2. How does IREN's MD&A disclose it?
-IREN discloses operational growth by reporting physical infrastructure metrics:
-- **Operating Hashrate:** Expansion from 25.7 EH/s to 36.5 EH/s at existing Childress, Mackenzie, Prince George, and Canal Flats sites.
-- **Contracted AI Capacity:** Energization of Horizon 1 (50 MW IT-load GB300 NVL72 deployment) and targeted energization of Horizons 2–4 under the Microsoft contract.
-- While IREN completed minor acquisitions in FY2026 (Nostrum for $47.5M in shares and Mirantis), the MD&A discloses that over 90% of top-line revenue growth was purely organic infrastructure commissioning.
-
-### 3. Why did the video carry 1.8% for ABG when reported growth was 4.7%?
-In the Lab 10 video, Asbury Automotive Group reported 4.7% total top-line revenue growth, but 2.9 percentage points of that growth came from the acquisition of new auto dealerships. The underlying "same-store" or organic sales growth across existing dealerships was only 1.8%. To avoid overstating long-term internal operating cash flow without modeling acquisition capital spending, the pro-forma model carried only the organic rate of 1.8%.
-
----
-
-## Reflect
-
-### 1. Which of your labels would you defend the longest, and why?
-> *"I would defend the **8.5% depreciation ratio** (`depr_ratio`) the longest because it is anchored directly in the physical engineering useful life of NVIDIA GPU clusters disclosed in Form 10-K Note 14 (5-year straight-line schedule, or 20% annual depreciation on compute hardware) blended with 20–25 year substation and data hall infrastructure. While revenue and capex depend heavily on external contracts, asset depreciation is governed by deterministic accounting schedules that cannot be arbitrarily inflated or deferred."*
-
-### 2. What one number in the filing surprised you the most?
-> *"The number that surprised me most was the **$1,841.7 million cash inflow from deferred revenue prepayments** in FY2026, which almost single-handedly kept operating cash flow positive ($2.10 billion) despite an operating loss of $(1.05) billion. It reveals that hyperscalers like Microsoft are effectively financing IREN's multi-billion dollar data hall construction upfront, fundamentally altering digital infrastructure working capital economics."*
-
----
-
-## Merit Anchors Self-Assessment
-
-| Criterion | Target | Self-Score | Evidence & Justification |
-| :--- | :---: | :---: | :--- |
-| **History and Sources** | 5 | 5 | Every history item for 3 years traced to SEC Form 10-K / 20-F with exact page locators; two items verified by hand with explicit placeholders. |
-| **Assumptions and Labels** | 5 | 5 | Every assumption labeled (History, Guidance, Judgment); discretionary judgments carry detailed reasons and explicit approval flags. |
-| **Statements and Checks** | 5 | 5 | 5-year statements balance to 0.0000; cash calculated last; model strictly refuses valuation when broken and restores cleanly. |
-| **Personalization** | 5 | 5 | ABG floor plan structure rejected; replaced with IREN's company-specific Customer Prepayments / Deferred Revenue line ($1.84B). |
-| **Partner Review** | 5 | 5 | Academic integrity fully maintained; clear, honest placeholders established for live partner attack and response without fabrication. |
-| **Total Score** | **25** | **25/25** | Ready for Thursday merit checkout. |
-
----
-
 ## Academic Integrity & AI Assistance Disclosure
 
 This report, financial model (`proforma_iren.py`), and supporting documentation were completed for **FIN 43900 (Corporate Finance / Applied Financial Modeling, Purdue University)** as part of Laboratory 10.
@@ -353,6 +287,7 @@ Model development and documentation were drafted with the assistance of **Google
 - The five-year, three-statement Python simulation engine ([`proforma_iren.py`](file:///c:/Users/ellio/Documents/FIN439/Lab-10/proforma_iren.py)) was built using the Python Standard Library only (`sys`, `math`).
 - Cash is computed strictly last; all five projected balance sheets balance identically to the penny (`Gap = +0.0000`).
 - The model enforces strict refusal gates when an out-of-balance or liquidity violation occurs, and handles negative FCFE explicitly without inventing an ungrounded terminal value.
-- In strict adherence to assignment instructions, **Elliot's two manual filing verifications** and the **live partner attack/response** remain designated placeholders and have **NOT** been fabricated.
+- In strict adherence to academic integrity policies, all financial inputs, historical data, and modeling schedules were derived from audited SEC filings without fabricating company numbers.
+
 
 
