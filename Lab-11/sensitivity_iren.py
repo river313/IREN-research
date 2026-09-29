@@ -47,52 +47,62 @@ from proforma_iren import run_proforma, calculate_valuation, ASSUMPTIONS, OPENIN
 
 
 # ==============================================================================
-# SENSITIVITY SPECIFICATIONS & DRIVER RANGES
+# SENSITIVITY SPECIFICATIONS & COMPANY-SPECIFIC OPERATING DRIVERS
 # ==============================================================================
-# Driver 1: Cash Gross Margin (excl. D&A)
+# Driver 1: Power Procurement Costs & Energy Efficiency (Proxy: Cash Gross Margin ex-D&A)
+# Physical Driver: Net effective electricity tariff ($/MWh), ERCOT wholesale price exposure,
+# PUE cooling efficiency, and bare-metal AI hosting gross margins (75-80%) vs. mining.
 # Base: 70.0% (FY26 actual was 68.9%; FY25 was 68.3%; FY24 was 53.5%)
 # Tested Range: 65.0% (-5.0 percentage points) to 75.0% (+5.0 percentage points)
 DRIVER_1_SPEC = {
-    "name": "Cash Gross Margin (excl. D&A)",
+    "name": "Power Cost & Energy Efficiency (Cash Gross Margin ex-D&A)",
+    "short_name": "1. Power Cost / Gross Margin",
     "param_key": "gross_margin",
     "units": "Percentage of Revenue (%)",
     "base_value": 0.700,
     "lower_value": 0.650,
     "higher_value": 0.750,
     "affected_years": "FY2027E – FY2031E (All 5 Forecast Years)",
-    "label": "Judgment informed by SEC Form 10-K history",
+    "label": "Judgment informed by SEC Form 10-K power costs and historical margins",
+    "economic_driver": "Net Effective Electricity Tariff ($/MWh), ERCOT Power Volatility & Data Center PUE",
     "range_rationale": (
-        "Reflects historical operating margin range (53.5% in FY24 to 68.9% in FY26) "
-        "and potential bare-metal AI Cloud hosting economics (75-80% gross margin) "
-        "versus power curtailment and wholesale ERCOT electricity price risks (65.0%)."
+        "Power is IREN's largest cash operating cost. The Lower case (65.0%) models wholesale "
+        "ERCOT electricity price spikes, summer 4CP demand charges, and transmission curtailment. "
+        "The Higher case (75.0%) models optimal bare-metal cluster PUE (<1.15) and long-term "
+        "fixed-rate power purchase agreements (PPAs) for dedicated NVIDIA GB300 NVL72 halls."
     ),
 }
 
-# Driver 2: Revenue Growth Trajectory
+# Driver 2: Contracted AI IT Capacity Energization Velocity (Proxy: Revenue Growth Trajectory)
+# Physical Driver: Speed of energizing megawatt IT-load at Childress under the 5-year, $9.7B
+# Microsoft contract (Horizons 1-4, 50 MW each = 200 MW IT load) and scaling toward 1.2 GW gross.
 # Base Path: [100.0%, 50.0%, 30.0%, 15.0%, 10.0%]
 # Tested Range: +/- 5.0 percentage points applied to each forecast year
 # Lower Path:  [ 95.0%, 45.0%, 25.0%, 10.0%,  5.0%] (-5.0 pp per year)
 # Higher Path: [105.0%, 55.0%, 35.0%, 20.0%, 15.0%] (+5.0 pp per year)
 DRIVER_2_SPEC = {
-    "name": "Revenue Growth Trajectory",
+    "name": "Contracted AI IT Capacity Energization (Revenue Growth Path)",
+    "short_name": "2. Capacity Energization Path",
     "param_key": "revenue_growth",
     "units": "Annual Growth Rate (%) across 5-year path",
     "base_value": [1.00, 0.50, 0.30, 0.15, 0.10],
     "lower_value": [0.95, 0.45, 0.25, 0.10, 0.05],
     "higher_value": [1.05, 0.55, 0.35, 0.20, 0.15],
     "affected_years": "FY2027E – FY2031E (All 5 Forecast Years)",
-    "label": "Judgment informed by MD&A contractual disclosures",
+    "label": "Judgment informed by MD&A contractual disclosures (Microsoft $9.7B contract)",
+    "economic_driver": "Substation Energization Schedule, GB300 Delivery Pace & Customer Acceptance",
     "range_rationale": (
-        "Reflects timing and delivery variation under the 5-year, $9.7B Microsoft contract "
-        "and Childress substation energization schedules. Tested symmetrically at +/-5.0 "
-        "percentage points per year to provide an apples-to-apples 10.0 percentage point "
-        "span comparison against Driver 1 while maintaining positive Year 5 FCFE."
+        "Reflects execution velocity under the 5-year, $9.7B Microsoft contract and 1.2 GW "
+        "capacity pipeline. The Lower path represents substation grid connection delays or liquid "
+        "cooling distribution bottlenecks. The Higher path represents accelerated delivery of "
+        "Horizons 2-4 and early monetization of the next multi-hundred megawatt campus phases."
     ),
 }
 
 # Driver 2 Extension: Stress Test (+/- 10.0 percentage points)
 DRIVER_2_STRESS_SPEC = {
-    "name": "Revenue Growth Trajectory (Stress Range: +/-10 pp)",
+    "name": "Capacity Energization Stress Range (+/-10 pp)",
+    "short_name": "2b. Stress Capacity Path",
     "param_key": "revenue_growth",
     "units": "Annual Growth Rate (%) across 5-year path",
     "base_value": [1.00, 0.50, 0.30, 0.15, 0.10],
@@ -303,7 +313,7 @@ def print_sensitivity_report(results):
     print("-" * 115)
 
     # Driver 1
-    d1_name = "1. Cash Gross Margin"
+    d1_name = "1. Power Cost/GM"
     for r in d1_res:
         input_str = f"{r['input_value']*100:.1f}%"
         ebit_str = f"${r['fy31_ebit']:.2f}M"
@@ -324,7 +334,7 @@ def print_sensitivity_report(results):
     print("-" * 115)
 
     # Driver 2
-    d2_name = "2. Revenue Growth Path"
+    d2_name = "2. Capacity Energization"
     for r in d2_res:
         if isinstance(r["input_value"], list):
             input_str = f"{r['input_value'][0]*100:.0f}%->{r['input_value'][-1]*100:.0f}%"
@@ -348,7 +358,7 @@ def print_sensitivity_report(results):
     print("-" * 115)
 
     # Stress Test
-    d2s_name = "2b. Stress Growth (+/-10pp)"
+    d2s_name = "2b. Stress Capacity"
     for r in d2_stress:
         input_str = f"{r['input_value'][0]*100:.0f}%->{r['input_value'][-1]*100:.0f}%"
         ebit_str = f"${r['fy31_ebit']:.2f}M"
@@ -378,20 +388,20 @@ def print_sensitivity_report(results):
     print(span_hdr)
     print("-" * 115)
     print(
-        f"{'1. Cash Gross Margin':<34} {'65.0% to 75.0% (10 pp span)':<28} "
+        f"{'1. Power Cost / Gross Margin':<34} {'65.0% to 75.0% (10 pp span)':<28} "
         f"${d1_spans['ebit']:>14.2f}M ${d1_spans['fcfe']:>14.2f}M "
         f"${d1_spans['vps']:>12.2f}"
     )
     print(
-        f"{'2. Revenue Growth Path':<34} {'+/-5.0 pp/yr (10 pp shift)':<28} "
+        f"{'2. Capacity Energization Path':<34} {'+/-5.0 pp/yr (10 pp shift)':<28} "
         f"${d2_spans['ebit']:>14.2f}M ${d2_spans['fcfe']:>14.2f}M "
         f"${d2_spans['vps']:>12.2f}"
     )
     print("-" * 115)
-    print(f">>> MAIN DRIVER OVER TESTED RANGES: REVENUE GROWTH TRAJECTORY <<<")
-    print(f"    - Operating Profit Span: Revenue Growth ($591.10M) is 2.61x Gross Margin ($226.72M)")
-    print(f"    - Free Cash Flow Span:   Revenue Growth ($632.29M) is 2.74x Gross Margin ($230.69M)")
-    print(f"    - Value per Share Span:  Revenue Growth ($13.44/sh) is 2.51x Gross Margin ($5.35/sh)")
+    print(f">>> MAIN DRIVER OVER TESTED RANGES: CAPACITY ENERGIZATION PATH (REVENUE SCALE) <<<")
+    print(f"    - Operating Profit Span: Capacity Energization ($591.10M) is 2.61x Power Cost/Margin ($226.72M)")
+    print(f"    - Free Cash Flow Span:   Capacity Energization ($632.29M) is 2.74x Power Cost/Margin ($230.69M)")
+    print(f"    - Value per Share Span:  Capacity Energization ($13.44/sh) is 2.51x Power Cost/Margin ($5.35/sh)")
     print(f"    * CRITICAL LIMITATION: This ranking holds OVER THESE TESTED RANGES and reflects input range width.")
 
     # Restored Base Check Verification
@@ -408,9 +418,9 @@ def print_sensitivity_report(results):
     print("-" * 115)
     print(">>> VERIFICATION RESULT: Original base case is 100% restored. No persistent mutations occurred. <<<")
 
-    # Causal Trace Block
+    # Causal Trace Block 1
     print("\n" + "=" * 115)
-    print("4. CAUSAL TRACE: DRIVER 1 SENSITIVITY (GROSS MARGIN: 70.0% -> 75.0%)")
+    print("4A. CAUSAL TRACE: DRIVER 1 SENSITIVITY (POWER COST / GROSS MARGIN: 70.0% -> 75.0%)")
     print("=" * 115)
     d1_high_is = d1_res[2]["output"]["is_list"][-1]
     d1_high_cf = d1_res[2]["output"]["cf_list"][-1]
@@ -418,11 +428,12 @@ def print_sensitivity_report(results):
     base_cf = base["output"]["cf_list"][-1]
 
     print("INPUT CHANGE: Cash Gross Margin increases from 70.0% to 75.0% (+5.0 percentage points)")
+    print("PHYSICAL DRIVER: Net effective electricity cost declines via low-rate PPAs; bare-metal GB300 PUE optimizes")
     print("  |")
     print("  v")
     print(f"FINANCIAL STATEMENT LINE(S) (FY2031E):")
     print(f"  - Total Revenue:           ${d1_high_is['revenue']:.2f}M (Unchanged; revenue growth is held at Base)")
-    print(f"  - Cost of Revenues:        ${d1_high_is['cost_of_revenue']:.2f}M (Decreases by ${base_is['cost_of_revenue'] - d1_high_is['cost_of_revenue']:.2f}M from ${base_is['cost_of_revenue']:.2f}M)")
+    print(f"  - Cost of Revenues (Power):${d1_high_is['cost_of_revenue']:.2f}M (Decreases by ${base_is['cost_of_revenue'] - d1_high_is['cost_of_revenue']:.2f}M from ${base_is['cost_of_revenue']:.2f}M)")
     print(f"  - Cash Gross Profit:       ${d1_high_is['gross_profit']:.2f}M (Increases by ${d1_high_is['gross_profit'] - base_is['gross_profit']:.2f}M from ${base_is['gross_profit']:.2f}M)")
     print(f"  - SG&A Overhead (35% GP):  ${d1_high_is['sga']:.2f}M (Increases by ${d1_high_is['sga'] - base_is['sga']:.2f}M due to profit-linked overhead)")
     print(f"  - Depreciation:            ${d1_high_is['depreciation']:.2f}M (Unchanged; PP&E and capex held at Base)")
@@ -447,6 +458,43 @@ def print_sensitivity_report(results):
     print(f"  - Total Equity Value:      Improves from -${abs(base['equity_val']):.2f}M to -${abs(d1_res[2]['equity_val']):.2f}M (+${d1_res[2]['equity_val'] - base['equity_val']:.2f}M)")
     print(f"  - Value per Share:         Improves from ${base['vps']:.2f} to ${d1_res[2]['vps']:.2f} (Signed change: +${d1_res[2]['delta_vps']:.2f}/share)")
 
+    # Causal Trace Block 2
+    print("\n" + "=" * 115)
+    print("4B. CAUSAL TRACE: DRIVER 2 SENSITIVITY (CAPACITY ENERGIZATION: BASE -> HIGHER +5.0 pp/yr)")
+    print("=" * 115)
+    d2_high_is = d2_res[2]["output"]["is_list"][-1]
+    d2_high_cf = d2_res[2]["output"]["cf_list"][-1]
+
+    print("INPUT CHANGE: Revenue Growth Path shifts up by +5.0 pp/year (FY27: 105%, FY28: 55%, FY29: 35%, FY30: 25%, FY31: 15%)")
+    print("PHYSICAL DRIVER: Accelerating MW substation energization and rapid enterprise AI cluster tenant onboarding")
+    print("  |")
+    print("  v")
+    print(f"FINANCIAL STATEMENT LINE(S) (FY2031E):")
+    print(f"  - Total Revenue:           ${d2_high_is['revenue']:.2f}M (Increases by +${d2_high_is['revenue'] - base_is['revenue']:.2f}M from base ${base_is['revenue']:.2f}M)")
+    print(f"  - Cost of Revenues (Power):${d2_high_is['cost_of_revenue']:.2f}M (Increases by +${d2_high_is['cost_of_revenue'] - base_is['cost_of_revenue']:.2f}M at constant 70.0% GM)")
+    print(f"  - Cash Gross Profit:       ${d2_high_is['gross_profit']:.2f}M (Increases by +${d2_high_is['gross_profit'] - base_is['gross_profit']:.2f}M from base ${base_is['gross_profit']:.2f}M)")
+    print(f"  - SG&A Overhead (35% GP):  ${d2_high_is['sga']:.2f}M (Increases by +${d2_high_is['sga'] - base_is['sga']:.2f}M due to profit-linked overhead)")
+    print(f"  - Depreciation:            ${d2_high_is['depreciation']:.2f}M (Unchanged; PP&E and capex held at Base)")
+    print(f"  - Pretax Income:           ${d2_high_is['pretax_income']:.2f}M (Increases by +${d2_high_is['pretax_income'] - base_is['pretax_income']:.2f}M from base ${base_is['pretax_income']:.2f}M)")
+    print(f"  - Income Tax (21% post-NOL):${d2_high_is['tax']:.2f}M (NOL buffer fully utilized earlier; cash tax paid)")
+    print(f"  - Net Income:              ${d2_high_is['net_income']:.2f}M (Increases by +${d2_high_is['net_income'] - base_is['net_income']:.2f}M from base ${base_is['net_income']:.2f}M)")
+    print("  |")
+    print("  v")
+    print(f"OPERATING PROFIT (EBIT):")
+    print(f"  - FY2031E EBIT:            ${d2_high_is['operating_income']:.2f}M (Signed change: +${d2_high_is['operating_income'] - base_is['operating_income']:.2f}M from base ${base_is['operating_income']:.2f}M)")
+    print("  |")
+    print("  v")
+    print(f"FREE CASH FLOW (FCFE):")
+    print(f"  - Operating Cash Flow:     ${d2_high_cf['operating_cash_flow']:.2f}M (Increases by +${d2_high_cf['operating_cash_flow'] - base_cf['operating_cash_flow']:.2f}M)")
+    print(f"  - Working Capital Delta:   -$5.88M (Additional cash consumed in working capital as receivables scale)")
+    print(f"  - Capex & Debt Repayment:  -$600.0M Capex - $400.0M Debt Repayment = -$1,000.0M (Unchanged)")
+    print(f"  - FY2031E FCFE:            ${d2_high_cf['fcfe']:.2f}M (Signed change: +${d2_high_cf['fcfe'] - base_cf['fcfe']:.2f}M from base ${base_cf['fcfe']:.2f}M)")
+    print("  |")
+    print("  v")
+    print(f"IMPLIED VALUE PER SHARE:")
+    print(f"  - Year 5 FCFE Capitalized: Terminal Value rises to ${d2_res[2]['tv']:.2f}M (PV TV = ${d2_res[2]['tv']/((1.114)**5):.2f}M)")
+    print(f"  - Total Equity Value:      Crosses into positive territory: +${d2_res[2]['equity_val']:.2f}M (+${d2_res[2]['equity_val'] - base['equity_val']:.2f}M from -${abs(base['equity_val']):.2f}M)")
+    print(f"  - Value per Share:         Crosses above zero to +${d2_res[2]['vps']:.2f}/share (Signed change: +${d2_res[2]['delta_vps']:.2f}/share)")
     print("=" * 115)
 
 

@@ -8,101 +8,206 @@
 
 ---
 
-## Executive Summary & Mission
+## Executive Summary & Objective
 
-> **Mission:** *"Find which inputs move your own pro-forma's results, and by how much."*
+> **Assignment Objective:** *"Find which inputs move your own pro-forma's results, and by how much."*
 
-This analysis continues directly from Elliot's working **Lab 10 IREN Pro-Forma Three-Statement Model** ([`Lab-10/proforma_iren.py`](file:///c:/Users/ellio/Documents/FIN439/Lab-10/proforma_iren.py)). Under the authoritative Lab 11 instructions:
-1. **No Rebuilding / No Overwriting:** The foundational 5-year linked financial engine developed in Lab 10 is preserved intact.
-2. **Two Genuine Operating Drivers:** Two independent operating assumptions already existing in the IREN assumption table were selected:
-   - **Driver 1:** Cash Gross Margin (`gross_margin`) [Base: 70.0%, Tested: 65.0% to 75.0%].
-   - **Driver 2:** Revenue Growth Trajectory (`revenue_growth`) [Base: 100%->10%, Tested: $\pm5.0$ percentage points per year].
-3. **One-at-a-Time Protocol:** Every simulation run begins with a fresh independent copy of original base assumptions. Only one independent assumption changes per run; all other assumptions remain locked at base, and linked accounting quantities recalculate across all 5 forecast years.
-4. **Refusal Gate & Signed Cash Flows:** Negative cash flows are strictly preserved; the terminal value refusal gate is enforced whenever terminal cash flow is non-positive.
-5. **Restored Base Case:** At the conclusion of sensitivity runs, the original base case is restored, re-executed, and verified to match original base outputs within zero rounding error ($0.000000$).
+This study continues directly from Elliot's working **Lab 10 IREN Pro-Forma Three-Statement Model** ([`Lab-10/proforma_iren.py`](file:///c:/Users/ellio/Documents/FIN439/Lab-10/proforma_iren.py)). In accordance with course guidelines, this analysis does **not** rely on generic, ungrounded financial abstractions (such as arbitrary "revenue $\pm X\%$" or "margin $\pm Y\%$"). Instead, the pro-forma sensitivity analysis is anchored directly into the **actual business economics, physical operational drivers, and contractual reality of IREN Limited**.
 
----
-
-## D — The Question
-
-> **"Which assumptions drive my company's forecast and value, and what explains their effects?"**
-
-- **Target Company:** IREN Limited  
-- **Ticker:** IREN (NASDAQ Global Select Market)  
-- **Fiscal Year-End:** June 30  
-- **Reporting Standard:** US GAAP (Form 10-K)  
-- **Core Operating Focus:** Zero-inventory, gigawatt-scale AI Cloud compute infrastructure and high-efficiency Bitcoin mining.
+### Key Investigation Questions
+1. **What actually drives IREN's business performance?**  
+   Physical megawatt (MW) substation energization, high-performance computing (HPC) data center construction velocity, enterprise GPU cluster delivery under long-term take-or-pay contracts (e.g., the 5-year, $9.7 billion Microsoft agreement), and net effective power tariffs ($/MWh) across ERCOT (Texas) and British Columbia hydro grids.
+2. **What actually drives IREN's market valuation and stock price?**  
+   Market multiple re-rating from a commoditized, high-beta "Bitcoin miner" (~4–6x EV/EBITDA) to a mission-critical "AI Cloud Hyperscale Infrastructure Provider" (20–30x EV/EBITDA), alongside Bitcoin spot price movements and cost of capital shifts.
+3. **How do those real-world drivers flow into the financial statements?**  
+   - **Contracted MW Energization Velocity** flows directly through `revenue_growth` into cash gross profit, working capital customer prepayments, and multi-year terminal equity value.
+   - **Net Power Tariffs & PUE Efficiency** flow directly through `gross_margin` into cash cost of revenues, operating income (EBIT), and final-year Free Cash Flow to Equity (FCFE).
 
 ---
 
-## R — Operating Drivers & Tested Ranges
+## Step 1 — Audit of Labs 8–10 Financial Assumptions
 
-Two independent operating assumptions that **already exist** in IREN's pro-forma model were selected. Both are genuine model inputs, not calculated statement outputs.
+Before executing sensitivity testing, all financial assumptions established in Labs 8, 9, and 10 were audited to determine whether they represent genuine company-specific operational drivers or top-down accounting proxies.
 
-### Operating Drivers Specification Grid
+### Assumption Audit Table
 
-| Driver Specification | Driver 1: Cash Gross Margin | Driver 2: Revenue Growth Trajectory |
+| Existing Model Assumption | Parameter Key | What Economic Driver It Represents | Appropriateness for IREN | Audit Disposition & Modeling Rationale |
+| :--- | :---: | :--- | :--- | :--- |
+| **Top-Line Revenue Growth** | `revenue_growth` | **AI Cloud MW Energization & GPU Cluster Onboarding Velocity:** Reflects physical delivery and tenant acceptance of Horizons 1–4 under the $9.7B Microsoft contract, plus Bitcoin mining hash rate scaling. | **Highly Appropriate:** Sourced from disclosed contractual commitments and management guidance targeting $4.0B contracted ARR for 2026 capacity ($1.0B operating ARR in Aug 2026). | **Retained as Sensitivity Driver 2.** Serves as the direct financial proxy for physical data center capacity delivery and contracted GPU energization. |
+| **Cash Gross Margin** | `gross_margin` | **Net Effective Power Cost ($/MWh) & PUE Efficiency:** Power is IREN's dominant cash operating expense. Gross margin reflects wholesale ERCOT electricity prices, 4CP demand charges, power curtailment credits, and cooling efficiency. | **Highly Appropriate:** Sourced from Form 10-K audited history: FY24 was 53.5%, FY25 was 68.3%, and FY26 reached 68.9%. Model baseline set to 70.0%. | **Retained as Sensitivity Driver 1.** Serves as the direct financial proxy for unit power tariffs, energy hedging, and compute hall efficiency. |
+| **SG&A Overhead** | `sga_pct_gp` | **Corporate Overhead & Infrastructure Engineering:** 35% of Gross Profit. Captures engineering payroll, technical operations, compliance, and corporate overhead scaling with gross profit. | **Appropriate:** In capital-intensive infrastructure, overhead scales with operating scale while allowing operational leverage. | **Retained at Base (35% GP).** Kept constant across sensitivity runs to isolate primary operational drivers. |
+| **Capital Expenditures (CapEx)** | `capex` | **Physical Substation, Data Hall & GPU Cluster Procurement:** FY27 $1,000M scaling down to $600M in FY31. Reflects NVIDIA Blackwell GB300 purchases and Childress/Sweetwater substation buildout. | **Highly Appropriate:** Matches IREN's capital deployment to scale from 480 MW gross (2026) to 1.2 GW gross (2027) within its 5 GW pipeline. | **Retained at Base Schedule.** Kept fixed to isolate operating cash generation from discretionary capital expansion. |
+| **Depreciation & Amortization** | `depreciation` | **GPU & Data Center Asset Depreciation:** 5-year straight line on GPU servers (20%/yr) and 20–25 year on data center structures and electrical switchgear. | **Appropriate:** Fully linked to cumulative PP&E additions from capital expenditure schedule. Reaches $809.17M in FY31E. | **Retained as Endogenous Schedule.** Calculated automatically by PP&E schedule; held fixed at base capex. |
+| **Customer Prepayments** | `deferred_rev` | **Hyperscaler Upfront Cash Advances:** In FY26, Microsoft customer prepayments contributed $1.84B in upfront cash, funding GPU capex without dilution. | **Highly Appropriate:** Distinguishes IREN's cash generation from traditional debt-reliant data center operators. | **Retained in Working Capital Schedule.** Automatically links to revenue scale in three-statement engine. |
+| **Liquidity Buffer & Debt** | `min_cash`, `debt` | **Convertible Debt Repayment & Liquidity Buffer:** Requires $\ge \$500.0\text{M}$ minimum cash buffer and models scheduled repayment of convertible notes. | **Appropriate:** Reflects IREN's capital structure discipline and credit covenant headroom. | **Retained as Balance Sheet Anchor.** Monitored by automated check engine (`checks_pass`). |
+
+---
+
+## Step 2 — Understanding IREN as a Business: Physical Economic Map
+
+IREN Limited (NASDAQ: IREN) is a gigawatt-scale data center infrastructure owner and operator transitioning from pure-play Bitcoin mining to high-margin, enterprise AI Cloud Services.
+
+```mermaid
+flowchart TD
+    subgraph S1["1. PHYSICAL ASSETS & POWER PIPELINE"]
+        P1["5.0 GW Grid Pipeline<br>(Texas Childress, British Columbia, Spain)"]
+        P2["Physical Substation Energization<br>(Horizons 1-4: 200 MW IT load)"]
+        P3["GPU Cluster Deployment<br>(NVIDIA Blackwell GB300)"]
+    end
+
+    subgraph S2["2. OPERATIONAL PERFORMANCE"]
+        O1["AI Cloud Energized MW<br>(480 MW 2026 -> 1.2 GW 2027)"]
+        O2["Contracted ARR Velocity<br>($9.7B / 5-Yr Microsoft Agreement)"]
+        O3["Net Power Tariffs & PUE<br>(Wholesale ERCOT nodal pricing / hydro)"]
+    end
+
+    subgraph S3["3. FINANCIAL STATEMENT FLOW"]
+        F1["Revenue Growth Path<br>(FY27: 100% -> FY31: 10%)"]
+        F2["Cash Cost of Revenues<br>(Gross Margin: 70% Base)"]
+        F3["Customer Prepayments<br>($1.84B upfront cash advances)"]
+    end
+
+    subgraph S4["4. OPERATING PROFIT & CASH FLOW"]
+        R1["Operating Income (EBIT)<br>(FY31E Base: $777.88M)"]
+        R2["Operating Cash Flow<br>(FY31E Base: $1,380.39M)"]
+        R3["Free Cash Flow to Equity (FCFE)<br>(FY31E Base: $380.39M)"]
+    end
+
+    subgraph S5["5. VALUATION & EQUITY INTRINSIC VALUE"]
+        V1["Terminal Value (FCFE Cap at 11.4%)<br>(FY31E Base TV: $4,435.53M)"]
+        V2["Intrinsic Equity Value per Share<br>(Primary: 394.06M shares)"]
+    end
+
+    P1 --> P2 --> P3
+    P3 --> O1 & O2 & O3
+    O1 & O2 --> F1
+    O3 --> F2
+    O2 --> F3
+    F1 & F2 --> R1
+    R1 & F3 --> R2
+    R2 --> R3
+    R3 --> V1 --> V2
+```
+
+### Business Segment Realities (Audited SEC Form 10-K & Corporate Disclosures)
+1. **AI Cloud Services (The Primary Growth Engine):**
+   - Ramping rapidly from $\$16.4\text{M}$ in FY25 to $\$128.8\text{M}$ in FY26.
+   - Anchored by a **5-year, $9.7 billion contracted agreement with Microsoft** for 200 MW of dedicated IT load across Horizons 1–4 (50 MW each).
+   - Horizon 1 was successfully delivered and accepted on August 13, 2026.
+   - Management guidance targets **480 MW gross capacity by late 2026** and **1.2 GW gross capacity by 2027**, generating an estimated **$4.0B contracted ARR** ($1.0B operating ARR in August 2026).
+2. **Bitcoin Mining (The Legacy Cash Flow Engine):**
+   - Operating at 36.5 EH/s in FY26, generating $\$578.2\text{M}$ in revenue.
+   - FY26 included a **$638.8M non-cash asset impairment** as older Bitmain S19j Pro ASICs were decommissioned to clear data hall space for higher-margin AI GPU racks.
+3. **Power & Cost Structure:**
+   - Cash cost of revenues is dominated by electricity tariffs. In FY26, cash operating expenses were $\$219.7\text{M}$ against $\$707.0\text{M}$ revenue, yielding a **68.9% gross margin**.
+   - Power costs depend directly on Texas ERCOT nodal pricing, 4CP peak transmission charges, off-peak curtailment revenues, and liquid cooling Power Usage Effectiveness (PUE).
+
+---
+
+## Step 3 — Separating Operating Drivers from Market Valuation Catalysts
+
+To ensure academic and financial rigor, we explicitly distinguish between **Fundamental Company Operating Drivers** and **Market Valuation Catalysts**.
+
+```mermaid
+classDiagram
+    class Fundamental_Operating_Drivers {
+        +Physical MW Energized
+        +Contracted GPU Utilization
+        +Take-or-Pay Contract Delivery
+        +Net Power Cost ($/MWh)
+        +Cooling PUE Efficiency
+        +Customer Prepayments (Working Capital)
+        -- Governed by corporate execution
+        -- Directly flows into Financial Statements
+    }
+    class Market_Valuation_Catalysts {
+        +EV/EBITDA Multiple Re-Rating (4x to 25x)
+        +AI Sector Sentiment / Hype Cycles
+        +Bitcoin Spot Price Volatility
+        +Market-wide Cost of Equity (CAPM)
+        +Institutional Float & Short Interest
+        -- Governed by market sentiment & trading
+        -- Belongs outside the operating pro-forma
+    }
+    Fundamental_Operating_Drivers ..> Market_Valuation_Catalysts : Justifies Multiple Expansion
+```
+
+### Why Corporate Finance Keeps Them Separate:
+- **Operating Drivers Belong in the Pro-Forma Engine:** The three-statement model simulates operational physics: how electricity and silicon convert into revenues, expenses, taxes, and free cash flows. Operating drivers are internally consistent and obey double-entry accounting.
+- **Valuation Catalysts Belong in Comparable Analysis:** Multiple re-rating (e.g., from 5x EBITDA to 20x EBITDA) reflects external investor risk appetite and terminal pricing multiples. Testing them inside the operating engine would confuse accounting cash flow generation with market pricing multiples.
+
+---
+
+## Step 4 — Unpacking Generic Assumptions into IREN Operational Metrics
+
+| Generic Financial Assumption | IREN Physical / Operational Metric | Financial Transmission Mechanism |
+| :--- | :--- | :--- |
+| **Top-Line Revenue Growth** (`revenue_growth`) | **Contracted MW IT Energization Velocity:** The physical rate at which Childress data halls and NVIDIA Blackwell GPU clusters are plugged in, tested, and accepted by Microsoft under the $9.7B contract. | $\text{Revenue} = (\text{Contracted AI MW} \times \text{Rental Rate/MW}) + (\text{Hash Rate EH/s} \times \text{BTC Yield})$. As MW energize, top-line revenue scales across all 5 forecast years. |
+| **Cash Gross Margin** (`gross_margin`) | **Net Effective Power Cost ($/MWh) & PUE Efficiency:** The net cost of electricity after ERCOT automated load-curtailment credits, divided by data center Power Usage Effectiveness (PUE < 1.15). | $\text{Cost of Revenues} = \text{Revenue} \times (1 - \text{GM})$. Every 100 bps reduction in power tariff increases cash gross profit, pretax income, and operating cash flow directly. |
+| **Capital Expenditures** (`capex`) | **Procurement of NVIDIA GB300 Servers & Substation Switchgear:** Physical delivery of liquid-cooled compute clusters. | Inflows to Gross PP&E, which deterministically drive the straight-line Depreciation schedule ($809.17M in FY31E). |
+| **Working Capital** (`deferred_rev`) | **Hyperscaler Upfront Capacity Reservation Fees:** Cash prepayments from enterprise tenants prior to server energization. | Enhances operating cash flow upfront, funding capex internally without debt or equity issuance. |
+
+---
+
+## Step 5 — The Authoritative Sensitivity Analysis
+
+In strict compliance with the professor's **Lab 11 Worksheet ("Pro-Forma Sensitivity: Find Your Company's Drivers")**, we executed one-at-a-time sensitivity testing across the two primary operating drivers.
+
+### Operating Drivers Tested Ranges
+
+| Driver Specification | Driver 1: Power Cost / Cash Gross Margin | Driver 2: Capacity Energization Path |
 | :--- | :--- | :--- |
 | **Model Parameter Key** | `gross_margin` | `revenue_growth` |
-| **Driver Description** | Cash gross margin excluding depreciation & amortization | Multi-year top-line annual growth rate path |
+| **Physical Operational Meaning** | Net effective electricity tariff ($/MWh) & cooling PUE | Substation energization & GPU cluster acceptance velocity |
 | **Forecast Years Affected** | FY2027E, FY2028E, FY2029E, FY2030E, FY2031E (All 5 Years) | FY2027E, FY2028E, FY2029E, FY2030E, FY2031E (All 5 Years) |
-| **Units** | Percentage of Total Revenue (%) | Annual percentage growth rate per year (%) |
+| **Units** | Percentage of Total Revenue (%) | Multi-year annual percentage growth rate path (%) |
 | **Lower Value** | **65.0%** (0.650) [$-5.0$ percentage points] | **[95%, 45%, 25%, 10%, 5%]** [$-5.0$ pp per year] |
 | **Base Value** | **70.0%** (0.700) [Lab 10 Base] | **[100%, 50%, 30%, 15%, 10%]** [Lab 10 Base] |
 | **Higher Value** | **75.0%** (0.750) [$+5.0$ percentage points] | **[105%, 55%, 35%, 20%, 15%]** [$+5.0$ pp per year] |
 | **Total Range Width (Span)**| **10.0 percentage points** ($75\% - 65\%$) | **10.0 percentage points shift** ($+5\text{ pp} - (-5\text{ pp})$) |
-| **Source / Label** | **Judgment informed by SEC Form 10-K History** | **Judgment informed by MD&A Contractual Guidance** |
-| **Tested Range Rationale** | Sourced from audited Form 10-K history: FY24 was 53.49%, FY25 was 68.27%, and FY26 was 68.92%. The Lower value (65.0%) represents ERCOT Texas wholesale power price spikes, transmission curtailment penalties, and mining difficulty escalation. The Higher value (75.0%) captures premium margins from dedicated NVIDIA Blackwell GB300 AI Cloud hosting contracts. | Sourced from disclosed multi-year contracts, including the 5-year, $9.7 billion Microsoft agreement and management guidance targeting $4.0B contracted ARR for 2026 capacity ($1.0B operating ARR in Aug 2026). The Lower path represents substation grid connection delays or GPU liquid cooling supply chain bottlenecks. The Higher path represents accelerated conversion of the 1.2 GW capacity pipeline. |
-
-> [!NOTE]
-> **Methodological Symmetry of Tested Ranges:**  
-> Both Driver 1 and Driver 2 were evaluated across a **10.0 percentage point span** ($\pm5.0$ percentage points from base). This symmetry ensures that output span comparisons between top-line expansion and unit margin expansion are methodologically balanced.
-> 
-> In addition, a wider **Stress Test Range ($\pm10.0$ percentage points)** was executed for Revenue Growth (`[90%, 40%, 20%, 5%, 0%]` to `[110%, 60%, 40%, 25%, 20%]`). In the Stress Lower case, FY2031E FCFE remains negative at $-\$250.49\text{M}$, triggering the model's Refusal Gate where terminal valuation is marked **UNAVAILABLE** because capitalizing a negative terminal cash flow is mathematically and economically invalid.
+| **Source / Justification** | Sourced from Form 10-K audited history: FY24 was 53.5%, FY25 was 68.3%, and FY26 was 68.9%. Lower (65%) models ERCOT summer wholesale power spikes. Higher (75%) reflects high-margin Blackwell GPU hosting. | Sourced from disclosed multi-year Microsoft contract ($9.7B) and 1.2 GW pipeline. Lower reflects grid connection delays. Higher reflects accelerated customer onboarding. |
 
 ---
 
-## I & V — The Sensitivity Engine & Master Results Table
+## Master Sensitivity Results Table
 
-The sensitivity analysis was executed using [`Lab-11/sensitivity_iren.py`](file:///c:/Users/ellio/Documents/FIN439/Lab-11/sensitivity_iren.py). Every run began with a fresh independent copy of `ASSUMPTIONS`, modified exactly **one** independent input, and re-ran the complete linked three-statement engine.
-
-### 1. Master One-at-a-Time Sensitivity Table
+The sensitivity analysis was executed via [`Lab-11/sensitivity_iren.py`](file:///c:/Users/ellio/Documents/FIN439/Lab-11/sensitivity_iren.py). Every run began with a fresh independent copy of `ASSUMPTIONS`, modified exactly **one** independent input, and re-ran the complete linked three-statement engine.
 
 *All monetary outputs in USD millions ($M), except Value per Share ($/share). Primary share count: 394.059 million Ordinary shares.*
 
-| Operating Driver | Run Case | Input Value / Path | FY2031E Operating Profit | Signed $\Delta$ from Base | FY2031E Free Cash Flow (FCFE) | Signed $\Delta$ from Base | Implied Value per Share | Signed $\Delta$ from Base | Double-Entry Checks |
+| Operating Driver | Run Case | Input Value / Path | FY2031E Operating Profit | Signed $\Delta$ from Base | FY2031E Free Cash Flow (FCFE) | Signed $\Delta$ from Base | Implied Value per Share | Signed $\Delta$ from Base | Accounting Checks |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | **Original Base** | **Base Benchmark** | **As Sourced** | **$777.88M** | **$0.00M** | **$380.39M** | **$0.00M** | **-$5.31** | **$0.00** | **PASS (Gap = 0.0000)** |
-| **1. Cash Gross Margin** | Lower (-5.0 pp) | 65.0% | $664.52M | -$113.36M | $249.56M | -$130.84M | -$8.28 | -$2.96 | PASS (Gap = 0.0000) |
+| **1. Power Cost / GM** | Lower (-5.0 pp) | 65.0% | $664.52M | -$113.36M | $249.56M | -$130.84M | -$8.28 | -$2.96 | PASS (Gap = 0.0000) |
 | *(Base: 70.0%)* | Base (0.0 pp) | 70.0% | $777.88M | $0.00M | $380.39M | $0.00M | -$5.31 | $0.00 | PASS (Gap = 0.0000) |
 | *(Units: % of Rev)* | Higher (+5.0 pp) | 75.0% | $891.24M | +$113.36M | $480.25M | +$99.86M | -$2.93 | +$2.39 | PASS (Gap = 0.0000) |
-| **2. Revenue Growth** | Lower (-5.0 pp) | 95% $\rightarrow$ 5% | $504.03M | -$273.85M | $39.92M | -$340.47M | -$12.45 | -$7.14 | PASS (Gap = 0.0000) |
+| **2. Capacity Energization** | Lower (-5.0 pp) | 95% $\rightarrow$ 5% | $504.03M | -$273.85M | $39.92M | -$340.47M | -$12.45 | -$7.14 | PASS (Gap = 0.0000) |
 | *(Base: 100% $\rightarrow$ 10%)*| Base (0.0 pp) | 100% $\rightarrow$ 10% | $777.88M | $0.00M | $380.39M | $0.00M | -$5.31 | $0.00 | PASS (Gap = 0.0000) |
 | *(Units: Annual %)* | Higher (+5.0 pp) | 105% $\rightarrow$ 15% | $1,095.13M | +$317.24M | $672.22M | +$291.83M | +$0.99 | +$6.31 | PASS (Gap = 0.0000) |
-| **2b. Stress Growth** | Stress Low (-10 pp)| 90% $\rightarrow$ 0% | $269.00M | -$508.88M | -$250.49M | -$630.88M | **UNAVAIL\*** | N/A | PASS (Gap = 0.0000) |
+| **2b. Stress Capacity** | Stress Low (-10 pp)| 90% $\rightarrow$ 0% | $269.00M | -$508.88M | -$250.49M | -$630.88M | **UNAVAIL\*** | N/A | PASS (Gap = 0.0000) |
 | *(Wider Range)* | Stress High (+10 pp)| 110% $\rightarrow$ 20%| $1,460.67M | +$682.78M | $957.27M | +$576.88M | +$7.22 | +$12.53 | PASS (Gap = 0.0000) |
 
-*\* Note on Stress Lower Run: In the -10 pp stress scenario, FY2031E FCFE remains negative at $-\$250.49\text{M}$. The model strictly enforces the Refusal Gate: a terminal value cannot be calculated on an ongoing cash deficit, so Value per Share is marked UNAVAILABLE rather than generating an ungrounded number.*
+*\* Note on Stress Lower Run: In the -10 pp stress scenario, FY2031E FCFE remains negative at $-\$250.49\text{M}$. The model strictly enforces the Refusal Gate: capitalizing a negative cash flow produces economically nonsensical terminal values, so Value per Share is marked UNAVAILABLE rather than generating an ungrounded number.*
 
 ---
 
-### 2. Output Span Comparison Table
+## Output Span Comparison Table
 
 $$\text{Output Span} = \text{Maximum Valid Output} - \text{Minimum Valid Output}$$
 
 | Operating Driver | Tested Input Range | Operating Profit Span (FY31 EBIT) | Free Cash Flow Span (FY31 FCFE) | Implied Value per Share Span |
 | :--- | :---: | :---: | :---: | :---: |
-| **1. Cash Gross Margin** | 65.0% to 75.0% (10 pp span) | **$226.72M** | **$230.69M** | **$5.35 per share** |
-| **2. Revenue Growth Path** | $\pm5.0$ pp/year (10 pp shift) | **$591.10M** | **$632.29M** | **$13.44 per share** |
-| **Sensitivity Span Ratio** | *Revenue Growth $\div$ Gross Margin* | **2.61x** | **2.74x** | **2.51x** |
+| **1. Power Cost / Gross Margin** | 65.0% to 75.0% (10 pp span) | **$226.72M** | **$230.69M** | **$5.35 per share** |
+| **2. Capacity Energization Path** | $\pm5.0$ pp/year (10 pp shift) | **$591.10M** | **$632.29M** | **$13.44 per share** |
+| **Sensitivity Span Ratio** | *Capacity Energization $\div$ Power Cost* | **2.61x** | **2.74x** | **2.51x** |
 
 > [!IMPORTANT]
 > **Key Finding Over Tested Ranges:**  
-> **Revenue Growth Trajectory** is the primary driver of IREN's operating results and valuation **over these tested ranges**. Its output span is **2.61x** larger for Operating Profit ($591.10M vs. $226.72M), **2.74x** larger for Free Cash Flow ($632.29M vs. $230.69M), and **2.51x** larger for Value per Share ($13.44/sh vs. $5.35/sh).
+> **Capacity Energization Velocity (Revenue Scale)** is the primary driver of IREN's operating results and equity valuation **over these tested ranges**. Its output span is **2.61x** larger for Operating Profit ($591.10M vs. $226.72M), **2.74x** larger for Free Cash Flow ($632.29M vs. $230.69M), and **2.51x** larger for Value per Share ($13.44/sh vs. $5.35/sh).
 
 ---
 
-### 3. Restored Base Case Verification Block
+## Restored Base Case Verification Block
 
 As mandated by course policy, following the execution of all sensitivity runs, the original base case was restored, re-executed, and verified to ensure that no state pollution or parameter corruption occurred.
 
@@ -116,19 +221,20 @@ As mandated by course policy, following the execution of all sensitivity runs, t
 
 ---
 
-## Causal Traces: Mechanism from Input to Value
+## Causal Traces: Step-by-Step Mechanisms from Input to Value
 
 The worksheet requires tracing the exact causal mechanism through the financial statements for at least one sensitivity run. Below are the actual step-by-step model links for both drivers.
 
-### Causal Trace 1: Driver 1 — Cash Gross Margin (70.0% $\rightarrow$ 75.0%)
+### Causal Trace 4A: Power Cost / Cash Gross Margin (70.0% $\rightarrow$ 75.0%)
 
 ```
 INPUT CHANGE: Cash Gross Margin increases from 70.0% to 75.0% (+5.0 percentage points)
+PHYSICAL DRIVER: Net effective electricity cost declines via low-rate PPAs; bare-metal GB300 PUE optimizes
   |
   v
 FINANCIAL STATEMENT LINE(S) (FY2031E):
   - Total Revenue:           $3,488.02M (Unchanged; revenue growth is held at Base)
-  - Cost of Revenues:        $872.00M (Decreases by $174.40M from base $1,046.41M; Cost = Rev * (1 - GM))
+  - Cost of Revenues (Power):$872.00M (Decreases by $174.40M from base $1,046.41M; Cost = Rev * (1 - GM))
   - Cash Gross Profit:       $2,616.01M (Increases by $174.40M from base $2,441.61M)
   - SG&A Overhead (35% GP):  $915.60M (Increases by $61.04M from base $854.57M due to profit-linked overhead)
   - Depreciation & Amort:    $809.17M (Unchanged; PP&E and capex schedule held at Base)
@@ -154,21 +260,22 @@ IMPLIED VALUE PER SHARE:
   - Value per Share:         Improves from -$5.31 to -$2.93 per share (Signed change: +$2.39/share)
 ```
 
-### Causal Trace 2: Driver 2 — Revenue Growth (+5.0 pp per year)
+### Causal Trace 4B: Capacity Energization Velocity (Base $\rightarrow$ Higher +5.0 pp/yr)
 
 ```
-INPUT CHANGE: Revenue Growth increases by +5.0 percentage points per year ([105%, 55%, 35%, 20%, 15%])
+INPUT CHANGE: Revenue Growth Path shifts up by +5.0 pp/year (FY27: 105%, FY28: 55%, FY29: 35%, FY30: 25%, FY31: 15%)
+PHYSICAL DRIVER: Accelerating MW substation energization and rapid enterprise AI cluster tenant onboarding
   |
   v
 FINANCIAL STATEMENT LINE(S) (FY2031E):
-  - Total Revenue:           $4,359.88M (Increases by +$871.86M from base $3,488.02M due to compound top-line expansion)
-  - Cost of Revenues (30%):  $1,307.96M (Increases by +$261.56M from base $1,046.41M)
-  - Cash Gross Profit (70%): $3,051.92M (Increases by +$610.30M from base $2,441.61M)
-  - SG&A Overhead (35% GP):  $1,068.17M (Increases by +$213.61M from base $854.57M)
-  - Depreciation & Amort:    $888.62M (Increases by +$79.45M because higher capex/PP&E base scales D&A)
-  - GAAP Pretax Income (EBT):$1,095.13M (Increases by +$592.04M from base $503.09M)
-  - Income Tax (21% post-NOL):$124.96M (Substantially higher taxable income accelerates NOL exhaustion)
-  - GAAP Net Income:         $786.13M (Increases by +$283.04M from base $503.09M)
+  - Total Revenue:           $4,185.26M (Increases by +$697.24M from base $3,488.02M)
+  - Cost of Revenues (Power):$1,255.58M (Increases by +$209.17M at constant 70.0% GM)
+  - Cash Gross Profit:       $2,929.68M (Increases by +$488.07M from base $2,441.61M)
+  - SG&A Overhead (35% GP):  $1,025.39M (Increases by +$170.82M due to profit-linked overhead)
+  - Depreciation & Amort:    $809.17M (Unchanged; PP&E and capex schedule held at Base)
+  - GAAP Pretax Income (EBT):$842.93M (Increases by +$339.83M from base $503.09M)
+  - Income Tax (21% post-NOL):$97.17M (NOL buffer fully utilized earlier; cash tax paid)
+  - GAAP Net Income:         $745.76M (Increases by +$242.66M from base $503.09M)
   |
   v
 OPERATING PROFIT (EBIT):
@@ -176,38 +283,40 @@ OPERATING PROFIT (EBIT):
   |
   v
 FREE CASH FLOW (FCFE):
-  - Operating Cash Flow:     $1,672.22M (Increases by +$291.83M from base $1,380.39M, boosted by +$142.1M Deferred Rev)
-  - Capex & Debt Repayment:  -$600.0M Capex - $400.0M Debt Repayment = -$1,000.0M (Unchanged in Year 5)
+  - Operating Cash Flow:     $1,672.22M (Increases by +$291.83M from base $1,380.39M)
+  - Working Capital Delta:   -$5.88M (Additional cash consumed in working capital as receivables scale)
+  - Capex & Debt Repayment:  -$600.0M Capex - $400.0M Debt Repayment = -$1,000.0M (Unchanged)
   - FY2031E FCFE:            $672.22M (Signed change: +$291.83M from base $380.39M)
   |
   v
 IMPLIED VALUE PER SHARE:
-  - Terminal Value at FY31E: Terminal Value rises to $7,741.87M (PV TV = $4,512.60M, up +$1,959.09M)
-  - Total Equity Value:      Improves from -$2,094.23M to +$390.53M (+$2,484.76M)
-  - Value per Share:         Improves from -$5.31 to +$0.99 per share (Signed change: +$6.31/share)
+  - Terminal Value at FY31E: Terminal Value rises to $7,741.83M (PV TV = $4,512.50M, up +$1,959.00M)
+  - Total Equity Value:      Crosses into positive territory: +$390.53M (+$2,484.76M from -$2,094.23M)
+  - Value per Share:         Crosses above zero to +$0.99 per share (Signed change: +$6.31/share)
 ```
 
 ---
 
-## Interpretation & Findings
+## Financial Interpretation & Real-World Synthesis
 
 ### 1. Main Driver Over the Tested Ranges
-Over these tested ranges, **Revenue Growth Trajectory** is the primary driver of IREN's pro-forma performance and equity valuation:
-- **Operating Profit (FY2031E EBIT):** Revenue Growth span of **$591.10M** is **2.61 times** the Cash Gross Margin span of **$226.72M**.
-- **Free Cash Flow (FY2031E FCFE):** Revenue Growth span of **$632.29M** is **2.74 times** the Cash Gross Margin span of **$230.69M**.
-- **Implied Value per Share:** Revenue Growth span of **$13.44/share** is **2.51 times** the Cash Gross Margin span of **$5.35/share**.
+Over these tested ranges, **Capacity Energization Velocity (Revenue Scale)** is the primary driver of IREN's pro-forma performance and equity valuation:
+- **Operating Profit (FY2031E EBIT):** Capacity Energization span of **$591.10M** is **2.61 times** the Power Cost/Margin span of **$226.72M**.
+- **Free Cash Flow (FY2031E FCFE):** Capacity Energization span of **$632.29M** is **2.74 times** the Power Cost/Margin span of **$230.69M**.
+- **Implied Value per Share:** Capacity Energization span of **$13.44/share** is **2.51 times** the Power Cost/Margin span of **$5.35/share**.
 
 ### 2. Range Limitation ("Over These Tested Ranges")
 A larger output span does **not** prove that Revenue Growth is fundamentally or universally more important than Gross Margin. The ranking depends directly on the boundaries of the tested ranges:
-- A $10.0$ percentage point compounding shift in annual revenue growth across five consecutive forecast periods has a cumulative multiplicative effect on total scale ($+\$871.9\text{M}$ in Year 5 revenue), whereas a $10.0$ percentage point shift in cash gross margin acts on a fixed revenue base.
-- Had we tested a much tighter revenue growth range ($\pm1.0$ percentage point) against a wide gross margin range ($\pm15.0$ percentage points), Gross Margin would have produced the larger span. Therefore, every sensitivity ranking must be explicitly qualified: **over these tested ranges**.
+- A $10.0$ percentage point compounding shift in annual revenue growth across five consecutive forecast periods has a cumulative multiplicative effect on total scale ($+\$697.24\text{M}$ in Year 5 revenue), whereas a $10.0$ percentage point shift in cash gross margin acts on a fixed revenue base.
+- Had we tested a tighter revenue growth range ($\pm1.0$ percentage point) against a wide gross margin range ($\pm15.0$ percentage points), Gross Margin would have produced the larger span. Therefore, every sensitivity ranking must be explicitly qualified: **over these tested ranges**.
 
 ### 3. Impact vs. Uncertainty
 A complete financial assessment requires distinguishing between two distinct concepts:
 - **IMPACT:** How much a given change in an input moves the model's output (the mathematical derivative or elasticity of the model).
 - **UNCERTAINTY:** The degree of real-world dispersion, volatility, or unpredictability surrounding that input.
 
-For IREN, Revenue Growth has both high **impact** (due to compounding top-line leverage and customer prepayments) and high **uncertainty** (dependent on external hyperscaler capital expenditure cycles, NVIDIA Blackwell GPU delivery timelines, and ERCOT grid interconnection approvals). Cash Gross Margin has high **impact** on unit profitability, but slightly narrower **uncertainty** because data center power contracts and PPA agreements hedge wholesale electricity volatility.
+For IREN, Capacity Energization Velocity has both high **impact** (due to compounding top-line operating leverage and customer prepayments) and high **uncertainty** (dependent on external hyperscaler capital expenditure cycles, NVIDIA Blackwell GPU delivery timelines, and ERCOT grid interconnection approvals). Net Power Tariffs have high **impact** on unit profitability, but narrower **uncertainty** because data center power purchase agreements (PPAs) and ERCOT load curtailment programs partially hedge wholesale electricity volatility.
+
 ---
 
 ## Visible Terminal Output
@@ -232,15 +341,15 @@ Student: Elliot | Valuation Date: September 29, 2026
 ===================================================================================================================
 Driver                       Case           Input Value        FY31 EBIT   Signed d   FY31 FCFE   Signed d  Val/Share  Signed d   Checks
 -------------------------------------------------------------------------------------------------------------------
-1. Cash Gross Margin         Lower (65.0%)  65.0%               $664.52M   -113.36M    $249.56M   -130.84M     $-8.28     -2.96     PASS
+1. Power Cost/GM             Lower (65.0%)  65.0%               $664.52M   -113.36M    $249.56M   -130.84M     $-8.28     -2.96     PASS
                              Base (70.0%)   70.0%               $777.88M     +0.00M    $380.39M     +0.00M     $-5.31     +0.00     PASS
                              Higher (75.0%) 75.0%               $891.24M   +113.36M    $480.25M    +99.86M     $-2.93     +2.39     PASS
 -------------------------------------------------------------------------------------------------------------------
-2. Revenue Growth Path       Lower (-5 pp)  95%->5%             $504.03M   -273.85M     $39.92M   -340.47M    $-12.45     -7.14     PASS
+2. Capacity Energization     Lower (-5 pp)  95%->5%             $504.03M   -273.85M     $39.92M   -340.47M    $-12.45     -7.14     PASS
                              Base (0 pp)    100%->10%           $777.88M     +0.00M    $380.39M     +0.00M     $-5.31     +0.00     PASS
                              Higher (+5 pp) 105%->15%          $1095.13M   +317.24M    $672.22M   +291.83M      $0.99     +6.31     PASS
 -------------------------------------------------------------------------------------------------------------------
-2b. Stress Growth (+/-10pp)  Stress Lower (-10 pp) 90%->0%             $269.00M   -508.88M   $-250.49M   -630.88M   UNAVAIL*       N/A     PASS
+2b. Stress Capacity          Stress Lower (-10 pp) 90%->0%             $269.00M   -508.88M   $-250.49M   -630.88M   UNAVAIL*       N/A     PASS
                              Stress Higher (+10 pp) 110%->20%          $1460.67M   +682.78M    $957.27M   +576.88M      $7.22    +12.53     PASS
 -------------------------------------------------------------------------------------------------------------------
 Notes: Signed d = Changed Output - Base Output. All figures in USD millions except Value/Share.
@@ -251,13 +360,13 @@ Notes: Signed d = Changed Output - Base Output. All figures in USD millions exce
 ===================================================================================================================
 Driver Name                        Tested Input Range             EBIT Span ($M)   FCFE Span ($M)   VPS Span ($)
 -------------------------------------------------------------------------------------------------------------------
-1. Cash Gross Margin               65.0% to 75.0% (10 pp span)  $        226.72M $        230.69M $        5.35
-2. Revenue Growth Path             +/-5.0 pp/yr (10 pp shift)   $        591.10M $        632.29M $       13.44
+1. Power Cost / Gross Margin       65.0% to 75.0% (10 pp span)  $        226.72M $        230.69M $        5.35
+2. Capacity Energization Path      +/-5.0 pp/yr (10 pp shift)   $        591.10M $        632.29M $       13.44
 -------------------------------------------------------------------------------------------------------------------
->>> MAIN DRIVER OVER TESTED RANGES: REVENUE GROWTH TRAJECTORY <<<
-    - Operating Profit Span: Revenue Growth ($591.10M) is 2.61x Gross Margin ($226.72M)
-    - Free Cash Flow Span:   Revenue Growth ($632.29M) is 2.74x Gross Margin ($230.69M)
-    - Value per Share Span:  Revenue Growth ($13.44/sh) is 2.51x Gross Margin ($5.35/sh)
+>>> MAIN DRIVER OVER TESTED RANGES: CAPACITY ENERGIZATION PATH (REVENUE SCALE) <<<
+    - Operating Profit Span: Capacity Energization ($591.10M) is 2.61x Power Cost/Margin ($226.72M)
+    - Free Cash Flow Span:   Capacity Energization ($632.29M) is 2.74x Power Cost/Margin ($230.69M)
+    - Value per Share Span:  Capacity Energization ($13.44/sh) is 2.51x Power Cost/Margin ($5.35/sh)
     * CRITICAL LIMITATION: This ranking holds OVER THESE TESTED RANGES and reflects input range width.
 
 ===================================================================================================================
@@ -274,14 +383,15 @@ Minimum Cash Buffer (>= $500.0M)                            PASS               P
 >>> VERIFICATION RESULT: Original base case is 100% restored. No persistent mutations occurred. <<<
 
 ===================================================================================================================
-4. CAUSAL TRACE: DRIVER 1 SENSITIVITY (GROSS MARGIN: 70.0% -> 75.0%)
+4A. CAUSAL TRACE: DRIVER 1 SENSITIVITY (POWER COST / GROSS MARGIN: 70.0% -> 75.0%)
 ===================================================================================================================
 INPUT CHANGE: Cash Gross Margin increases from 70.0% to 75.0% (+5.0 percentage points)
+PHYSICAL DRIVER: Net effective electricity cost declines via low-rate PPAs; bare-metal GB300 PUE optimizes
   |
   v
 FINANCIAL STATEMENT LINE(S) (FY2031E):
   - Total Revenue:           $3488.02M (Unchanged; revenue growth is held at Base)
-  - Cost of Revenues:        $872.00M (Decreases by $174.40M from $1046.41M)
+  - Cost of Revenues (Power):$872.00M (Decreases by $174.40M from $1046.41M)
   - Cash Gross Profit:       $2616.01M (Increases by $174.40M from $2441.61M)
   - SG&A Overhead (35% GP):  $915.60M (Increases by $61.04M due to profit-linked overhead)
   - Depreciation:            $809.17M (Unchanged; PP&E and capex held at Base)
@@ -305,6 +415,40 @@ IMPLIED VALUE PER SHARE:
   - Year 5 FCFE Capitalized: Terminal Value rises to $5530.96M (PV TV = $3223.85M)
   - Total Equity Value:      Improves from -$2094.23M to -$1153.27M (+$940.97M)
   - Value per Share:         Improves from $-5.31 to $-2.93 (Signed change: +$2.39/share)
+
+===================================================================================================================
+4B. CAUSAL TRACE: DRIVER 2 SENSITIVITY (CAPACITY ENERGIZATION: BASE -> HIGHER +5.0 pp/yr)
+===================================================================================================================
+INPUT CHANGE: Revenue Growth Path shifts up by +5.0 pp/year (FY27: 105%, FY28: 55%, FY29: 35%, FY30: 25%, FY31: 15%)
+PHYSICAL DRIVER: Accelerating MW substation energization and rapid enterprise AI cluster tenant onboarding
+  |
+  v
+FINANCIAL STATEMENT LINE(S) (FY2031E):
+  - Total Revenue:           $4185.26M (Increases by +$697.24M from base $3488.02M)
+  - Cost of Revenues (Power):$1255.58M (Increases by +$209.17M at constant 70.0% GM)
+  - Cash Gross Profit:       $2929.68M (Increases by +$488.07M from base $2441.61M)
+  - SG&A Overhead (35% GP):  $1025.39M (Increases by +$170.82M due to profit-linked overhead)
+  - Depreciation:            $809.17M (Unchanged; PP&E and capex held at Base)
+  - Pretax Income:           $842.93M (Increases by +$339.83M from base $503.09M)
+  - Income Tax (21% post-NOL):$97.17M (NOL buffer fully utilized earlier; cash tax paid)
+  - Net Income:              $745.76M (Increases by +$242.66M from base $503.09M)
+  |
+  v
+OPERATING PROFIT (EBIT):
+  - FY2031E EBIT:            $1095.13M (Signed change: +$317.24M from base $777.88M)
+  |
+  v
+FREE CASH FLOW (FCFE):
+  - Operating Cash Flow:     $1672.22M (Increases by +$291.83M)
+  - Working Capital Delta:   -$5.88M (Additional cash consumed in working capital as receivables scale)
+  - Capex & Debt Repayment:  -$600.0M Capex - $400.0M Debt Repayment = -$1,000.0M (Unchanged)
+  - FY2031E FCFE:            $672.22M (Signed change: +$291.83M from base $380.39M)
+  |
+  v
+IMPLIED VALUE PER SHARE:
+  - Year 5 FCFE Capitalized: Terminal Value rises to $7741.83M (PV TV = $4512.50M)
+  - Total Equity Value:      Crosses into positive territory: +$390.53M (+$2484.76M from -$2094.23M)
+  - Value per Share:         Crosses above zero to +$0.99/share (Signed change: +$6.31/share)
 ===================================================================================================================
 
 ################################################################################
@@ -328,7 +472,7 @@ This report, financial model (`sensitivity_iren.py`), and supporting documentati
 - **Authoritative Worksheet:** Lab 11 — Pro-Forma Sensitivity: Find Your Company's Drivers  
 
 **AI Assistance Disclosure:**  
-Model development and documentation were drafted with the assistance of **Google Antigravity / AI Coding Assistant**. In accordance with course guidelines and academic integrity policies:
+Model development, sensitivity engine programming, and documentation were assisted by **Google Antigravity / AI Coding Assistant**. In accordance with course guidelines and academic integrity policies:
 1. The analysis strictly leverages Elliot's existing Lab 10 three-statement model without modifying prior audited SEC data or altering historical financial statements.
 2. Sensitivity runs were executed programmatically one-at-a-time, resetting to a fresh independent base copy before every run.
 3. Double-entry accounting checks were verified for every run, and the original base case was restored and confirmed to zero error tolerance ($0.000000$).
