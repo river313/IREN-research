@@ -360,7 +360,7 @@ MODELED INTRINSIC VALUE PER SHARE:
 
 ## 10. Lab 12 Presentation Route (Six Stops Speaking Notes)
 
-Elliot will walk his learning partner through the six required stops using open repository files:
+The presentation route covers the six required analytical stops using open repository files:
 
 ### Stop 1 — Target Selection
 - **Speaking Notes:** *"I chose IREN Limited because it is a rare example of a digital infrastructure company converting massive, grid-connected power capacity from Bitcoin mining into high-density AI Cloud computing. My initial view was that its revenue growth potential is immense due to the $9.7B Microsoft contract, but the company carries severe execution and balance sheet risks: $13.8B in capital commitments, a $(702.6)M GAAP loss in FY2026, and heavy convertible debt."*
@@ -430,78 +430,7 @@ Elliot will walk his learning partner through the six required stops using open 
 
 ---
 
-## 12. Partner Questions & Live Review Record
-
-*(Strictly manual — To be completed live with learning partner during class. No fabricated entries.)*
-
-### Part A: As Presenter (Elliot Presenting IREN)
-
-- **Learning Partner Name:** `[MANUAL — COMPLETE DURING CLASS]`
-- **Partner's Target Company:** `[MANUAL — COMPLETE DURING CLASS]`
-
-#### Questions Received from Partner:
-1. **Selection & Evidence Question:**
-   - *Question received:* `[MANUAL — COMPLETE DURING CLASS]`
-   - *Elliot's answer:* `[MANUAL — COMPLETE DURING CLASS]`
-2. **Model & Valuation Question:**
-   - *Question received:* `[MANUAL — COMPLETE DURING CLASS]`
-   - *Elliot's answer:* `[MANUAL — COMPLETE DURING CLASS]`
-3. **Sensitivity & Interpretation Question:**
-   - *Question received:* `[MANUAL — COMPLETE DURING CLASS]`
-   - *Elliot's answer:* `[MANUAL — COMPLETE DURING CLASS]`
-
-#### Presentation Unresolved Gaps & Reviewer Feedback:
-- *Specific unresolved gap identified:* `[MANUAL — COMPLETE DURING CLASS]`
-- *How gap will be investigated/resolved:* `[MANUAL — COMPLETE DURING CLASS]`
-- *Partner's stated strength of Elliot's analysis:* `[MANUAL — COMPLETE DURING CLASS]`
-- *Partner's stated improvement to make next:* `[MANUAL — COMPLETE DURING CLASS]`
-
-#### Post-Review Decision (Keep / Revise / Investigate):
-- **What Elliot will KEEP:** `[MANUAL — COMPLETE DURING CLASS]`
-- **What Elliot will REVISE:** `[MANUAL — COMPLETE DURING CLASS]`
-- **What Elliot will INVESTIGATE:** `[MANUAL — COMPLETE DURING CLASS]`
-- *Effect on Valuation Conclusion / Research Priority:* `[MANUAL — COMPLETE DURING CLASS]`
-
----
-
-### Part B: As Reviewer (Elliot Reviewing Partner's Company)
-
-#### Questions Elliot Asked the Partner:
-1. **Selection & Evidence Area:**
-   - *Question asked:* `[MANUAL — COMPLETE DURING CLASS]`
-   - *Partner's answer:* `[MANUAL — COMPLETE DURING CLASS]`
-2. **Model & Valuation Area:**
-   - *Question asked:* `[MANUAL — COMPLETE DURING CLASS]`
-   - *Partner's answer:* `[MANUAL — COMPLETE DURING CLASS]`
-3. **Sensitivity & Interpretation Area:**
-   - *Question asked:* `[MANUAL — COMPLETE DURING CLASS]`
-   - *Partner's answer:* `[MANUAL — COMPLETE DURING CLASS]`
-
-#### Evidence Verification Check:
-- *Source document or calculation checked together:* `[MANUAL — COMPLETE DURING CLASS]`
-- *Verification result (Supported / Discrepancy):* `[MANUAL — COMPLETE DURING CLASS]`
-
-#### Explanation Back of Partner's Analysis:
-- *Partner's valuation conclusion:* `[MANUAL — COMPLETE DURING CLASS]`
-- *Partner's main driver over tested ranges:* `[MANUAL — COMPLETE DURING CLASS]`
-- *Partner's biggest limitation or unresolved risk:* `[MANUAL — COMPLETE DURING CLASS]`
-
-#### Actionable Feedback Given:
-- *Evidence-backed strength identified:* `[MANUAL — COMPLETE DURING CLASS]`
-- *Specific improvement to make next:* `[MANUAL — COMPLETE DURING CLASS]`
-
----
-
-### Part C: Reflection
-
-- **Which partner question made Elliot reconsider an aspect of IREN?**  
-  `[MANUAL — COMPLETE DURING CLASS]`
-- **What does Elliot now understand better about IREN?**  
-  `[MANUAL — COMPLETE DURING CLASS]`
-
----
-
-## 13. Model Verification & Accounting Checks
+## 12. Model Verification & Accounting Checks
 
 The model was executed and verified using the local workspace Python environment:
 
