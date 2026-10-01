@@ -1,0 +1,544 @@
+# FIN 439 Lab 12 — Pro-Forma Sensitivity: Present and Review Your Full Analysis
+**Target Company:** IREN Limited (NASDAQ: IREN)  
+**Course:** FIN 43900 (Corporate Finance / Applied Financial Modeling, Purdue University)  
+**Student:** Elliot  
+**Valuation / Submission Date:** October 1, 2026  
+**Assignment Reference:** Lab 12 — Pro-Forma Sensitivity: Present and Review Your Full Analysis (Week 6 Thursday Merit Checkout)  
+**Prior Lab Baselines:** Lab 08 (Peer Triangulation, Sept 3/17), Lab 09 (ABG Benchmark Engine, Sept 22), Lab 10 (IREN Three-Statement Engine, Sept 24), Lab 11 (Two-Driver Sensitivity, Sept 29), Project 1 (DCF & Beta Baseline, Sept 22)  
+
+---
+
+## Workspace Navigation & Traceable Repository Links
+
+All evidence, historical data, financial statements, modeling code, and sensitivity suites are located directly in Elliot's FIN 439 repository:
+
+- **Lab 10 Pro-Forma Engine:** [`Lab-10/proforma_iren.py`](file:///c:/Users/ellio/Documents/FIN439/Lab-10/proforma_iren.py) (The authoritative 5-year, 3-statement integrated model)
+- **Lab 10 Written Report:** [`Lab-10/lab10.md`](file:///c:/Users/ellio/Documents/FIN439/Lab-10/lab10.md) (Historical ratios, line justifications, and checks)
+- **Lab 11 Sensitivity Engine:** [`Lab-11/sensitivity_iren.py`](file:///c:/Users/ellio/Documents/FIN439/Lab-11/sensitivity_iren.py) (Two-driver sensitivity suite and output span comparison)
+- **Lab 11 Written Report:** [`Lab-11/lab11.md`](file:///c:/Users/ellio/Documents/FIN439/Lab-11/lab11.md) (Driver ranking, impact vs. uncertainty, and causal traces)
+- **Lab 12 Sensitivity Script:** [`Lab-12/lab12_sensitivity.py`](file:///c:/Users/ellio/Documents/FIN439/Lab-12/lab12_sensitivity.py) (Executable engine for required $\pm1$ percentage-point revenue sensitivity)
+- **Lab 08 Comparable Valuation:** [`Lab-08/lab08.md`](file:///c:/Users/ellio/Documents/FIN439/Lab-08/lab08.md) & [`Lab-08/pe_calculator.py`](file:///c:/Users/ellio/Documents/FIN439/Lab-08/pe_calculator.py) (CORZ, APLD peer analysis and trailing P/E refusal)
+- **Project 1 DCF & Beta Engine:** [`Project-1/dcf.py`](file:///c:/Users/ellio/Documents/FIN439/Project-1/dcf.py) & [`Project-1/analysis/calculate_iren_beta.py`](file:///c:/Users/ellio/Documents/FIN439/Project-1/analysis/calculate_iren_beta.py)
+- **Primary SEC Filing Sources:** Preserved locally in `IREN-research/`:
+  - FY2026 Form 10-K (filed August 27, 2026, 178 pages): [`IREN-research/IREN_10-K.pdf`](file:///c:/Users/ellio/Documents/FIN439/IREN-research/IREN_10-K.pdf) and [`IREN-research/iren-20250630.htm`](file:///c:/Users/ellio/Documents/FIN439/IREN-research/iren-20250630.htm)
+  - FY2024 Form 20-F (filed August 28, 2024): [`IREN-research/iren-20240630_20-F.htm`](file:///c:/Users/ellio/Documents/FIN439/IREN-research/iren-20240630_20-F.htm)
+  - Research Summary & Sources: [`IREN-research/IREN_2026-09-03_report.md`](file:///c:/Users/ellio/Documents/FIN439/IREN-research/IREN_2026-09-03_report.md) & [`IREN-research/sources.md`](file:///c:/Users/ellio/Documents/FIN439/IREN-research/sources.md)
+
+---
+
+## 1. Audit of Existing IREN Analysis (Labs 8–11 & Project 1)
+
+Before presenting in class, Elliot's existing repository was audited across all prior labs to establish exact numbers, trace methodological evolution, and identify data reconciliations.
+
+```mermaid
+flowchart LR
+    L08["Lab 08 (Sept 17)<br>Peer Triangulation<br>CORZ & APLD P/E Refused"]
+    P01["Project 1 (Sept 22)<br>Naive DCF Template<br>-$196.34/sh (Reverse DCF Failed)"]
+    L10["Lab 10 (Sept 24)<br>Integrated Pro-Forma<br>Cash Last | -$5.31/sh"]
+    L11["Lab 11 (Sept 29)<br>Two-Driver Sensitivity<br>Gross Margin vs Capacity"]
+    L12["Lab 12 (Oct 1)<br>Full Review & Presentation<br>±1pp Revenue Sensitivity"]
+
+    L08 --> L10
+    P01 --> L10
+    L10 --> L11
+    L11 --> L12
+```
+
+### Audit Findings & Sourced Data Summary
+
+1. **Target Selection Rationale:**  
+   - IREN Limited (formerly Iris Energy) was selected as a rare, vertically integrated digital infrastructure builder undergoing a massive capital reallocation: transitioning high-voltage, grid-connected power capacity away from volatile Bitcoin mining toward high-margin, enterprise AI Cloud Services (NVIDIA Blackwell GB300 NVL72 compute clusters).
+   - *Initial View:* Exceptional revenue growth potential anchored by a 5-year, $9.7B take-or-pay contract with Microsoft, but clouded by massive upfront capital requirements ($13.8B in contractual capital commitments), heavy accounting losses during the transition period, and substantial dilution/convertible debt overhang.
+
+2. **Audited Historical Financial Data (Form 10-K / Form 20-F):**
+   - **FY2024 (ended June 30, 2024):** Revenue **$187.19M** ($3.11M AI Cloud, $184.09M Bitcoin mining); Cash Cost of Revenues $87.07M; Cash Gross Profit $100.13M (53.49% margin); D&A $50.47M; Operating Loss $(27.23)M; GAAP Net Loss $(28.92)M; Net PP&E $441.37M; Ending Cash $404.60M; Cash Capex $479.9M.
+   - **FY2025 (ended June 30, 2025):** Revenue **$501.02M** ($16.39M AI Cloud, $484.63M Bitcoin mining, +167.65% YoY); Cash Cost of Revenues $158.99M; Cash Gross Profit $342.03M (68.27% margin); D&A $181.14M; Operating Income $17.33M; GAAP Net Income **$86.94M**; Net PP&E $1,930.57M; Ending Cash $564.53M; Cash Capex $1,372.6M.
+   - **FY2026 (ended June 30, 2026):** Revenue **$707.01M** ($128.80M AI Cloud, $578.21M Bitcoin mining, +41.11% YoY); Cash Cost of Revenues $219.71M; Cash Gross Profit **$487.30M** (68.92% margin); SG&A $449.12M (including $205.0M non-cash stock compensation); D&A $417.73M; Asset Impairment **$638.81M** (decommissioning legacy S19j Pro ASIC miners); Operating Loss **$(1,046.71)M**; Pretax Loss $(708.70)M; GAAP Net Loss **$(702.62)M**; GAAP Diluted EPS **$(2.22)**; Operating Cash Flow **$2,100.4M** (boosted by +$1,841.7M customer prepayments); Cash Capex **-$4,333.1M** ($2,998.0M PP&E + $1,335.1M computer hardware); Net PP&E $6,753.18M; Ending Cash **$5,895.59M**; Restricted Cash $1,723.94M; Customer Prepayments (Deferred Revenue) **$1,842.55M**; Total Debt & Leases **$7,836.74M**; Total Stockholders' Equity **$4,185.61M**.
+
+3. **Comparable-Company Analysis (Lab 08):**
+   - Candidate Peer 1: Core Scientific (CORZ) — Stock price $17.90, FY25 GAAP EPS **-$0.88**. Landlord hosting model (500 MW for CoreWeave).
+   - Candidate Peer 2: Applied Digital (APLD) — Stock price $25.91, FY26 GAAP EPS **-$0.91**. Wholesale datacenter developer (Ellendale, ND).
+   - Excluded Benchmark: Equinix (EQIX) — Stock price $1,040.83, FY25 GAAP EPS $13.76 (P/E = 75.64x). Excluded under pre-screening policy as a tax-exempt retail colocation REIT with no GPU ownership or crypto pivot.
+   - *Valuation Result:* Trailing P/E was **REFUSED** as mathematically and economically meaningless because target IREN (-$2.22) and both direct operational peers (CORZ -$0.88, APLD -$0.91) reported negative GAAP earnings during the capital buildout phase.
+
+4. **Discounted Cash Flow Models & Method Evolution:**
+   - **Project 1 Naive DCF (`Project-1/dcf.py`):** Used a top-down single-formula DCF where starting FCFF (-$2,191.19M) was compounded by arbitrary growth rates [50%, 35%, 20%, 12%, 6%]. This generated increasingly negative cash flows (reaching -$6,321.36M in Year 5), an ungrounded negative terminal value (-$72,802.13M), and an implied equity value of **-$196.34 per share**. Reverse DCF failed completely because growing a negative cash flow expands the cash deficit, making it impossible to solve for the target market price of $45.73.
+   - **Lab 10 & 11 Pro-Forma Engine (`Lab-10/proforma_iren.py`):** Rebuilt valuation on an integrated 3-statement pro-forma foundation. Modeled physical capacity buildout, customer prepayments, cash calculated last, NOL tax shielding, and debt amortization. Cash flow inflects from heavy deficits (-$4,115.02M in FY27E, -$1,203.83M in FY28E, -$401.67M in FY29E) into positive cash generation: **+$130.99M in FY30E** and **+$380.39M in FY31E**. Capitalizing Year 5 positive cash flow yields a Terminal Value of **$4,380.90M** (PV TV = $2,553.51M) against PV of explicit 5-year FCFE of **-$4,647.74M**, resulting in an intrinsic equity value of **-$2,094.23M** or **-$5.31 per share** (on 394.06M shares).
+
+5. **Identified Conflicts & Data Reconciliations Across Labs:**
+   - *Conflict 1: Valuation Output (-$196.34/sh vs. -$5.31/sh).* Sourced from methodology: Project 1 compounded negative historical cash flow without a balance sheet or working capital advances, whereas Lab 10 modeled the operational inflection to positive FCFE ($380.39M) supported by $1.84B in customer prepayments and operational scaling.
+   - *Conflict 2: Share Count Bases.* 
+     - Base A (Current 10-K Cover Page, August 14, 2026): **394.059 million** shares $\rightarrow$ **-$5.31 per share**.
+     - Base B (Audited Balance Sheet Ending, June 30, 2026): **380.194 million** shares $\rightarrow$ **-$5.51 per share**.
+     - Base C (FY2026 Diluted Weighted-Average): **316.123 million** shares $\rightarrow$ **-$6.62 per share**.
+     - *Resolution:* All three are mathematically verified from the Form 10-K. The model uses 394.059M shares as its primary base because equity claims must be evaluated on currently issued shares following recent ATM financings.
+   - *Conflict 3: Reference Market Price ($41.65 vs. $45.73).*
+     - $41.65 was the actual NASDAQ closing price on September 3, 2026 (the valuation date of the Week 3 research report).
+     - $45.73 was recorded as the live trading price on September 24, 2026 in `Project-1/dcf.py` line 25. Both represent verifiable historical market quotes.
+   - *Conflict 4: Historical Capital Expenditures ($4,333.1M vs. $2,998.0M).* Commercial financial aggregators reported FY26 capex as $2,998.0M because they scraped only "Payments for property, plant and equipment." Reading the Form 10-K Statement of Cash Flows (p. F-9) revealed an additional $1,335.1M in "Payments for computer hardware." Total cash capex was **$4,333.1M**.
+
+---
+
+## 2. Understand What Actually Drives IREN
+
+IREN is not a software company or a generic data center. Its financial statements are governed by physical energy, high-density electrical infrastructure, and enterprise AI hardware contracts.
+
+```mermaid
+flowchart TD
+    subgraph INPUTS["PRIMARY OPERATING INPUTS"]
+        MW["Grid-Connected Power Capacity (GW/MW)<br>Childress, Sweetwater, BC Hydro"]
+        PUE["Power Usage Effectiveness (PUE < 1.15)<br>& Wholesale ERCOT Tariffs ($/MWh)"]
+        GPU["GPU Cluster Deployment & Acceptance<br>NVIDIA Blackwell GB300 NVL72"]
+        MSFT["Take-or-Pay Hyperscaler Contracts<br>5-Yr, $9.7B Microsoft Agreement"]
+        BTC["Bitcoin Mining Hashrate (36.5 EH/s)<br>& Daily Spot Liquidation"]
+    end
+
+    subgraph ENGINE["FINANCIAL TRANSMISSION CHANNELS"]
+        REV["Revenue Growth Path<br>AI Cloud ARR ($4B guide) + BTC Mining"]
+        COR["Cash Cost of Revenues<br>Gross Margin: 70% Base"]
+        ADV["Customer Prepayments<br>$1.84B Advance Capital Funding"]
+        CAP["Capital Expenditures<br>$2.5B down to $600M refresh"]
+        DEP["Depreciation Schedule<br>5-Yr GPU (20%/yr) + 20-25Yr Shell"]
+    end
+
+    subgraph OUTPUTS["CASH FLOW & EQUITY VALUE"]
+        EBIT["Operating Profit (EBIT)<br>FY31E Base: $777.88M"]
+        FCFE["Free Cash Flow to Equity (FCFE)<br>FY31E Base: $380.39M"]
+        VAL["Modeled Equity Value per Share<br>Base: -$5.31/share"]
+    end
+
+    MW & GPU & MSFT --> REV
+    PUE --> COR
+    MSFT --> ADV
+    GPU --> CAP --> DEP
+    REV & COR & DEP --> EBIT
+    EBIT & ADV & CAP --> FCFE
+    FCFE --> VAL
+```
+
+### Investigation of Specific Real-World Factors
+
+1. **Bitcoin Mining Capacity & Hash Rate:**  
+   - Operated at 36.5 EH/s in FY26 (up from 25.7 EH/s in FY25), mining 5,499–6,075 BTC annually and generating $578.2M.
+   - Sells Bitcoin daily for cash; does not hold speculative crypto balance sheet inventory.
+   - In FY26, management wrote down $638.8M in legacy Bitmain S19j Pro ASICs to vacate data hall space for higher-density AI racks. Mining acts as a declining revenue component (81.8% in FY26 down to <15% in FY31E).
+
+2. **AI / HPC Capacity & Contracts:**  
+   - Delivering 200 MW of dedicated IT load across Horizons 1–4 (50 MW each) at Childress, Texas, under a 5-year, $9.7B contract with Microsoft.
+   - Horizon 1 was delivered and accepted by Microsoft on August 13, 2026.
+   - Management guidance targets 480 MW gross capacity in 2026 and 1.2 GW gross capacity in 2027, scaling toward a 5.0 GW total power pipeline.
+
+3. **Power Availability & Electricity Costs:**  
+   - Power is IREN's largest cash operating cost ($219.7M cash cost of sales in FY26).
+   - Operates behind dedicated high-voltage substations connected to ERCOT (Texas) and BC Hydro grids.
+   - Gross margin is insulated by automated ERCOT nodal load-curtailment credits (earning revenue by shutting down during summer 4CP peak pricing spikes) and direct-to-chip liquid cooling maintaining a Power Usage Effectiveness (PUE) below 1.15.
+
+4. **Customer Prepayments & Working Capital:**  
+   - Hyperscalers pay advance capacity reservation fees. Deferred revenue surged from $0.88M in FY25 to **$1,842.55M in FY26**.
+   - This provided $1.84B in upfront cash, funding massive GPU procurement without relying entirely on high-yield debt or immediate equity dilution.
+
+5. **Capital Expenditures, Depreciation & Financing:**  
+   - Cash capex hit $4,333.1M in FY26; future contractual commitments stand at $13.81B.
+   - GPU hardware depreciates over 5 years (20% straight line), causing D&A to climb to $809.17M by FY31E.
+   - Financed via $4.74B in ordinary share issuance and $6.30B in convertible notes (coupons 3.25%–5.50%), establishing a total debt balance of $7,836.74M against $5,895.59M in cash.
+
+---
+
+## 3. Separate Company Drivers from Stock / Valuation Drivers
+
+To maintain academic and professional financial discipline, we strictly separate fundamental operating drivers from market valuation catalysts:
+
+### IREN — What Actually Drives the Company?
+
+The fundamental operating engine obeys accounting physics:
+
+1. **Megawatt Substation Energization & Customer Acceptance Velocity:**  
+   $\text{Real Driver}$ (Substation transformers energized, NVIDIA GB300 NVL72 racks commissioned) $\rightarrow$  
+   $\text{Operational Change}$ (Delivered IT megawatts increase from 50 MW to 200 MW to 800+ MW) $\rightarrow$  
+   $\text{Revenue/Cost/Capex}$ (Revenue multiplies from $707M to $3,488M; Capex tapers from $2,500M to $600M) $\rightarrow$  
+   $\text{Operating Profit}$ (Operating income expands from -$1,046.7M to +$777.9M) $\rightarrow$  
+   $\text{FCFE}$ (Cash flow inflects from -$4,115.0M to +$380.4M) $\rightarrow$  
+   $\text{Value}$ (Terminal equity value reaches $4,380.9M).
+
+2. **Net Effective Electricity Tariff ($/MWh) & Cooling PUE:**  
+   $\text{Real Driver}$ (Wholesale ERCOT nodal power prices, curtailment credits, PUE < 1.15) $\rightarrow$  
+   $\text{Operational Change}$ (Per-megawatt hour power input cost changes) $\rightarrow$  
+   $\text{Revenue/Cost/Capex}$ (Cost of revenues ex-D&A shifts at 70% gross margin baseline) $\rightarrow$  
+   $\text{Operating Profit}$ (Every 5.0 pp change in cash gross margin alters FY31E EBIT by $\pm\$113.36\text{M}$) $\rightarrow$  
+   $\text{FCFE}$ (Alters Year 5 FCFE by $\pm\$99.86\text{M}$ to $\pm\$130.84\text{M}$) $\rightarrow$  
+   $\text{Value}$ (Moves modeled equity value by $\pm\$2.39$ to $\pm\$2.96$ per share).
+
+3. **Hyperscaler Upfront Capital Advances (Customer Prepayments):**  
+   $\text{Real Driver}$ (Enterprise take-or-pay contract reservation clauses) $\rightarrow$  
+   $\text{Operational Change}$ (Customers advance cash before compute hours are consumed) $\rightarrow$  
+   $\text{Revenue/Cost/Capex}$ (Deferred revenue liability increases, generating immediate cash inflow) $\rightarrow$  
+   $\text{Operating Profit}$ (No immediate EBIT impact; revenue is recognized as service is delivered) $\rightarrow$  
+   $\text{FCFE}$ (Injects billions into operating cash flow during heavy capex years) $\rightarrow$  
+   $\text{Value}$ (Avoids catastrophic liquidity shortfalls and dilutive distress financing).
+
+---
+
+### IREN — What Actually Drives the Stock / Valuation?
+
+The market price ($41.65 on Sept 3; $45.73 on Sept 24) reflects market expectations, terminal multiples, and macro pricing of risk:
+
+| Stock / Valuation Factor | Category | Why It Matters for IREN Stock & Valuation |
+| :--- | :---: | :--- |
+| **Market Multiple Re-Rating (EV/EBITDA)** | **B (Investor Expectations)** | Pure-play Bitcoin miners trade at **4x–6x EV/EBITDA**, while mission-critical AI hyperscale infrastructure providers trade at **20x–30x EV/EBITDA**. The market price of $41.65+ reflects anticipation of this multiple re-rating, which is external to the cash flow engine. |
+| **Bitcoin Spot Price Volatility** | **C (Both Business & Sentiment)** | *Business:* Directly changes revenue on the 5,500+ BTC mined annually. *Market:* Retail and algorithmic investors trade IREN with a high historical beta to Bitcoin, creating short-term price swings unrelated to data center construction. |
+| **Horizon Delivery & Acceptance Milestones** | **C (Both Business & Sentiment)** | *Business:* Triggers GAAP revenue recognition under the Microsoft contract. *Market:* Proves execution credibility to Wall Street, de-risking future campus phases and reducing equity cost of capital. |
+| **Cost of Capital & Interest Rates (WACC / $r_e$)** | **B (Investor Expectations)** | IREN carries $7.84B in debt and convertible notes. Higher interest rates increase debt refinancing coupons and increase the DCF hurdle rate ($11.4\%$), compressing the present value of distant cash flows. |
+| **Convertible Debt Conversion & Share Dilution** | **A (Underlying Business & Capital Claims)** | In FY26, ordinary shares expanded to 394.06M. Convertible notes maturing in 2029–2032 carry conversion options. If converted, share count expands, diluting per-share intrinsic value. |
+
+---
+
+## 4. Revenue Growth — What Is Underneath the Assumption?
+
+In the pro-forma model, revenue growth is parameterized across 5 forecast years:  
+`revenue_growth = [1.00, 0.50, 0.30, 0.15, 0.10]` (100% in FY27E, 50% in FY28E, 30% in FY29E, 15% in FY30E, 10% in FY31E).
+
+### What Actually Makes IREN Revenue Grow in Plain English?
+
+```
+                     UNDERNEATH IREN REVENUE GROWTH
+                                   │
+         ┌─────────────────────────┴─────────────────────────┐
+         ▼                                                   ▼
+   AI CLOUD SERVICES REVENUE                           BITCOIN MINING REVENUE
+   = Energized IT Load (MW)                            = Fleet Hashrate (EH/s)
+   × Rack Power Density (kW/rack)                      ÷ Global Network Difficulty
+   × Rental Rate ($/MW/year)                           × Block Subsidies & Fees (BTC)
+   × Tenant Billing / Acceptance                       × Realized Bitcoin Spot Price ($)
+```
+
+1. **Physical Substation Energization:** IREN cannot recognize AI cloud revenue until physical utility transformers and high-voltage substations are energized by ERCOT or BC Hydro.
+2. **NVIDIA Cluster Delivery & Acceptance:** Compute racks (GB300 NVL72) must be physically installed, connected to direct-to-chip liquid cooling loops, and formally signed off by the customer (as occurred with Microsoft on August 13, 2026 for Horizon 1).
+3. **Take-or-Pay Contractual Pricing:** Hyperscaler contracts specify a fixed fee per megawatt-month regardless of whether the customer runs workloads 24/7. This makes AI revenue annuity-like once energized.
+4. **Transition from Mining:** As older ASIC miners are decommissioned, volatile mining revenue is replaced by high-dollar, contracted AI cloud hosting revenue.
+
+---
+
+## 5. Required $\pm1$ Percentage-Point Revenue Growth Sensitivity
+
+Per assignment instructions, we executed a dedicated sensitivity run modifying the modeled revenue growth assumption by **$\pm1$ percentage point** across each year of the forecast path, holding all other independent assumptions exactly at base.
+
+### Model Execution Results Table
+
+*All figures in USD millions ($M), except Value per Share ($/share). Primary share count: 394.059 million Ordinary shares.*
+
+| Scenario | Revenue Growth Path | Final-Year Revenue | Operating Profit (EBIT) | Final-Year FCFF | Final-Year FCFE | Modeled Value/Share | $ Change vs Base | % Change vs Base | Accounting Checks |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Lower (-1 pp)** | `[99%, 49%, 29%, 14%, 9%]` | **$3,360.35M** | **$719.79M** | **$988.57M** | **$308.00M** | **-$6.83** (-$6.8270) | **-$1.51** (-$1.5125) | **-28.46%** | **PASS (Gap = 0.0000)** |
+| **Base Case** | `[100%, 50%, 30%, 15%, 10%]`| **$3,488.02M** | **$777.88M** | **$1,055.18M** | **$380.39M** | **-$5.31** (-$5.3145) | **$0.00** ($0.0000) | **0.00%** | **PASS (Gap = 0.0000)** |
+| **Higher (+1 pp)**| `[101%, 51%, 31%, 16%, 11%]`| **$3,619.50M** | **$837.71M** | **$1,123.94M** | **$455.04M** | **-$3.76** (-$3.7576) | **+$1.56** (+$1.5569) | **+29.30%** | **PASS (Gap = 0.0000)** |
+
+*Note on Percentage Changes:* Percentage changes are evaluated relative to baseline magnitude ($|-5.3145| = \$5.3145$). Signed mathematical changes are $-29.30\%$ for upside (reducing deficit) and $+28.46\%$ for downside (expanding deficit).
+
+### Explicit Sensitivity Calculations
+
+#### Upside Sensitivity (+1 percentage point):
+$$\text{Upside Dollar Change} = -\$3.7576 - (-\$5.3145) = \mathbf{+\$1.5569\text{ per share}}$$
+$$\text{Upside Percentage Change} = \frac{+\$1.5569}{\$5.3145} = \mathbf{+29.30\%}$$
+
+> **Verbatim Result Statement:**  
+> **"A +1 percentage-point change in modeled revenue growth changes IREN's modeled value per share from -$5.31 to -$3.76, a change of +$1.56 or +29.30%."**
+
+#### Downside Sensitivity (-1 percentage point):
+$$\text{Downside Dollar Change} = -\$6.8270 - (-\$5.3145) = \mathbf{-\$1.5125\text{ per share}}$$
+$$\text{Downside Percentage Change} = \frac{-\$1.5125}{\$5.3145} = \mathbf{-28.46\%}$$
+
+> **Verbatim Result Statement:**  
+> **"A -1 percentage-point change in modeled revenue growth changes IREN's modeled value per share from -$5.31 to -$6.83, a change of -$1.51 or -28.46%."**
+
+*(Supplementary Note: If shifting ONLY the Year 5 growth rate from 10% to 11% or 9%, modeled value per share moves from -$5.3145 to -$4.9213 [+$0.3933 or +7.40%] and -$5.7078 [-$0.3933 or -7.40%], respectively.)*
+
+---
+
+## 6. Important Distinction — Market Stock Price vs. Modeled Intrinsic Value
+
+Elliot must articulate this distinction clearly in class:
+
+> *"Our sensitivity analysis measures how the **model's intrinsic discounted equity value** responds when we alter fundamental growth assumptions. It does **NOT** predict that IREN's market stock price will move by that percentage tomorrow."*
+
+- **The Actual Market Stock Price ($41.65 / $45.73)** is set by real-time secondary market supply and demand, Bitcoin spot price momentum, retail sentiment, and Wall Street multiple expansion expectations (anticipating 20x+ EV/EBITDA multiples upon full gigawatt buildout).
+- **The Modeled Intrinsic Value (-$5.31 per share)** discounts explicit fundamental cash flows at an $11.4\%$ equity hurdle rate. It reflects the heavy burden of $4.3B+ in upfront capex and debt service before contracted cash flows turn positive in FY2030E.
+- Confusing the two would treat an internal financial sensitivity model as an empirical stock price forecasting tool.
+
+---
+
+## 7. Lab 11 Two-Driver Results & Output Spans
+
+In Lab 11, Elliot evaluated two primary operating drivers across defensible operational ranges:
+
+### Two Drivers Tested in Lab 11
+
+1. **Driver 1: Power Cost & Energy Efficiency (Proxy: Cash Gross Margin ex-D&A)**
+   - *Plain English:* The net effective electricity cost per MWh after ERCOT load-curtailment credits, combined with cooling efficiency (PUE < 1.15).
+   - *Tested Range:* **65.0%** (Lower, -5 pp) to **70.0%** (Base) to **75.0%** (Higher, +5 pp).
+   - *Reason for Range:* Audited history showed 53.5% (FY24), 68.3% (FY25), and 68.9% (FY26). Lower models wholesale power spikes; higher reflects high-margin bare-metal GPU hosting.
+   - *EBIT Span:* **$226.72M** ($664.52M to $891.24M).
+   - *FCFE Span:* **$230.69M** ($249.56M to $480.25M).
+   - *Value/Share Span:* **$5.35 per share** (-$8.28 to -$2.93).
+
+2. **Driver 2: Contracted AI IT Capacity Energization Velocity (Proxy: Revenue Growth Path)**
+   - *Plain English:* The speed at which Childress data halls and NVIDIA GB300 clusters are energized, commissioned, and accepted by Microsoft.
+   - *Tested Range:* $\pm5.0$ pp per year (`[95%, 45%, 25%, 10%, 5%]` to `[105%, 55%, 35%, 20%, 15%]`).
+   - *Reason for Range:* Sourced from execution pacing under the 5-year, $9.7B Microsoft contract and 1.2 GW pipeline. Lower represents grid interconnection delays; higher represents accelerated tenant delivery.
+   - *EBIT Span:* **$591.10M** ($504.03M to $1,095.13M).
+   - *FCFE Span:* **$632.29M** ($39.92M to $672.22M).
+   - *Value/Share Span:* **$13.44 per share** (-$12.45 to +$0.99).
+
+### Output Span Comparison Table
+
+$$\text{Output Span} = \text{Maximum Valid Output} - \text{Minimum Valid Output}$$
+
+| Operating Driver | Tested Input Range | Operating Profit Span (FY31 EBIT) | Free Cash Flow Span (FY31 FCFE) | Implied Value per Share Span |
+| :--- | :---: | :---: | :---: | :---: |
+| **1. Power Cost / Gross Margin** | 65.0% to 75.0% (10 pp span) | **$226.72M** | **$230.69M** | **$5.35 per share** |
+| **2. Capacity Energization Path** | $\pm5.0$ pp/year (10 pp shift) | **$591.10M** | **$632.29M** | **$13.44 per share** |
+| **Sensitivity Span Ratio** | *Capacity Energization $\div$ Power Cost* | **2.61x** | **2.74x** | **2.51x** |
+
+> [!IMPORTANT]
+> **Key Finding Over Tested Ranges:**  
+> **Capacity Energization Velocity** had the larger effect **OVER THESE TESTED RANGES**: its output span was **2.61x** larger for EBIT, **2.74x** larger for FCFE, and **2.51x** larger for Value per Share.
+>
+> *Critical Range Qualification:* This ranking does **NOT** mean revenue scale is inherently superior to power cost. Compounding a 10 pp shift in annual growth across 5 years has a cumulative multiplicative effect on revenue ($+\$697.24\text{M}$ in Year 5), whereas a 10 pp gross margin shift operates on a fixed revenue base. If tested with a narrow growth range ($\pm1$ pp) against a wide margin range ($\pm15$ pp), power cost would produce the larger span.
+
+---
+
+## 8. Impact vs. Uncertainty
+
+A comprehensive financial evaluation requires distinguishing between model elasticity and real-world unpredictability:
+
+- **IMPACT:** The mathematical leverage an input exerts on modeled financial outputs (the derivative $\frac{\partial \text{Value}}{\partial \text{Input}}$).
+- **UNCERTAINTY:** The degree of real-world dispersion, variance, or unpredictability surrounding that parameter.
+
+```
+                           IMPACT VS. UNCERTAINTY MATRIX
+              ▲
+              │   [MODERATE IMPACT / HIGH UNCERTAINTY]      [HIGH IMPACT / HIGH UNCERTAINTY]
+              │   • Bitcoin Spot Price & Network Hashrate   ★ AI Capacity Energization Velocity
+              │   • Conversion of Convertible Debt          ★ Hyperscaler Capex Sustainability
+  UNCERTAINTY │                                             ★ NVIDIA Hardware Delivery Lead Times
+              │   ─────────────────────────────────────────────────────────────────────────────
+              │   [LOW IMPACT / LOW UNCERTAINTY]            [HIGH IMPACT / MODERATE UNCERTAINTY]
+              │   • Inventory Days ($0 across all filings)  • Net Effective Power Tariffs ($/MWh)
+              │   • Accounts Receivable Days (11 days)      • Data Center Cooling PUE Efficiency
+              │   • Corporate Income Tax Rate (21% / NOLs)  (Hedged by PPAs & ERCOT Curtailment)
+              └─────────────────────────────────────────────────────────────────────────►
+                                         IMPACT
+```
+
+### Which Assumption Deserves Additional Research Next?
+
+**Contracted AI Capacity Energization Velocity & Hyperscaler Capex Pacing** deserves the most intensive ongoing research:
+- It carries both **maximum model impact** ($2.51\text{x}$ value span) and **maximum real-world uncertainty**.
+- IREN's future depends heavily on a concentrated counterparty (Microsoft) and rapid execution at Childress. If hyperscalers curtail AI infrastructure capex or NVIDIA delays Blackwell deliveries, top-line cash generation stalls while fixed debt service continues.
+- Conversely, power cost uncertainty is partially hedged through long-term power purchase agreements (PPAs) and automated ERCOT curtailment software.
+
+---
+
+## 9. Trace a Real Sensitivity Result (Causal Transmission Chain)
+
+To demonstrate full model ownership, we trace the exact step-by-step transmission mechanism for **Driver 1: Cash Gross Margin (70.0% $\rightarrow$ 75.0%)**:
+
+```
+INPUT CHANGE: Cash Gross Margin increases from 70.0% to 75.0% (+5.0 percentage points)
+PHYSICAL DRIVER: Net effective electricity cost declines via low-rate PPAs; bare-metal GB300 PUE optimizes
+  │
+  ▼
+FINANCIAL STATEMENT LINES (FY2031E):
+  - Total Revenue:            $3,488.02M (Unchanged; revenue growth is held at Base)
+  - Cost of Revenues (Power): $872.00M (Decreases by $174.40M from base $1,046.41M; Cost = Rev × (1 - GM))
+  - Cash Gross Profit:        $2,616.01M (Increases by $174.40M from base $2,441.61M)
+  - SG&A Overhead (35% GP):   $915.60M (Increases by $61.04M from base $854.57M due to profit-linked overhead)
+  - Depreciation & Amort:     $809.17M (Unchanged; PP&E and capex schedule held at Base)
+  - Pretax Income (EBT):      $631.48M (Increases by $128.39M from base $503.09M)
+  - Income Tax (21%):         $28.53M (Tax increases from $0.00M because higher earnings exhaust $700M NOLs earlier)
+  - GAAP Net Income:          $602.95M (Increases by $99.86M from base $503.09M)
+  │
+  ▼
+OPERATING PROFIT (EBIT):
+  - FY2031E EBIT:             $891.24M (Signed change: +$113.36M from base $777.88M)
+  │
+  ▼
+FREE CASH FLOW (FCFE):
+  - Operating Cash Flow:      $1,480.25M (Increases by +$99.86M from base $1,380.39M)
+  - Working Capital Delta:    Unchanged (AR, Deferred Revenue, and Other Liabilities track revenue, which is at Base)
+  - Capex & Debt Repayment:   -$600.0M Capex - $400.0M Debt Repayment = -$1,000.0M (Unchanged)
+  - FY2031E FCFE:             $480.25M (Signed change: +$99.86M from base $380.39M)
+  │
+  ▼
+IMPLIED VALUE PER SHARE:
+  - Terminal Value at FY31E:  Terminal Value rises to $5,530.96M (PV TV = $3,223.85M, up +$670.34M)
+  - Total Equity Value:       Improves from -$2,094.23M to -$1,153.27M (+$940.97M)
+  - Modeled Value per Share:  Improves from -$5.31 to -$2.93 per share (Signed change: +$2.39/share)
+```
+
+---
+
+## 10. Lab 12 Presentation Route (Six Stops Speaking Notes)
+
+Elliot will walk his learning partner through the six required stops using open repository files:
+
+### Stop 1 — Target Selection
+- **Speaking Notes:** *"I chose IREN Limited because it is the most aggressive example in the public markets of a digital infrastructure company converting massive, grid-connected power capacity from Bitcoin mining into high-density AI Cloud computing. My initial view was that its revenue growth potential is immense due to the $9.7B Microsoft contract, but the company carries severe execution and balance sheet risks: $13.8B in capital commitments, a $(702.6)M GAAP loss in FY2026, and heavy convertible debt."*
+- **Evidence Open:** [`IREN-research/IREN_2026-09-03_report.md`](file:///c:/Users/ellio/Documents/FIN439/IREN-research/IREN_2026-09-03_report.md).
+
+### Stop 2 — Company and Evidence
+- **Speaking Notes:** *"IREN makes money in two ways: Bitcoin mining ($578.2M in FY26, 81.8% of revenue) where it liquidates mined bitcoin daily, and AI Cloud Services ($128.8M, up from $16.4M in FY25) where it provides bare-metal GPU compute to hyperscalers. FY26 revenue was $707.0M, but reported operating loss was $(1,046.7)M because of a $638.8M one-time impairment writing down legacy ASIC miners, plus $417.7M in D&A and $449.1M in SG&A. It is vertically integrated: it owns the land, substations, data halls, and NVIDIA GB300 GPUs."*
+- **Evidence Open:** Form 10-K, Item 8, Consolidated Statements of Operations (p. F-7) and Segment Note 4 (p. F-15).
+
+### Stop 3 — Pro-Forma Engine
+- **Speaking Notes:** *"In Lab 10, I adapted the pro-forma engine for IREN across FY2027E–FY2031E. Unlike automotive retail which uses floor plan debt to fund inventory, IREN has zero inventory. Its company-specific line is **Customer Prepayments / Deferred Revenue**, which brought in $1.84B in cash upfront in FY26. I modeled revenue growing from $1.4B to $3.5B as Childress energizes, cash gross margin at 70%, and capex tapering from $2.5B to $600M. The engine computes Cash LAST, respects a $500M minimum cash buffer, and balances to $0.0000 across all 5 years."*
+- **Evidence Open:** [`Lab-10/proforma_iren.py`](file:///c:/Users/ellio/Documents/FIN439/Lab-10/proforma_iren.py) lines 54–93 and validation printout.
+
+### Stop 4 — Valuation
+- **Speaking Notes:** *"My pro-forma DCF implies an equity value of **-$5.31 per share** on 394.06M shares (or -$5.51 on ending BS shares; -$6.62 on weighted shares) as of late September 2026. This reflects an 11.4% cost of equity and 2.5% terminal growth. Explicit cash flows are heavily negative during early capex years, totaling -$4,647.74M in present value, while Year 5 FCFE inflects to positive $380.39M, creating a $4,380.90M terminal value (PV $2,553.51M). Trailing P/E was refused because IREN and peers CORZ and APLD all report negative EPS. The market priced IREN at $41.65 (Sept 3) and $45.73 (Sept 24), which prices in massive future AI multiple expansion that current cash flows do not yet support."*
+- **Evidence Open:** [`Lab-10/lab10.md`](file:///c:/Users/ellio/Documents/FIN439/Lab-10/lab10.md) Section 5 and [`Lab-08/lab08.md`](file:///c:/Users/ellio/Documents/FIN439/Lab-08/lab08.md).
+
+### Stop 5 — Sensitivity and Drivers
+- **Speaking Notes:** *"In Lab 11, I tested Power Cost (65%–75% gross margin) and Capacity Energization ($\pm5$ pp revenue growth). Over those ranges, Capacity Energization was the main driver: its output span of $13.44/share was 2.51 times larger than Power Cost ($5.35/share). Furthermore, our dedicated $\pm1$ percentage-point revenue growth sensitivity shows that a +1 pp shift raises value/share from -$5.31 to -$3.76 (+$1.56 or +29.30%), while a -1 pp shift lowers it to -$6.83 (-$1.51 or -28.46%)."*
+- **Evidence Open:** [`Lab-11/sensitivity_iren.py`](file:///c:/Users/ellio/Documents/FIN439/Lab-11/sensitivity_iren.py) and [`Lab-12/lab12_sensitivity.py`](file:///c:/Users/ellio/Documents/FIN439/Lab-12/lab12_sensitivity.py).
+
+### Stop 6 — Interpretation
+- **Speaking Notes:** *"My conditional conclusion is that IREN's current market price of $40+ represents an aggressive call option on flawless execution of its 5 GW pipeline and sustained hyperscaler AI demand. If Childress energization slips, cash deficits deepen rapidly. My view has evolved from seeing IREN as a crypto miner to recognizing it as a capital-intensive infrastructure utility. What I would research next is the Microsoft contract delivery milestones for Horizons 2–4 and customer renewal/expansion terms for 2027."*
+- **Evidence Open:** [`Lab-11/lab11.md`](file:///c:/Users/ellio/Documents/FIN439/Lab-11/lab11.md) Section 7.
+
+---
+
+## 11. Elliot's Simple IREN Cheat Sheet
+
+*(Elliot can speak directly from this section in class without AI assistance)*
+
+### WHAT DOES IREN DO?
+> IREN is a next-generation digital infrastructure company that builds and owns multi-megawatt data center campuses connected directly to high-voltage power grids. It uses this electrical infrastructure to run high-density liquid-cooled NVIDIA GPU clusters for enterprise AI cloud workloads and to mine Bitcoin.
+
+### HOW DOES IREN MAKE MONEY?
+> IREN makes money in two ways:
+> 1. **AI Cloud Services:** Renting bare-metal GPU computing power to hyperscalers like Microsoft under multi-year, take-or-pay contracts.
+> 2. **Bitcoin Mining:** Contributing computing hashrate to mining pools, earning Bitcoin rewards, and selling the Bitcoin daily for cash.
+
+### WHAT ACTUALLY DRIVES IREN FUNDAMENTALLY?
+> 1. **Megawatt Substation Energization:** How fast utility substations connect power to data halls so servers can turn on.
+> 2. **Net Power Costs & PUE:** The net price paid for electricity in Texas after curtailment credits, divided by cooling efficiency.
+> 3. **Customer Prepayments:** Advance cash deposits from hyperscalers that fund GPU procurement without dilution.
+
+### WHAT DRIVES IREN's STOCK / MARKET VALUATION?
+> 1. **Multiple Expansion:** The market re-rating IREN from a cheap Bitcoin miner (5x EBITDA) to an AI cloud provider (20x+ EBITDA).
+> 2. **Bitcoin Spot Price Momentum:** Everyday retail and algorithmic trading beta tied to Bitcoin price moves.
+> 3. **Execution Credibility:** Proof that milestones like Microsoft Horizon deployments are accepted on schedule.
+
+### WHAT ARE MY TWO LAB 11 DRIVERS?
+> 1. **Power Cost / Cash Gross Margin:** Tested from 65.0% to 75.0% (Span: $5.35/share).
+> 2. **Capacity Energization Velocity (Revenue Growth Path):** Tested at $\pm5.0$ pp per year (Span: $13.44/share).
+
+### WHAT HAPPENS IF REVENUE GROWTH CHANGES $\pm1$ PERCENTAGE POINT?
+> - **-1 pp:** Modeled value per share moves from **-$5.31 to -$6.83** (a change of **-$1.51 or -28.46%**).
+> - **+1 pp:** Modeled value per share moves from **-$5.31 to -$3.76** (a change of **+$1.56 or +29.30%**).
+
+### MY DCF VALUE PER SHARE:
+> **-$5.31 per share** (on 394.06M shares; -$5.51 on BS shares; -$6.62 on weighted shares).
+
+### WHY IS IT NEGATIVE?
+> Because IREN must spend over **$6.3 billion in capex** and repay debt across the next 3 years before contracted AI cash flows turn positive in FY2030E. When discounted back at an 11.4% cost of equity, early cash burn outweighs the terminal value.
+
+### MY BIGGEST MODEL DRIVER OVER TESTED RANGES:
+> **Capacity Energization Velocity (Revenue Growth Path)**.
+
+### WHY?
+> Over the tested ranges, a 10 pp compounding shift in revenue growth creates an output span of **$13.44/share**, which is **2.51 times larger** than the power cost span ($5.35/share).
+
+### BIGGEST RISK / UNCERTAINTY:
+> **Execution delays and customer concentration with Microsoft.** If substation connections or NVIDIA GB300 shipments delay customer acceptance, cash burn deepens rapidly.
+
+### WHAT WOULD I RESEARCH NEXT?
+> Customer delivery and acceptance milestones for **Horizons 2, 3, and 4 at Childress**, and whether additional hyperscalers sign contracts for the remaining 1.2 GW pipeline.
+
+---
+
+## 12. Partner Questions & Live Review Record
+
+*(Strictly manual — To be completed live with learning partner during class. No fabricated entries.)*
+
+### Part A: As Presenter (Elliot Presenting IREN)
+
+- **Learning Partner Name:** `[MANUAL — COMPLETE DURING CLASS]`
+- **Partner's Target Company:** `[MANUAL — COMPLETE DURING CLASS]`
+
+#### Questions Received from Partner:
+1. **Selection & Evidence Question:**
+   - *Question received:* `[MANUAL — COMPLETE DURING CLASS]`
+   - *Elliot's answer:* `[MANUAL — COMPLETE DURING CLASS]`
+2. **Model & Valuation Question:**
+   - *Question received:* `[MANUAL — COMPLETE DURING CLASS]`
+   - *Elliot's answer:* `[MANUAL — COMPLETE DURING CLASS]`
+3. **Sensitivity & Interpretation Question:**
+   - *Question received:* `[MANUAL — COMPLETE DURING CLASS]`
+   - *Elliot's answer:* `[MANUAL — COMPLETE DURING CLASS]`
+
+#### Presentation Unresolved Gaps & Reviewer Feedback:
+- *Specific unresolved gap identified:* `[MANUAL — COMPLETE DURING CLASS]`
+- *How gap will be investigated/resolved:* `[MANUAL — COMPLETE DURING CLASS]`
+- *Partner's stated strength of Elliot's analysis:* `[MANUAL — COMPLETE DURING CLASS]`
+- *Partner's stated improvement to make next:* `[MANUAL — COMPLETE DURING CLASS]`
+
+#### Post-Review Decision (Keep / Revise / Investigate):
+- **What Elliot will KEEP:** `[MANUAL — COMPLETE DURING CLASS]`
+- **What Elliot will REVISE:** `[MANUAL — COMPLETE DURING CLASS]`
+- **What Elliot will INVESTIGATE:** `[MANUAL — COMPLETE DURING CLASS]`
+- *Effect on Valuation Conclusion / Research Priority:* `[MANUAL — COMPLETE DURING CLASS]`
+
+---
+
+### Part B: As Reviewer (Elliot Reviewing Partner's Company)
+
+#### Questions Elliot Asked the Partner:
+1. **Selection & Evidence Area:**
+   - *Question asked:* `[MANUAL — COMPLETE DURING CLASS]`
+   - *Partner's answer:* `[MANUAL — COMPLETE DURING CLASS]`
+2. **Model & Valuation Area:**
+   - *Question asked:* `[MANUAL — COMPLETE DURING CLASS]`
+   - *Partner's answer:* `[MANUAL — COMPLETE DURING CLASS]`
+3. **Sensitivity & Interpretation Area:**
+   - *Question asked:* `[MANUAL — COMPLETE DURING CLASS]`
+   - *Partner's answer:* `[MANUAL — COMPLETE DURING CLASS]`
+
+#### Evidence Verification Check:
+- *Source document or calculation checked together:* `[MANUAL — COMPLETE DURING CLASS]`
+- *Verification result (Supported / Discrepancy):* `[MANUAL — COMPLETE DURING CLASS]`
+
+#### Explanation Back of Partner's Analysis:
+- *Partner's valuation conclusion:* `[MANUAL — COMPLETE DURING CLASS]`
+- *Partner's main driver over tested ranges:* `[MANUAL — COMPLETE DURING CLASS]`
+- *Partner's biggest limitation or unresolved risk:* `[MANUAL — COMPLETE DURING CLASS]`
+
+#### Actionable Feedback Given:
+- *Evidence-backed strength identified:* `[MANUAL — COMPLETE DURING CLASS]`
+- *Specific improvement to make next:* `[MANUAL — COMPLETE DURING CLASS]`
+
+---
+
+### Part C: Reflection
+
+- **Which partner question made Elliot reconsider an aspect of IREN?**  
+  `[MANUAL — COMPLETE DURING CLASS]`
+- **What does Elliot now understand better about IREN?**  
+  `[MANUAL — COMPLETE DURING CLASS]`
+
+---
+
+## 13. Model Verification & Accounting Checks
+
+The model was executed and verified using the local workspace Python environment:
+
+```powershell
+& "C:\Users\ellio\Documents\FIN439\Python-3.13.15\python.exe" Lab-12/lab12_sensitivity.py
+```
+
+### Verification Checklist Results:
+1. **Base Valuation Integrity:** FY31E EBIT = **$777.88M**, FY31E FCFE = **$380.39M**, Modeled Equity Value per Share = **-$5.3145**.
+2. **Double-Entry Balance Sheet Gap:** Evaluated across all 5 forecast years (FY2027E–FY2031E): $|\text{Gap}| = \mathbf{0.0000}$ in every period (**PASS**).
+3. **Liquidity Buffer Constraint:** Minimum cash buffer maintained $\ge \$500.0\text{M}$ across all periods (**PASS**).
+4. **Restored Base Case Verification:** Following sensitivity execution, restored inputs and outputs match original base case exactly to 6 decimal places ($0.000000$ error, **PASS**).
+5. **Signed Differences & Spans:** All differences calculated as $\text{Changed Output} - \text{Base Output}$ and verified.
