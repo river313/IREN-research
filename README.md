@@ -78,7 +78,13 @@ py project_audit.py project-submission-manifest-template.csv
 ```
 *Expected terminal output: Audits the 12-row project submission manifest against actual repository deliverables. Reports mechanical gaps for deliverables scheduled for final Week 8 compilation (videos, transcripts, final PDFs).*
 
-### 4. Execute Core Pro-Forma & Sensitivity Labs
+### 4. Launch Interactive Valuation Workbench (Streamlit Application)
+```powershell
+py -m streamlit run app.py
+```
+*Expected output: Launches the semi-adjustable Pro-Forma Workbench in your web browser with bounded driver sliders, live accounting check banners, dynamic statement tabs, and sensitivity explorer.*
+
+### 5. Execute Core Pro-Forma & Sensitivity Labs
 ```powershell
 # Run Lab 10 Full Three-Statement Pro-Forma Model & Articulation Gates
 py Lab-10/proforma_iren.py

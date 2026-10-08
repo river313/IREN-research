@@ -1,15 +1,16 @@
 """
-FIN 43900 Project 1 — Master Analysis Runner & Visible Output Generator
+FIN 43900 Project 1 — Master Analysis Runner & Valuation Reconciliation
 Company: IREN Limited (NASDAQ: IREN)
 Student: Elliot
 Course: FIN 43900 (Corporate Finance / Applied Financial Modeling, Purdue University)
 Valuation Date: October 8, 2026 (Audit as-of date)
 Baseline Filing: FY2026 Form 10-K (ended June 30, 2026; filed August 27, 2026)
 
-This script executes the fully integrated 5-year three-statement pro-forma model
-and valuation engine, runs double-entry accounting integrity checks, computes
-FCFE and FCFF valuation bridges, executes key driver sensitivities, and exports
-the frozen contract to visible_output.json.
+This script executes the fully integrated 5-year three-statement pro-forma model,
+runs double-entry accounting integrity checks, computes both:
+  1. The Required Course Architecture: FCFF Enterprise DCF with WACC & Enterprise-to-Equity Bridge ($12.12/sh)
+  2. The Direct Equity FCFE DCF (-$5.31/sh) and documents the methodological reconciliation
+Evaluates key driver sensitivities, and exports visible_output.json.
 """
 
 from __future__ import annotations
@@ -19,7 +20,6 @@ import os
 import sys
 from pathlib import Path
 
-# Add Lab-10 and Lab-12 to path
 CURRENT_DIR = Path(__file__).resolve().parent
 LAB10_DIR = CURRENT_DIR / "Lab-10"
 if str(LAB10_DIR) not in sys.path and LAB10_DIR.exists():
@@ -34,11 +34,91 @@ from proforma_iren import (
 )
 
 
+def calculate_fcff_valuation(
+    proforma_output: dict,
+    wacc: float = 0.100,
+    terminal_growth: float = 0.025,
+    shares: float = 394.059,
+) -> dict:
+    """
+    Computes FCFF Enterprise DCF valuation with complete enterprise-to-equity bridge.
+    FCFF = EBIT*(1-t) + Depr - Capex - Delta_NWC
+    EV = PV(Explicit FCFF) + PV(Terminal Value)
+    Equity Value = EV + Cash - Debt
+    Value Per Share = Equity Value / Shares
+    """
+    is_list = proforma_output["is_list"]
+    cf_list = proforma_output["cf_list"]
+
+    fcff_list = []
+    pv_explicit_fcff = 0.0
+    discounted_fcff = []
+
+    for idx, (is_r, cf_r) in enumerate(zip(is_list, cf_list), start=1):
+        year = YEARS[idx - 1]
+        ebit = is_r["operating_income"]
+        tax = is_r["tax"]
+        depr = is_r["depreciation"]
+        capex = cf_r["capex"]
+        delta_wc = (
+            cf_r["delta_ar"]
+            + cf_r["delta_other_assets"]
+            - cf_r["delta_deferred_rev"]
+            - cf_r["delta_other_liab"]
+        )
+        # NOPAT = EBIT - Tax (accounting for NOL tax shield)
+        fcff = ebit - tax + depr - capex - delta_wc
+        fcff_list.append(fcff)
+
+        df = (1.0 + wacc) ** idx
+        pv_cf = fcff / df
+        pv_explicit_fcff += pv_cf
+        discounted_fcff.append({
+            "year": year,
+            "fcff": round(fcff, 2),
+            "pv": round(pv_cf, 2),
+        })
+
+    # Terminal Value on Year 5 FCFF
+    tv5_fcff = (fcff_list[-1] * (1.0 + terminal_growth)) / (wacc - terminal_growth)
+    pv_tv_fcff = tv5_fcff / ((1.0 + wacc) ** 5)
+    enterprise_value = pv_explicit_fcff + pv_tv_fcff
+
+    # Enterprise-to-Equity Bridge
+    # Cash at June 30, 2026 = $5,895.59M
+    cash = OPENING_BS["cash"]
+    # Total Debt at June 30, 2026 = $7,836.74M
+    debt = OPENING_BS["term_debt"]
+    net_debt = debt - cash
+    equity_value = enterprise_value + cash - debt
+    value_per_share = equity_value / shares
+    tv_share_ev = pv_tv_fcff / enterprise_value if enterprise_value != 0 else 0.0
+
+    return {
+        "wacc": wacc,
+        "terminal_growth": terminal_growth,
+        "shares": shares,
+        "fcff_list": fcff_list,
+        "discounted_fcff": discounted_fcff,
+        "pv_explicit_fcff": round(pv_explicit_fcff, 2),
+        "terminal_value_fcff": round(tv5_fcff, 2),
+        "pv_tv_fcff": round(pv_tv_fcff, 2),
+        "enterprise_value": round(enterprise_value, 2),
+        "cash": round(cash, 2),
+        "debt": round(debt, 2),
+        "net_debt": round(net_debt, 2),
+        "equity_value": round(equity_value, 2),
+        "value_per_share": round(value_per_share, 2),
+        "tv_share_ev": round(tv_share_ev, 4),
+    }
+
+
 def run_full_project_analysis() -> dict:
     """Executes base case pro-forma and generates structured frozen visible output."""
-    # 1. Execute Base Pro-Forma
+    # 1. Base Pro-Forma Execution
     base_results = run_proforma()
-    base_val = calculate_valuation(base_results)
+    base_fcfe_val = calculate_valuation(base_results)
+    base_fcff_val = calculate_fcff_valuation(base_results, wacc=0.100, terminal_growth=0.025, shares=394.059)
 
     # 2. Extract key statement line items for FY2031E (Year 5)
     fy31_rev = base_results["is_list"][-1]["revenue"]
@@ -50,14 +130,7 @@ def run_full_project_analysis() -> dict:
     fy31_ocf = base_results["cf_list"][-1]["operating_cash_flow"]
     fy31_capex = base_results["cf_list"][-1]["capex"]
     fy31_fcfe = base_results["cf_list"][-1]["fcfe"]
-
-    delta_wc_fy31 = (
-        base_results["cf_list"][-1]["delta_ar"]
-        + base_results["cf_list"][-1]["delta_other_assets"]
-        - base_results["cf_list"][-1]["delta_deferred_rev"]
-        - base_results["cf_list"][-1]["delta_other_liab"]
-    )
-    fy31_fcff = fy31_ebit - fy31_tax + fy31_depr - fy31_capex - delta_wc_fy31
+    fy31_fcff = base_fcff_val["fcff_list"][-1]
 
     # 3. Check Double-Entry Balance Integrity
     checks_passed = True
@@ -69,42 +142,32 @@ def run_full_project_analysis() -> dict:
         if gap > 0.01 or not c["min_cash_pass"]:
             checks_passed = False
 
-    # 4. Driver Sensitivities
+    # 4. Driver Sensitivities on Required FCFF DCF Architecture
     # Sensitivity 1: Cash Gross Margin (+/- 5 percentage points)
     gm_lower = run_proforma(custom_assumptions={"gross_margin": 0.650})
     gm_higher = run_proforma(custom_assumptions={"gross_margin": 0.750})
-    vps_gm_lower = calculate_valuation(gm_lower)["value_per_share"]
-    vps_gm_higher = calculate_valuation(gm_higher)["value_per_share"]
-    gm_vps_span = round(vps_gm_higher - vps_gm_lower, 2)
+    vps_fcff_gm_lower = calculate_fcff_valuation(gm_lower)["value_per_share"]
+    vps_fcff_gm_higher = calculate_fcff_valuation(gm_higher)["value_per_share"]
+    gm_fcff_span = round(vps_fcff_gm_higher - vps_fcff_gm_lower, 2)
 
     # Sensitivity 2: Revenue Growth Path (+/- 5 percentage points per year)
     rev_lower_path = [g - 0.05 for g in ASSUMPTIONS["revenue_growth"]]
     rev_higher_path = [g + 0.05 for g in ASSUMPTIONS["revenue_growth"]]
     rev_lower = run_proforma(custom_assumptions={"revenue_growth": rev_lower_path})
     rev_higher = run_proforma(custom_assumptions={"revenue_growth": rev_higher_path})
-    vps_rev_lower = calculate_valuation(rev_lower)["value_per_share"]
-    vps_rev_higher = calculate_valuation(rev_higher)["value_per_share"]
-    rev_vps_span = round(vps_rev_higher - vps_rev_lower, 2)
-
-    # Sensitivity 3: Single-Year FY31 Revenue Growth (+/- 1 percentage point)
-    rev_fy31_lower = run_proforma(
-        custom_assumptions={"revenue_growth": [1.00, 0.50, 0.30, 0.15, 0.09]}
-    )
-    rev_fy31_higher = run_proforma(
-        custom_assumptions={"revenue_growth": [1.00, 0.50, 0.30, 0.15, 0.11]}
-    )
-    vps_fy31_lower = calculate_valuation(rev_fy31_lower)["value_per_share"]
-    vps_fy31_higher = calculate_valuation(rev_fy31_higher)["value_per_share"]
+    vps_fcff_rev_lower = calculate_fcff_valuation(rev_lower)["value_per_share"]
+    vps_fcff_rev_higher = calculate_fcff_valuation(rev_higher)["value_per_share"]
+    rev_fcff_span = round(vps_fcff_rev_higher - vps_fcff_rev_lower, 2)
 
     output_payload = {
         "target_company": "IREN Limited",
         "ticker": "NASDAQ: IREN",
         "decision": "WATCH / DEFER",
-        "committee_action": "Do not initiate a buy position; place name on watch/defer list pending customer acceptance and recognized GAAP cash flow from Horizons 2-4 and gigawatt cluster energization.",
+        "committee_action": "Do not initiate a buy position. The market prices IREN at $45.73 (~$18.0B market cap), representing a ~280% premium to fundamental operating FCFF DCF value ($12.12/share). Defer position pending customer acceptance of Horizons 2-4 and recognized GAAP operating cash flow inflection.",
         "as_of": "2026-10-08",
         "valuation_date": "2026-09-24",
         "filing_source": "FY2026 Form 10-K (ended June 30, 2026; filed August 27, 2026)",
-        "intended_user": "Buy-side Investment Committee (AI Task Force embedded in corporate finance/analyst team)",
+        "intended_user": "Buy-side Investment Committee (AI Task Force embedded in corporate finance team)",
         "currency": "USD",
         "share_counts": {
             "primary_10k_cover_page": 394.059,
@@ -112,19 +175,32 @@ def run_full_project_analysis() -> dict:
             "weighted_average_diluted": 316.123,
         },
         "modeled_valuation": {
-            "methodology": "Five-Year Integrated Three-Statement Pro-Forma FCFE DCF",
-            "cost_of_equity": 0.114,
-            "terminal_growth_rate": 0.025,
-            "value_per_share_primary": -5.31,
-            "value_per_share_bs_ending": -5.51,
-            "value_per_share_weighted": -6.62,
-            "present_value_explicit_fcfe_usd_m": -4647.74,
-            "terminal_value_usd_m": 4380.90,
-            "present_value_terminal_value_usd_m": 2553.51,
-            "total_implied_equity_value_usd_m": -2094.23,
+            "primary_required_architecture": {
+                "methodology": "Five-Year Pro-Forma Operating FCFF DCF with WACC & Enterprise-to-Equity Bridge",
+                "wacc": 0.100,
+                "terminal_growth_rate": 0.025,
+                "pv_explicit_fcff_usd_m": base_fcff_val["pv_explicit_fcff"],
+                "terminal_value_fcff_usd_m": base_fcff_val["terminal_value_fcff"],
+                "pv_terminal_value_usd_m": base_fcff_val["pv_tv_fcff"],
+                "enterprise_value_usd_m": base_fcff_val["enterprise_value"],
+                "bridge_cash_usd_m": base_fcff_val["cash"],
+                "bridge_debt_usd_m": base_fcff_val["debt"],
+                "net_debt_usd_m": base_fcff_val["net_debt"],
+                "implied_equity_value_usd_m": base_fcff_val["equity_value"],
+                "value_per_share_primary": base_fcff_val["value_per_share"],
+                "valuation_range_primary": f"${vps_fcff_rev_lower:.2f} to ${vps_fcff_rev_higher:.2f}",
+            },
+            "secondary_fcfe_comparison": {
+                "methodology": "Direct Equity FCFE DCF (Unadjusted for Cash Balance)",
+                "cost_of_equity": 0.114,
+                "terminal_growth_rate": 0.025,
+                "value_per_share_primary": -5.31,
+                "reconciliation_explanation": "Direct FCFE yields -$5.31 because explicit capex of $4.0B in FY27E-FY28E causes negative FCFE before cash flows recover; however, because that capex is funded from the $5,895.6M cash already sitting on the balance sheet, the FCFF Enterprise DCF properly captures the asset value and yields $12.12/share. Both methods confirm that the current market price of $45.73 is substantially overvalued.",
+            },
             "market_comparison_prices": {
                 "2026-09-03": 41.65,
                 "2026-09-24": 45.73,
+                "market_premium_over_fcff": round((45.73 / base_fcff_val["value_per_share"] - 1.0) * 100, 1),
             },
         },
         "proforma_fy2031e_summary_usd_m": {
@@ -144,28 +220,22 @@ def run_full_project_analysis() -> dict:
             "minimum_cash_buffer_usd_m": 500.0,
         },
         "sensitivities": {
-            "power_cost_gross_margin_65_to_75_pct": {
+            "fcff_power_cost_margin_span": {
                 "tested_range": "65.0% to 75.0%",
-                "vps_range": f"${vps_gm_lower:.2f} to ${vps_gm_higher:.2f}",
-                "vps_span": gm_vps_span,
+                "vps_range": f"${vps_fcff_gm_lower:.2f} to ${vps_fcff_gm_higher:.2f}",
+                "vps_span": gm_fcff_span,
             },
-            "revenue_growth_path_shift_5pp_yr": {
+            "fcff_revenue_path_shift_span": {
                 "tested_range": "-5.0 pp/yr to +5.0 pp/yr across 5 years",
-                "vps_range": f"${vps_rev_lower:.2f} to ${vps_rev_higher:.2f}",
-                "vps_span": rev_vps_span,
-            },
-            "single_year_fy31_growth_1pp": {
-                "tested_range": "9.0% to 11.0% (FY31E only)",
-                "vps_range": f"${vps_fy31_lower:.2f} to ${vps_fy31_higher:.2f}",
-                "vps_span": round(vps_fy31_higher - vps_fy31_lower, 2),
+                "vps_range": f"${vps_fcff_rev_lower:.2f} to ${vps_fcff_rev_higher:.2f}",
+                "vps_span": rev_fcff_span,
             },
             "dominant_driver": "Capacity Energization Path (Revenue Scale) over the tested ranges",
         },
-        "reversal_trigger": "Change recommendation from WATCH-DEFER to INITIATE-BUY if IREN demonstrates (1) on-schedule delivery and customer acceptance of Horizons 2-4 with recognized GAAP revenue scaling above $1.5B ARR, (2) positive operating cash flow generation before customer prepayments, and (3) capital additions funded without further dilutive equity/convertible debt issuance exceeding 10% of existing share count.",
+        "reversal_trigger": "Change recommendation from WATCH-DEFER to INITIATE-BUY if: (1) market price corrects toward the fundamental valuation range ($12-$18), OR (2) IREN demonstrates verified customer acceptance and recognized billing for Horizons 2-4 scaling GAAP quarterly revenue above $375M, positive operating cash flow generation before customer prepayments, and capital additions funded without equity dilution exceeding 10%.",
         "kill_conditions": "Reject valuation model if pro-forma balance sheet does not articulate (Gap > $0.01M), if cash falls below $500.0M liquidity reserve, or if power purchase agreements fail to maintain gross power margin above 50%.",
     }
 
-    # Save to visible_output.json
     output_path = CURRENT_DIR / "visible_output.json"
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(output_payload, f, indent=2)
@@ -178,14 +248,16 @@ def main():
     print("RUNNING FIN 43900 PROJECT 1 VALUATION ENGINE (IREN LIMITED)")
     print("=" * 80)
     payload = run_full_project_analysis()
-    print(f"Company:               {payload['target_company']} ({payload['ticker']})")
-    print(f"As-of Date:            {payload['as_of']}")
-    print(f"Committee Decision:    {payload['decision']}")
-    print(f"Modeled Value/Share:   ${payload['modeled_valuation']['value_per_share_primary']:.2f}")
-    print(f"Market Trading Price:  $45.73 (as of 2026-09-24) / $41.65 (as of 2026-09-03)")
-    print(f"Accounting Checks:     {'PASS (Gap = 0.0000)' if payload['accounting_checks']['all_5_years_balanced'] else 'FAIL'}")
-    print(f"Dominant Driver:       {payload['sensitivities']['dominant_driver']}")
-    print(f"Visible Output:        Saved successfully to visible_output.json")
+    p_arch = payload["modeled_valuation"]["primary_required_architecture"]
+    print(f"Company:                    {payload['target_company']} ({payload['ticker']})")
+    print(f"As-of Date:                 {payload['as_of']}")
+    print(f"Committee Decision:         {payload['decision']}")
+    print(f"Primary FCFF Value/Share:   ${p_arch['value_per_share_primary']:.2f} (Range: {p_arch['valuation_range_primary']})")
+    print(f"Secondary FCFE Value/Share: ${payload['modeled_valuation']['secondary_fcfe_comparison']['value_per_share_primary']:.2f}")
+    print(f"Market Trading Price:       $45.73 (Premium: +{payload['modeled_valuation']['market_comparison_prices']['market_premium_over_fcff']}%)")
+    print(f"Accounting Checks:          {'PASS (Gap = 0.0000)' if payload['accounting_checks']['all_5_years_balanced'] else 'FAIL'}")
+    print(f"Dominant Driver:            {payload['sensitivities']['dominant_driver']}")
+    print(f"Visible Output:             Saved successfully to visible_output.json")
     print("=" * 80)
 
 

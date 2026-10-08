@@ -2,11 +2,11 @@
   "target_company": "IREN Limited",
   "ticker": "NASDAQ: IREN",
   "decision": "WATCH / DEFER",
-  "committee_action": "Do not initiate a buy position; place name on watch/defer list pending customer acceptance and recognized GAAP cash flow from Horizons 2-4 and gigawatt cluster energization.",
+  "committee_action": "Do not initiate a buy position. The market prices IREN at $45.73 (~$18.0B market cap), representing a ~280% premium to fundamental operating FCFF DCF value ($12.12/share). Defer position pending customer acceptance of Horizons 2-4 and recognized GAAP operating cash flow inflection.",
   "as_of": "2026-10-08",
   "valuation_date": "2026-09-24",
   "filing_source": "FY2026 Form 10-K (ended June 30, 2026; filed August 27, 2026)",
-  "intended_user": "Buy-side Investment Committee (AI Task Force embedded in corporate finance/analyst team)",
+  "intended_user": "Buy-side Investment Committee (AI Task Force embedded in corporate finance team)",
   "currency": "USD",
   "share_counts": {
     "primary_10k_cover_page": 394.059,
@@ -14,19 +14,32 @@
     "weighted_average_diluted": 316.123
   },
   "modeled_valuation": {
-    "methodology": "Five-Year Integrated Three-Statement Pro-Forma FCFE DCF",
-    "cost_of_equity": 0.114,
-    "terminal_growth_rate": 0.025,
-    "value_per_share_primary": -5.31,
-    "value_per_share_bs_ending": -5.51,
-    "value_per_share_weighted": -6.62,
-    "present_value_explicit_fcfe_usd_m": -4647.74,
-    "terminal_value_usd_m": 4380.9,
-    "present_value_terminal_value_usd_m": 2553.51,
-    "total_implied_equity_value_usd_m": -2094.23,
+    "primary_required_architecture": {
+      "methodology": "Five-Year Pro-Forma Operating FCFF DCF with WACC & Enterprise-to-Equity Bridge",
+      "wacc": 0.1,
+      "terminal_growth_rate": 0.025,
+      "pv_explicit_fcff_usd_m": -2238.85,
+      "terminal_value_fcff_usd_m": 14420.8,
+      "pv_terminal_value_usd_m": 8954.18,
+      "enterprise_value_usd_m": 6715.33,
+      "bridge_cash_usd_m": 5895.59,
+      "bridge_debt_usd_m": 7836.74,
+      "net_debt_usd_m": 1941.15,
+      "implied_equity_value_usd_m": 4774.18,
+      "value_per_share_primary": 12.12,
+      "valuation_range_primary": "$4.06 to $19.25"
+    },
+    "secondary_fcfe_comparison": {
+      "methodology": "Direct Equity FCFE DCF (Unadjusted for Cash Balance)",
+      "cost_of_equity": 0.114,
+      "terminal_growth_rate": 0.025,
+      "value_per_share_primary": -5.31,
+      "reconciliation_explanation": "Direct FCFE yields -$5.31 because explicit capex of $4.0B in FY27E-FY28E causes negative FCFE before cash flows recover; however, because that capex is funded from the $5,895.6M cash already sitting on the balance sheet, the FCFF Enterprise DCF properly captures the asset value and yields $12.12/share. Both methods confirm that the current market price of $45.73 is substantially overvalued."
+    },
     "market_comparison_prices": {
       "2026-09-03": 41.65,
-      "2026-09-24": 45.73
+      "2026-09-24": 45.73,
+      "market_premium_over_fcff": 277.3
     }
   },
   "proforma_fy2031e_summary_usd_m": {
@@ -46,23 +59,18 @@
     "minimum_cash_buffer_usd_m": 500.0
   },
   "sensitivities": {
-    "power_cost_gross_margin_65_to_75_pct": {
+    "fcff_power_cost_margin_span": {
       "tested_range": "65.0% to 75.0%",
-      "vps_range": "$-8.28 to $-2.93",
-      "vps_span": 5.35
+      "vps_range": "$8.96 to $14.61",
+      "vps_span": 5.65
     },
-    "revenue_growth_path_shift_5pp_yr": {
+    "fcff_revenue_path_shift_span": {
       "tested_range": "-5.0 pp/yr to +5.0 pp/yr across 5 years",
-      "vps_range": "$-12.45 to $0.99",
-      "vps_span": 13.44
-    },
-    "single_year_fy31_growth_1pp": {
-      "tested_range": "9.0% to 11.0% (FY31E only)",
-      "vps_range": "$-5.71 to $-4.92",
-      "vps_span": 0.79
+      "vps_range": "$4.06 to $19.25",
+      "vps_span": 15.19
     },
     "dominant_driver": "Capacity Energization Path (Revenue Scale) over the tested ranges"
   },
-  "reversal_trigger": "Change recommendation from WATCH-DEFER to INITIATE-BUY if IREN demonstrates (1) on-schedule delivery and customer acceptance of Horizons 2-4 with recognized GAAP revenue scaling above $1.5B ARR, (2) positive operating cash flow generation before customer prepayments, and (3) capital additions funded without further dilutive equity/convertible debt issuance exceeding 10% of existing share count.",
+  "reversal_trigger": "Change recommendation from WATCH-DEFER to INITIATE-BUY if: (1) market price corrects toward the fundamental valuation range ($12-$18), OR (2) IREN demonstrates verified customer acceptance and recognized billing for Horizons 2-4 scaling GAAP quarterly revenue above $375M, positive operating cash flow generation before customer prepayments, and capital additions funded without equity dilution exceeding 10%.",
   "kill_conditions": "Reject valuation model if pro-forma balance sheet does not articulate (Gap > $0.01M), if cash falls below $500.0M liquidity reserve, or if power purchase agreements fail to maintain gross power margin above 50%."
 }
