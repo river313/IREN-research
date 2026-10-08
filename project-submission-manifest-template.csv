@@ -1,9 +1,9 @@
 item,required,location_or_url,title,duration_or_as_of,timestamp_index,access_checked,frozen_or_commit_id,notes
-Research-Evolution.pdf,yes,Research-Evolution.pdf,Research Evolution Brief (Edition A to B),2026-10-08,N/A,Yes,b3ec7ca,Compiled formal PDF deliverable; tracks Edition A baseline (commit 2710819) to Edition B
-Repository,yes,https://github.com/river313/IREN-research,IREN Limited Valuation & Decision Model Repository,2026-10-08,N/A,Yes,b3ec7ca,Public GitHub repository containing complete audited lab history and Project 1 analysis
-Visible executed output,yes,visible_output.json,IREN Pro-Forma DCF Frozen Audited Output,2026-10-08,N/A,Yes,b3ec7ca,"Frozen JSON output of 5-year pro-forma DCF (.12/sh FCFF; -.31/sh FCFE), checks, and spans"
-Decision memo or deck,yes,Decision-Memo.pdf,IREN Investment Committee Decision Memo (2 Pages),2026-10-08,N/A,Yes,b3ec7ca,Compiled formal 2-page decision memo recommending WATCH-DEFER with enterprise bridge & spans
-Validation-and-AI-Use.pdf,yes,Validation-and-AI-Use.pdf,IREN Validation Record and AI Use Register,2026-10-08,N/A,Yes,b3ec7ca,"Compiled formal PDF validation record with cold-run log, locked changed-input test, failure audit"
+Research-Evolution.pdf,yes,Research-Evolution.pdf,Research Evolution Brief (Edition A to B),2026-10-08,N/A,Yes,a1acf078dce766509dc296cecc0f48b3eb5c5623,Compiled formal PDF deliverable; tracks Edition A baseline (commit 2710819) to Edition B
+Repository,yes,https://github.com/river313/IREN-research,IREN Limited Valuation & Decision Model Repository,2026-10-08,N/A,Yes,a1acf078dce766509dc296cecc0f48b3eb5c5623,Public GitHub repository containing complete audited lab history and Project 1 analysis
+Visible executed output,yes,visible_output.json,IREN Pro-Forma DCF Frozen Audited Output,2026-10-08,N/A,Yes,a1acf078dce766509dc296cecc0f48b3eb5c5623,"Frozen JSON output of 5-year pro-forma DCF (.12/sh FCFF; -.31/sh FCFE), checks, and spans"
+Decision memo or deck,yes,Decision-Memo.pdf,IREN Investment Committee Decision Memo (2 Pages),2026-10-08,N/A,Yes,a1acf078dce766509dc296cecc0f48b3eb5c5623,Compiled formal 2-page decision memo recommending WATCH-DEFER with enterprise bridge & spans
+Validation-and-AI-Use.pdf,yes,Validation-and-AI-Use.pdf,IREN Validation Record and AI Use Register,2026-10-08,N/A,Yes,a1acf078dce766509dc296cecc0f48b3eb5c5623,"Compiled formal PDF validation record with cold-run log, locked changed-input test, failure audit"
 Video 1,yes,,,,,,,Not yet recorded (Script prepared in docs/Video-Scripts-and-Rehearsal-Guide.md; recording scheduled)
 Transcript Video 1,yes,,,,,,,Pending Video 1 recording (transcripts must be generated from actual student audio)
 Video 2,yes,,,,,,,Not yet recorded (Script prepared in docs/Video-Scripts-and-Rehearsal-Guide.md; recording scheduled)
