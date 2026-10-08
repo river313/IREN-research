@@ -1,0 +1,68 @@
+{
+  "target_company": "IREN Limited",
+  "ticker": "NASDAQ: IREN",
+  "decision": "WATCH / DEFER",
+  "committee_action": "Do not initiate a buy position; place name on watch/defer list pending customer acceptance and recognized GAAP cash flow from Horizons 2-4 and gigawatt cluster energization.",
+  "as_of": "2026-10-08",
+  "valuation_date": "2026-09-24",
+  "filing_source": "FY2026 Form 10-K (ended June 30, 2026; filed August 27, 2026)",
+  "intended_user": "Buy-side Investment Committee (AI Task Force embedded in corporate finance/analyst team)",
+  "currency": "USD",
+  "share_counts": {
+    "primary_10k_cover_page": 394.059,
+    "balance_sheet_ending": 380.194,
+    "weighted_average_diluted": 316.123
+  },
+  "modeled_valuation": {
+    "methodology": "Five-Year Integrated Three-Statement Pro-Forma FCFE DCF",
+    "cost_of_equity": 0.114,
+    "terminal_growth_rate": 0.025,
+    "value_per_share_primary": -5.31,
+    "value_per_share_bs_ending": -5.51,
+    "value_per_share_weighted": -6.62,
+    "present_value_explicit_fcfe_usd_m": -4647.74,
+    "terminal_value_usd_m": 4380.9,
+    "present_value_terminal_value_usd_m": 2553.51,
+    "total_implied_equity_value_usd_m": -2094.23,
+    "market_comparison_prices": {
+      "2026-09-03": 41.65,
+      "2026-09-24": 45.73
+    }
+  },
+  "proforma_fy2031e_summary_usd_m": {
+    "total_revenue": 3488.02,
+    "operating_income_ebit": 777.88,
+    "depreciation_amortization": 809.17,
+    "gaap_net_income": 503.09,
+    "operating_cash_flow": 1380.39,
+    "capital_expenditures": 600.0,
+    "free_cash_flow_to_equity_fcfe": 380.39,
+    "free_cash_flow_to_firm_fcff": 1055.18
+  },
+  "accounting_checks": {
+    "balance_sheet_gap_max": 0.0,
+    "all_5_years_balanced": true,
+    "cash_buffer_pass": true,
+    "minimum_cash_buffer_usd_m": 500.0
+  },
+  "sensitivities": {
+    "power_cost_gross_margin_65_to_75_pct": {
+      "tested_range": "65.0% to 75.0%",
+      "vps_range": "$-8.28 to $-2.93",
+      "vps_span": 5.35
+    },
+    "revenue_growth_path_shift_5pp_yr": {
+      "tested_range": "-5.0 pp/yr to +5.0 pp/yr across 5 years",
+      "vps_range": "$-12.45 to $0.99",
+      "vps_span": 13.44
+    },
+    "single_year_fy31_growth_1pp": {
+      "tested_range": "9.0% to 11.0% (FY31E only)",
+      "vps_range": "$-5.71 to $-4.92",
+      "vps_span": 0.79
+    },
+    "dominant_driver": "Capacity Energization Path (Revenue Scale) over the tested ranges"
+  },
+  "reversal_trigger": "Change recommendation from WATCH-DEFER to INITIATE-BUY if IREN demonstrates (1) on-schedule delivery and customer acceptance of Horizons 2-4 with recognized GAAP revenue scaling above $1.5B ARR, (2) positive operating cash flow generation before customer prepayments, and (3) capital additions funded without further dilutive equity/convertible debt issuance exceeding 10% of existing share count.",
+  "kill_conditions": "Reject valuation model if pro-forma balance sheet does not articulate (Gap > $0.01M), if cash falls below $500.0M liquidity reserve, or if power purchase agreements fail to maintain gross power margin above 50%."
+}

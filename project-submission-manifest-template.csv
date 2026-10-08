@@ -1,0 +1,13 @@
+item,required,location_or_url,title,duration_or_as_of,timestamp_index,access_checked,frozen_or_commit_id,notes
+Research-Evolution.pdf,yes,docs/Research-Evolution.md,Research Evolution Brief (Edition A to B),2026-10-08,N/A,Yes,,Edition A baseline frozen at commit 2710819; draft markdown in docs/; final compiled PDF deliverable pending Week 8 freeze
+Repository,yes,https://github.com/river313/IREN-research,IREN Limited Valuation & Decision Model Repository,2026-10-08,N/A,Yes,8cc1721ebd81c56d540c67a9f6f1bdbc6e74c0d1,Public GitHub repository containing complete audited lab history and Project 1 analysis
+Visible executed output,yes,visible_output.json,IREN Pro-Forma DCF Frozen Audited Output,2026-10-08,N/A,Yes,8cc1721ebd81c56d540c67a9f6f1bdbc6e74c0d1,"Frozen JSON output of 5-year pro-forma DCF (-.31/sh), accounting checks, and sensitivity spans"
+Decision memo or deck,yes,docs/Decision-Memo.md,IREN Investment Committee Decision Memo (Draft),2026-10-08,N/A,Yes,,Draft 2-page decision memo recommending WATCH-DEFER; final PDF export pending Week 8 freeze
+Validation-and-AI-Use.pdf,yes,docs/Validation-and-AI-Use.md,IREN Validation Record and AI Use Register (Draft),2026-10-08,N/A,Yes,,"Draft validation record with cold-run log, locked changed-input test, failure audit; PDF export pending Week 8 freeze"
+Video 1,yes,,,,,,,Not yet recorded (Week 7 readiness audit phase; recording scheduled for Week 8)
+Transcript Video 1,yes,,,,,,,Pending Video 1 recording
+Video 2,yes,,,,,,,Not yet recorded (Week 7 readiness audit phase; recording scheduled for Week 8)
+Transcript Video 2,yes,,,,,,,Pending Video 2 recording
+Video 3,yes,,,,,,,Not yet recorded (Week 7 readiness audit phase; recording scheduled for Week 8)
+Transcript Video 3,yes,,,,,,,Pending Video 3 recording
+Optional deployed output,no,,,,,,,Local Python execution only; web deployment optional per course policy
