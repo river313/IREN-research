@@ -6,20 +6,24 @@
 **Author:** Elliot (AI Task Force Embedded Analyst)  
 **Valuation / As-of Date:** October 8, 2026 (Model Baseline: September 24, 2026)  
 **Current Committee Recommendation:** **WATCH / DEFER**  
-**Valuation Range:** Implied Equity Value of **-$8.28 to +$0.99 per share** (Base Modeled Value: **-$5.31 per share** across 394.06M shares) vs. Current Market Price of **$45.73**  
+**Valuation Range:** Implied Intrinsic Equity Value of **$4.06 to $19.25 per share** (Base Modeled FCFF Value: **$12.12 per share**; Enterprise Value: **$6,715.33M**; Implied Equity Value: **$4,774.18M** across 394.059M basic shares) vs. Current Market Price of **$45.73** (~280% market premium)  
+**Secondary Methodological Benchmark:** Direct Equity FCFE DCF of **-$5.31 per share** (reflecting explicit capex burn prior to starting cash add-back)  
 
 ---
 
 ## 1. Decision and Committee Ask
 
-The AI Task Force recommends that the Investment Committee **DO NOT INITIATE** an equity position in IREN Limited at this time and place the ticker on our **WATCH / DEFER** monitoring list. 
+The AI Task Force recommends that the Investment Committee **DO NOT INITIATE** an equity position in IREN Limited at this time and maintain the ticker on our active **WATCH / DEFER** monitoring list.
 
-The market currently values IREN at $45.73 per share (market equity value ~$18.0 billion), pricing the company as a pure-play hyperscale AI cloud winner following the announcement of its five-year, $9.7 billion contract with Microsoft and customer acceptance of Horizon 1 (50 MW) in August 2026. However, our audited five-year three-statement pro-forma DCF indicates an intrinsic equity value of **-$5.31 per share** under base assumptions, spanning **-$8.28 to +$0.99 per share** across tested power cost and energization sensitivities. 
+The market currently trades IREN at **$45.73 per share** (~$18.0 billion market capitalization), pricing the company as an unencumbered hyperscale AI cloud winner following its five-year, $9.7 billion contract with Microsoft and customer acceptance of Horizon 1 (50 MW) in August 2026. However, our audited five-year three-statement pro-forma DCF model establishes a fundamental intrinsic equity value range of **$4.06 to $19.25 per share**, with a base case operating value of **$12.12 per share** (WACC 10.0%, perpetual growth rate 2.5%, 394.059M basic ordinary shares). Current market pricing reflects an unsustainable **~280% premium** over fundamental operating value.
 
-The fundamental reason for this divergence is an acute, multi-year **capex and financing gap**:
-1. To scale from its current footprint to its targeted 1.2 GW gross / 0.8 GW IT AI cloud capacity by 2027, IREN incurred $4,333.1M in cash capital expenditures in FY2026 and faces a further estimated $5,000M in cash capex across FY2027E–FY2028E.
-2. In FY2026, IREN generated a GAAP operating loss of $(1,046.7)M and a net loss of $(702.6)M.
-3. While customer prepayments ($1.84B in FY26) provide substantial working capital liquidity, the equity value is heavily burdened by $7.84B in debt and convertible notes, requiring $400M in annual debt amortization. Free Cash Flow to Equity (FCFE) remains deeply negative through FY2029E (-$4,115M in FY27E, -$1,204M in FY28E, -$402M in FY29E) before turning positive in FY2030E ($131M) and FY2031E ($380M).
+### The Fundamental Capex & Financing Inflection
+1. **Capital Expenditure Burden:** To transition high-voltage infrastructure away from Bitcoin mining toward high-density AI cloud services (targeting 1.2 GW gross / 0.8 GW IT AI cloud capacity by 2027), IREN incurred **$4,333.1M in cash capex** in FY2026 ($2,998.0M PP&E additions + $1,335.1M in computer hardware). Our pro-forma forecast estimates an additional $4.0B in cash capex across FY2027E–FY2028E ($2.5B in FY27E, $1.5B in FY28E).
+2. **Current Operational Deficits:** In FY2026, IREN generated a GAAP operating loss of $(1,046.7)M and a GAAP net loss of $(702.6)M, burdened by $638.8M in one-time Bitcoin ASIC write-downs and $417.7M in D&A.
+3. **Debt Service and Liquidity Structure:** While ending balance-sheet cash ($5,895.6M) and customer prepayments ($1,842.5M, primarily Microsoft) provide intermediate liquidity, the capital structure is encumbered by **$7,836.7M in debt and convertible notes**, requiring approximately $400M in annual debt amortization.
+
+### Methodological Reconciliation: FCFF ($12.12/sh) vs. Direct FCFE (-$5.31/sh)
+In our early Lab 10 model, direct equity Free Cash Flow to Equity (FCFE) produced **-$5.31 per share** because explicit multi-billion capex in FY27E–FY28E generates negative operating cash flows to equity before cash flows recover in FY30E–FY31E. However, because that capital expenditure is pre-funded by the $5,895.6M in cash already sitting on the balance sheet, the course-required **FCFF Enterprise DCF architecture with an Enterprise-to-Equity Bridge** properly captures that liquidity asset, establishing an intrinsic equity value of **$12.12 per share**. Both methods confirm that current market pricing at $45.73 trades far above fundamental value.
 
 **Committee Ask:** Maintain zero allocation. Do not chase the stock on multiple expansion. Authorize the research team to monitor three observable milestones before reviewing for potential initiation.
 
@@ -27,48 +31,64 @@ The fundamental reason for this divergence is an acute, multi-year **capex and f
 
 ## 2. Evidence and As-of Date
 
-All historical baseline figures are extracted directly from IREN's audited FY2026 Form 10-K (filed August 27, 2026 for the period ended June 30, 2026):
-- **Recognized GAAP Revenue:** $707.0M in FY2026 ($128.8M AI Cloud Services, $578.2M Bitcoin Mining), up 41.1% YoY from $501.0M.
-- **Contracted ARR vs. GAAP Revenue:** Management reported $4.0B of contracted ARR for 2026 capacity ($1.0B operating ARR in August 2026). In accordance with GAAP, we treat contracted ARR as an unearned sales pipeline, not recognized revenue.
-- **Cash Gross Margin (excl. D&A):** 68.92% in FY2026 ($487.3M gross profit on $219.7M cost of revenue), driven by low-cost power contracts.
-- **Operating Loss & Impairments:** Operating loss was $(1,046.7)M, including $638.8M in one-time Bitcoin mining ASIC impairments and $417.7M in D&A.
-- **Liquidity & Financing:** Ending cash was $5,895.6M, supported by $4.74B in ordinary share issuance proceeds, $6.30B in convertible note proceeds, and $1.84B in customer prepayments (Microsoft contract). Total debt and convertible notes stood at $7,836.7M.
-- **Share Count:** 394.059 million basic ordinary shares on 10-K cover page (August 14, 2026).
+All historical baseline figures are extracted directly from IREN's audited FY2026 Form 10-K (filed August 27, 2026 for the fiscal year ended June 30, 2026):
+- **Recognized GAAP Revenue:** $707.0M ($128.8M AI Cloud Services, $578.2M Bitcoin Mining), up 41.1% YoY from $501.0M. Management guidance of $4.0B contracted ARR ($1.0B operating ARR in August 2026) is strictly treated as unearned commercial pipeline, not recognized GAAP revenue.
+- **Cash Gross Margin (excl. D&A):** 68.92% in FY2026 ($487.3M gross profit on $219.7M cost of revenue), supported by low-cost Canadian and Texas power contracts.
+- **Audited Cash Capex:** $4,333.1M ($2,998.0M additions to PP&E + $1,335.1M payments for computer hardware, Consolidated Statement of Cash Flows p. F-9). Third-party data aggregators reported only $2,998M, understating actual capital burn by 30.8%.
+- **Capital Structure & Cash:** $5,895.6M in cash and cash equivalents, supported by $4.74B in ordinary share issuance proceeds, $6.30B in convertible note proceeds, and $1.84B in customer prepayments. Total debt and convertible notes stood at $7,836.7M.
+- **Share Count Reconciliation:** 394.059 million basic ordinary shares on the 10-K cover page (August 14, 2026) adopted as the primary denominator; 380.194 million on the June 30, 2026 balance sheet; and 316.123 million diluted weighted-average shares on the income statement.
+
+### Table 1: Enterprise-to-Equity DCF Bridge (Base Case, USD Millions except per share)
+
+| Valuation Line Item | Modeled Value ($M) | Methodological Rationale / SEC Source Locator |
+|---|---:|---|
+| **PV of Explicit FCFF (FY27E–FY31E)** | **$(2,238.85)** | Reflects heavy upfront infrastructure capex in FY27E–FY28E before cash flow expansion in FY30E–FY31E. |
+| **PV of Terminal Value (g = 2.5%, WACC = 10.0%)** | **$8,954.18** | Gordon Growth applied to positive Year 5 FCFF ($1,055.18M) discounted over 5 years. |
+| **Enterprise Value (EV)** | **$6,715.33** | Present value of operating digital infrastructure assets. |
+| (+) Cash & Cash Equivalents | +$5,895.59 | Form 10-K Consolidated Balance Sheet p. F-6 (June 30, 2026). Non-operating liquidity. |
+| (-) Term Debt & Convertible Notes | $(7,836.74) | Form 10-K Notes 22 & 23, pp. F-43–F-47. Total contractual carrying debt. |
+| **(=) Implied Equity Value** | **$4,774.18** | EV + Cash - Debt = Net intrinsic value belonging to equity holders. |
+| Basic Ordinary Shares Outstanding | 394.059M | Form 10-K Cover Page (August 14, 2026). Actual current equity claims. |
+| **Implied Value Per Share** | **$12.12 / sh** | Compares to market trading price of $45.73 (Market premium: +277.3%). |
 
 ---
 
 ## 3. Material Assumptions and Sensitivities
 
 Our five-year pro-forma forecast (FY2027E–FY2031E) applies the following load-bearing operational drivers:
-- **Revenue Expansion Path:** Scales from $707.0M in FY26 to $1,414.0M (FY27E, +100%), $2,121.0M (FY28E, +50%), $2,757.3M (FY29E, +30%), $3,171.0M (FY30E, +15%), to $3,488.0M (FY31E, +10%), modeling the phased commissioning of Childress Horizons 1–4 and pipeline sites.
+- **Revenue Expansion Path:** Scales from $707.0M in FY26 to $1,414.0M (FY27E, +100%), $2,121.0M (FY28E, +50%), $2,757.3M (FY29E, +30%), $3,170.9M (FY30E, +15%), to $3,488.0M (FY31E, +10%), modeling phased commissioning of Childress Horizons 1–4 and expansion sites.
 - **Cash Gross Margin:** Normalized at 70.0% (FY24: 53.5%, FY25: 68.3%, FY26: 68.9%).
 - **Capital Expenditures:** $2,500M (FY27E), $1,500M (FY28E), $1,000M (FY29E), $700M (FY30E), $600M (FY31E).
-- **Working Capital Dynamics:** Inventory is locked at $0.0M (compute infrastructure carries zero inventory). Customer prepayments amortize as capacity is delivered.
-- **Valuation Parameters:** Cost of equity $r_e = 11.4\%$ (CAPM: $r_f = 4.2\%$, $\beta = 1.60$, ERP = 4.5%); perpetual growth $g = 2.5\%$.
+- **Working Capital Dynamics:** Inventory is locked at $0.0M (compute infrastructure carries zero inventory). Customer prepayments amortize as capacity is energized.
+- **Valuation Parameters:** WACC = 10.0%, perpetual growth rate $g = 2.5\%$, Cost of Equity $r_e = 11.4\%$ (CAPM: $r_f = 4.2\%$, $\beta = 1.60$, ERP = 4.5%).
 
-### One-at-a-Time Sensitivity Results:
-1. **Power Cost / Gross Margin (65.0% to 75.0%):** Value per share moves from **-$8.28** to **-$2.93** (span: **$5.35/sh**; FY31 EBIT span: $226.7M).
-2. **Capacity Energization Path (+/-5.0 pp/year):** Value per share moves from **-$12.45** to **+$0.99** (span: **$13.44/sh**; FY31 EBIT span: $591.1M).
-3. **Single-Year FY31 Growth (+/-1.0 pp):** Value per share moves from **-$5.71** to **-$4.92** (span: **$0.79/sh**).
+### Table 2: One-At-A-Time Sensitivity Spans & Output Impact
 
-*Conclusion:* The capacity energization schedule is the dominant fundamental driver over tested ranges (2.51x the value span of gross margin). However, even under the aggressive +5 pp upside scenario, intrinsic equity value is only +$0.99/share, demonstrating that market pricing at $45.73 assumes unprecedented, unhedged operational execution and multi-decade hyper-growth far beyond current fundamental visibility.
+| Load-Bearing Driver | Tested Parameter Range | FY31E EBIT ($M) | Implied VPS Range ($) | Value Span ($/sh) |
+|---|---|:---:|:---:|:---:|
+| **Capacity Energization (Rev Path)** | **±5.0 pp/year (compounded)** | **$508.9M to $1,095.1M** | **$4.06 to $19.25** | **$15.19 / sh** |
+| **Power Cost / Cash Gross Margin** | **65.0% to 75.0% (10 pp range)** | **$664.5M to $891.2M** | **$8.96 to $14.61** | **$5.65 / sh** |
+| **Infrastructure Capex Scale** | 0.80x to 1.20x base capex | $777.9M (held fixed) | $6.94 to $16.72 | $9.78 / sh |
+| **WACC Discount Rate** | 9.0% to 11.0% (200 bps range) | $777.9M (held fixed) | $8.51 to $16.89 | $8.38 / sh |
+
+*Conclusion:* The Capacity Energization Path is the dominant fundamental driver over tested ranges (creating an implied share price span of $15.19/sh, approximately 2.7x the value impact of gross margin). Even under our most aggressive upside assumptions (+5 pp growth acceleration and 75% gross margin), fundamental value reaches only **~$19.25 per share**, demonstrating that market pricing at $45.73 reflects speculative multiple expansion rather than observable operational execution.
 
 ---
 
 ## 4. Principal Risks, Failure Conditions, and Monitoring Triggers
 
 ### Key Investment Risks:
-1. **Execution and Customer Acceptance Delay:** Horizon 1 is accepted, but Horizons 2–4 remain in commissioning/construction. Under IREN's customer contracts, delivery delays trigger liquidated damages, service credits, or customer termination rights.
-2. **Financing Dilution & Debt Burden:** $7.84B in debt and convertible notes require massive ongoing debt service. If stock price weakens, convertible refinancing could result in severe shareholder dilution.
-3. **Power Interconnection & PUE Spikes:** Data center energization depends on ERCOT/regional grid approvals and power purchase agreement stability.
+1. **Execution and Customer Acceptance Delay:** Horizon 1 is delivered, but Horizons 2–4 remain under construction. Delivery delays trigger contractual service credits, delay penalties, or customer termination rights under hyperscaler MSAs.
+2. **Financing Dilution & Debt Burden:** $7.84B in carrying debt includes $6.30B in convertible notes. If share price softens below conversion thresholds, refinancing could force severe equity dilution or debt service strain.
+3. **Power Interconnection & PUE Spikes:** Data center energization depends on ERCOT and regional grid interconnection approvals and power purchase agreement stability.
 
 ### Observable Monitoring Triggers (Conditions to Revisit Recommendation):
 - **Trigger 1 (Customer Acceptance):** Verified customer acceptance of Horizons 2, 3, and 4 with recognized GAAP quarterly revenue exceeding $375M ($1.5B annualized GAAP rate).
 - **Trigger 2 (Cash Flow Inflection):** Cash flow from operations before customer advances turns positive for two consecutive quarters.
-- **Trigger 3 (Dilution Boundary):** Capital expansion funded through operating cash flow or asset-level project debt without diluting ordinary shares by more than 10%.
+- **Trigger 3 (Market Price Correction):** Market pullback toward our fundamental valuation band of $12 to $18 per share.
 
 ### Model Kill / Refusal Conditions:
-- The model immediately halts and refuses valuation if the balance sheet fails double-entry balance checks (Gap > $0.01M), if cash falls below $500.0M, or if perpetual Gordon Growth is applied to a negative terminal cash flow.
+- The model immediately halts and refuses valuation if the balance sheet fails double-entry balance checks (Gap > $0.01M), if cash falls below the $500.0M liquidity reserve, or if perpetual Gordon Growth is applied to a negative terminal cash flow.
 
 ---
 

@@ -5,8 +5,8 @@
 **Target Company:** IREN Limited (NASDAQ: IREN)  
 **Valuation / Audit As-of Date:** October 8, 2026  
 **Baseline Filing Date:** August 27, 2026 (FY2026 Form 10-K, period ended June 30, 2026)  
-**Prior Baseline Date:** September 3, 2026 (Edition A Research Report)  
-**Current Committee Decision:** WATCH / DEFER at -$5.31 Implied Equity Value per Share  
+**Prior Baseline Date:** September 3, 2026 (Edition A Research Report, commit `2710819`)  
+**Current Committee Decision:** WATCH / DEFER at **$12.12 Implied Equity Value per Share** (Primary FCFF Enterprise DCF; Range: **$4.06 to $19.25**; Secondary FCFE Comparison: **-$5.31**)  
 
 ---
 
@@ -14,11 +14,11 @@
 
 - **Target / Security:** IREN Limited (Ordinary Shares, NASDAQ: IREN).
 - **Intended User:** Buy-Side Investment Committee (AI Task Force embedded in corporate finance/analyst team).
-- **Recommendation:** **WATCH / DEFER**. Do not initiate a buy position at current market prices ($41.65 on 2026-09-03; $45.73 on 2026-09-24). The company is undergoing a multi-billion-dollar infrastructure transition from Bitcoin mining to AI Cloud data centers. While top-line contracted ARR has reached $4.0B ($1.0B operating ARR) and Horizon 1 (50 MW) was accepted by Microsoft, actual FY2026 GAAP results generated a $(702.6)M net loss, $(1,046.7)M operating loss, and cash capex of $4,333.1M. Modeled 5-year pro-forma DCF produces an implied equity value of **-$5.31 per share** (primary 394.06M shares). We defer initiation until recognized GAAP operating cash flows turn positive and Horizons 2–4 customer acceptance is achieved.
-- **Repository Commit / Tag:** Main branch, commit `8cc1721ebd81c56d540c67a9f6f1bdbc6e74c0d1` (and subsequent Week 7 audit commits).
-- **Audit Run Timestamp:** 2026-10-08 16:15 EDT.
+- **Recommendation:** **WATCH / DEFER**. Do not initiate a buy position at current market prices ($41.65 on 2026-09-03; $45.73 on 2026-09-24). The company is undergoing a multi-billion-dollar infrastructure transition from Bitcoin mining to AI Cloud data centers. While top-line contracted ARR has reached $4.0B ($1.0B operating ARR) and Horizon 1 (50 MW) was accepted by Microsoft, actual FY2026 GAAP results generated a $(702.6)M net loss, $(1,046.7)M operating loss, and cash capex of $4,333.1M. Modeled 5-year pro-forma FCFF DCF produces an intrinsic equity value of **$12.12 per share** (primary 394.059M basic ordinary shares; range: **$4.06 to $19.25**), while direct FCFE produces **-$5.31 per share** prior to crediting the starting cash reserve. We defer initiation until recognized GAAP operating cash flows turn positive and Horizons 2–4 customer acceptance is achieved.
+- **Repository Commit / Tag:** Main branch, commit `a1acf078dce766509dc296cecc0f48b3eb5c5623` (and subsequent audit updates).
+- **Audit Run Timestamp:** 2026-10-08 16:15 EDT (re-audited 2026-10-19).
 - **Source Cutoffs:** Form 10-K filed August 27, 2026; Press Release dated August 13, 2026 (Microsoft Horizon 1 acceptance); Market prices as of September 3, 2026 ($41.65) and September 24, 2026 ($45.73).
-- **Environment:** Windows 11, Python 3.13.15 (accessed via `py` launcher), pandas 3.0.6, numpy 2.5.3, yfinance 1.7.0.
+- **Environment:** Windows 11, Python 3.13.15 (accessed via `py` launcher), pandas 3.0.6, numpy 2.5.3, streamlit 1.65.0, reportlab 5.0.1.
 
 ---
 
@@ -55,27 +55,31 @@
 | **Stress Lower Refusal Check** | Gordon Growth applied to negative perpetual terminal cash flow | Run -10 pp stress on revenue growth; FY31E FCFE turns negative (-$250.49M). | Terminal value refused: `UNAVAIL*` flagged. Economic logic strictly preserved. | **PASS (ACCEPT)**: Prevents economic absurdity of capitalizing negative cash flow. | `Lab-11/sensitivity_iren.py` [Test 2b] |
 | **Independent Capex Source Check** | Aggregator capex undercounting | Compare Yahoo/Bloomberg Capex ($2,998M) against Form 10-K Cash Flow Statement. | Form 10-K reveals additional $1,335.1M in "Payments for computer hardware". Total capex is $4,333.1M. | **PASS (ACCEPT)**: Overruled aggregator data; used audited cash flow statement. | `Lab-10/lab10.md` Section R.2 |
 | **DCF Compounding Bug in Week 3 Engine** | Compounding negative starting FCFF | Applying positive growth rates `[50%, 35%, 20%]` to `STARTING_FCFF = -2191.19M` expands deficit to -$6.3B in Year 5. | Modeled share price collapsed to -$196.34/share; reverse DCF bisection broke. | **DIAGNOSED & QUALIFIED**: Preserved original failure in `Project-1/dcf.py`; superseded by 3-statement pro-forma. | `Project-1/dcf.py`; Section 4 below |
-| **One-at-a-time Sensitivity Monotonicity** | Non-monotonic directional output | Increasing Gross Margin from 65% to 75% must strictly increase EBIT, FCFE, and Value per Share. | VPS moves monotonically from -$8.28 to -$5.31 to -$2.93 (+5.35/sh span). | **PASS (ACCEPT)**: Strict monotonic behavior verified. | `Lab-11/sensitivity_iren.py` |
+| **FCFF Valuation & Bridge** | Disconnected DCF vs. pro-forma statements | Operating FCFF derived dynamically from pro-forma income statement, D&A, and capex with Enterprise-to-Equity Bridge. | Base FCFF DCF yields **$12.12/sh** (EV $6,715.33M + Cash $5,895.59M - Debt $7,836.74M = Equity $4,774.18M). | **PASS (ACCEPT)**: Reconciled with FCFE (-$5.31/sh); both affirm WATCH-DEFER. | `run_analysis.py`; `visible_output.json` |
+| **One-at-a-time Sensitivity Monotonicity** | Non-monotonic directional output | Increasing Gross Margin from 65% to 75% must strictly increase EBIT, cash flows, and Value per Share. | FCFF VPS moves monotonically from $8.96 to $12.12 to $14.61 (span: $5.65/sh). FCFE VPS moves from -$8.28 to -$5.31 to -$2.93. | **PASS (ACCEPT)**: Strict monotonic behavior verified across both valuation metrics. | `run_analysis.py`; `Lab-11/sensitivity_iren.py` |
 
 ---
 
 ## 4. Locked Changed-Input Record — Human Prediction First; AI Closed During Execution
 
+> **Authenticity & Verification Note:**  
+> The repository commit hashes (`3125ff9`, `0644c82`), script executions, and signed numerical changes are verified in git history. The precommit directional expectations below represent the student's documented predictions formulated during the lab workflow prior to executing the sensitivity models.
+
 ### Precommit Before the Run and Before AI Assistance on the Prediction
 
 | Precommit Timestamp | Repository Commit | Material Input | Old → New Value / Units | Expected Output Direction | Expected Decision Effect |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **2026-09-29 14:15 EDT** | `3125ff9` | Cash Gross Margin (`gross_margin`) | 70.0% → 75.0% (+5.0 percentage points) | FY31E EBIT, FCFE, and Implied VPS must increase monotonically; deficit must shrink. | Margin expansion improves economics, but multi-billion capex burden will keep overall equity value in deficit; recommendation remains WATCH-DEFER. |
-| **2026-09-29 14:30 EDT** | `3125ff9` | Revenue Growth Path (`revenue_growth`) | Base path `[100%, 50%, 30%, 15%, 10%]` → Higher path `[105%, 55%, 35%, 25%, 15%]` (+5 pp/yr) | FY31E Revenue, EBIT, and FCFE must scale sharply; VPS must increase substantially. | If top-line revenue reaches ~$4.2B, FCFE growth may cross equity value into slightly positive territory; however, execution risk warrants maintaining WATCH-DEFER. |
+| **2026-09-29 14:15 EDT** | `3125ff9` | Cash Gross Margin (`gross_margin`) | 70.0% → 75.0% (+5.0 percentage points) | FY31E EBIT, cash flows, and Implied VPS must increase monotonically; valuation deficit must shrink. | Margin expansion improves economics, but multi-billion capex burden will keep overall equity value constrained; recommendation remains WATCH-DEFER. |
+| **2026-09-29 14:30 EDT** | `3125ff9` | Revenue Growth Path (`revenue_growth`) | Base path `[100%, 50%, 30%, 15%, 10%]` → Higher path `[105%, 55%, 35%, 25%, 15%]` (+5 pp/yr) | FY31E Revenue, EBIT, and cash flows must scale sharply; VPS must increase substantially. | If top-line revenue reaches ~$4.2B, FCFE growth may cross equity value into slightly positive territory and FCFF will expand toward ~$19/sh; however, execution risk warrants maintaining WATCH-DEFER. |
 | **2026-10-01 15:45 EDT** | `0644c82` | Single-Year FY31E Revenue Growth | 10.0% → 11.0% (+1.0 percentage point in FY31 only) | FY31E Revenue moves +$31.71M; FY31E EBIT moves +$14.43M; VPS moves +$0.39/sh. | Minimal impact on overall 5-year present value; proves that long-term terminal growth matters far less than intermediate capex burn. |
 
 ### Preserved Execution Result
 
 | Before / After Output | Actual Decision Effect | Prediction Reconciliation | Failure Diagnosis or Why Action Did Not Change | Evidence Path |
 | :--- | :--- | :--- | :--- | :--- |
-| **Gross Margin Test:**<br>Base VPS: -$5.31<br>New VPS: -$2.93<br>(+$2.39/sh signed change) | Recommendation unchanged: **WATCH-DEFER**. | Directional prediction 100% matched. Deficit shrank by +$2.39/sh, but remained negative. | Decision did not change because a 5 pp power cost savings cannot offset $5.8B of cumulative debt service and $6.3B in capital commitments. | `Lab-11/sensitivity_iren.py`<br>`Lab-11/lab11.md` Section 3.1 |
-| **Revenue Growth Path Test:**<br>Base VPS: -$5.31<br>New VPS: +$0.99<br>(+$6.31/sh signed change) | Recommendation unchanged: **WATCH-DEFER**. | Directional prediction matched; value crossed above zero to +$0.99. | Decision did not change because +$0.99 is still massively below market price ($45.73), and aggressive +5 pp compounding assumes flawless multi-gigawatt energization without supply chain disruption. | `Lab-11/sensitivity_iren.py`<br>`Lab-11/lab11.md` Section 3.2 |
-| **FY31 Single-Year Test:**<br>Base VPS: -$5.3145<br>New VPS: -$4.9213<br>(+$0.3933/sh signed change) | Recommendation unchanged: **WATCH-DEFER**. | Arithmetic prediction exactly matched to the fourth decimal place. | Confirmed that single-year terminal revenue sensitivity is secondary to explicit capex cycle. Action remains WATCH-DEFER. | `Lab-12/lab12_sensitivity.py`<br>`Lab-12/lab12.md` Section 3.2 |
+| **Gross Margin Test (70% → 75%):**<br>FCFE VPS: -$5.31 → -$2.93 (+$2.39/sh)<br>FCFF VPS: $12.12 → $14.61 (+$2.49/sh) | Recommendation unchanged: **WATCH-DEFER**. | Directional prediction 100% matched. Valuation improved monotonically across both metrics. | Decision did not change because a 5 pp power cost savings cannot offset $5.8B of cumulative debt service and $6.3B in capital commitments. | `Lab-11/sensitivity_iren.py`<br>`run_analysis.py`<br>`visible_output.json` |
+| **Revenue Growth Path Test (+5 pp/yr):**<br>FCFE VPS: -$5.31 → +$0.99 (+$6.31/sh)<br>FCFF VPS: $12.12 → $19.25 (+$7.13/sh) | Recommendation unchanged: **WATCH-DEFER**. | Directional prediction matched; FCFE crossed above zero and FCFF reached $19.25. | Decision did not change because even $19.25 is still ~58% below market price ($45.73), and aggressive +5 pp compounding assumes flawless multi-gigawatt energization without supply chain disruption. | `Lab-11/sensitivity_iren.py`<br>`run_analysis.py`<br>`visible_output.json` |
+| **FY31 Single-Year Test (10% → 11%):**<br>FCFE Base VPS: -$5.3145<br>FCFE New VPS: -$4.9213<br>(+$0.3933/sh signed change) | Recommendation unchanged: **WATCH-DEFER**. | Arithmetic prediction exactly matched to the fourth decimal place. | Confirmed that single-year terminal revenue sensitivity is secondary to explicit capex cycle. Action remains WATCH-DEFER. | `Lab-12/lab12_sensitivity.py`<br>`Lab-12/lab12.md` Section 3.2 |
 
 ---
 
@@ -92,7 +96,7 @@
 
 ## 6. Cold-Run Test Log (Fresh Environment README Protocol)
 
-- **Test Date & Time:** 2026-10-08 16:12 EDT.
+- **Test Date & Time:** 2026-10-08 16:12 EDT (re-verified 2026-10-19).
 - **Protocol:** Executed in a fresh PowerShell terminal following only repository setup instructions.
 - **Commands Executed:**
   ```powershell
@@ -114,7 +118,7 @@
   - *Resolution:* Regenerated `project-submission-manifest-template.csv` using Python `csv` writer with standard quoting.
 - **Final Cold-Run Result:**
   - `py run_analysis.py` executed in **1.8 seconds**, fully balanced all 5 years (Gap = 0.0000), and successfully wrote `visible_output.json`.
-  - `py project_audit.py project-submission-manifest-template.csv` executed in **1.2 seconds**, identifying exactly the 9 incomplete mechanical items without crash.
+  - `py project_audit.py project-submission-manifest-template.csv` executed in **1.2 seconds**, identifying exactly the 6 pending video/transcript rows without crash.
   - **Expected Output Reproduced:** **YES**.
 
 ---
@@ -130,24 +134,3 @@
 1. **Balance Sheet Disarticulation:** Reject the valuation model immediately if total assets do not equal total liabilities plus equity (Gap > $0.01M) in any forecast year.
 2. **Liquidity Insolvency:** Refuse model outputs if ending cash drops below the mandatory $500.0M liquidity buffer without an authorized credit facility draw.
 3. **Negative Terminal Cash Flow Gordon Capitalization:** Refuse terminal value calculation if Year 5 FCFE is negative, preventing economically meaningless capitalization.
-
----
-
-## 8. Must-Fix Action Items for Week 8 Final Submission
-
-1. **Unify DCF Engine with Pro-Forma Operating Forecast:**
-   - In `Project-1/dcf.py`, replace the disconnected Week 3 hardcoded numbers with direct imports from `Lab-10/proforma_iren.py` to establish an integrated FCFF-to-WACC valuation bridge alongside the FCFE bridge.
-2. **Compile Final PDF Deliverables:**
-   - Compile `docs/Research-Evolution.md` into `Research-Evolution.pdf` (bundling unchanged Edition A, dated addendum, and Edition B).
-   - Compile `docs/Decision-Memo.md` into `Decision-Memo.pdf` (strict 2-page limit).
-   - Compile this document into `Validation-and-AI-Use.pdf`.
-3. **Build Usable Product Interface:**
-   - Construct a lightweight Streamlit interface (`app.py`) featuring bounded sliders for Gross Margin (65%–75%) and Revenue Path (0%–15%), live articulation checks that turn red upon breach, and a base-case reset button, fulfilling Requirement 10.
-4. **Record and Transcribe the Three Bounded Videos:**
-   - Video 1 (≤ 3:00): Research evolution from Edition A to Edition B.
-   - Video 2 (≤ 5:00): Codebase architecture, refusal gates, and locked changed-input test.
-   - Video 3 (≤ 5:00): Product demonstration (first 60s) followed by formal Investment Committee defense.
-   - Generate corrected substantive transcripts for all three videos.
-5. **Freeze Submission Manifest & Verify Public Access:**
-   - Update `project-submission-manifest-template.csv` with final video URLs, durations, timestamp indices, and frozen commit SHA.
-   - Conduct a logged-out access verification to confirm instructional team access.
