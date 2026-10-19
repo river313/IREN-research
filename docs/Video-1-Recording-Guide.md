@@ -96,3 +96,4 @@ Ensure the numbers you speak match these exact verified figures:
 - **Mistake 2: Claiming your recommendation changed.** Be crystal clear: the *recommendation* remained WATCH / DEFER; what changed was the *analytical foundation* (from qualitative hesitation to quantitative DCF proof).
 - **Mistake 3: Staring only at your notes.** Look at your webcam when introducing yourself and when delivering the conclusion. Glance down at the screen when pointing to specific table rows.
 - **Mistake 4: Claiming an unverified Brightspace receipt.** State that Edition A is verified directly via Git commit history (`2710819`), which is verifiable in the repository.
+

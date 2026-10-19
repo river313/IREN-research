@@ -47,7 +47,7 @@ Follow this chronological sequence:
 | **0:00 – 0:40** | VS Code File Tree | Point cursor at file explorer: `run_analysis.py`, `Lab-10/`, `visible_output.json`. | Introduce yourself and your codebase architecture: anchored by `run_analysis.py` and locked to Git `main`. |
 | **0:40 – 1:35** | `Project-1/dcf.py` + Terminal | Open `dcf.py`. Highlight lines 15–28. In terminal, run:<br>`py Project-1/dcf.py` | Explain the Week 3 failure: generic growth rate compounded negative starting cash flow into -$196.34/share. Explain why preserving historical failures proves modeling integrity. |
 | **1:35 – 2:45** | `Lab-10/proforma_iren.py` + Terminal | Switch tab to `proforma_iren.py`. Highlight double-entry check loop (`Gap == 0.0000`). In terminal, run:<br>`py Lab-10/proforma_iren.py --test` | Show Test 1 (Valid Base Case), Test 2 (Refusal Gate: +$500M cash break triggers `MODEL REFUSAL`), and Test 3 (Valid restoration). Explain fail-loud accounting safeguards. |
-| **2:45 – 3:35** | `docs/Validation-and-AI-Use.md` | Switch tab to Section 4 (*Locked Changed-Input Record*). Point cursor at precommit timestamp and prediction table. | Walk through genuine human precommit predictions logged before code run at commit `3125ff9`. Margin helps ($12.12 $\rightarrow$ $15.45), but revenue path shift dominates ($12.12 $\rightarrow$ $19.25), confirming Capacity Energization hierarchy. |
+| **2:45 – 3:35** | `docs/Validation-and-AI-Use.md` | Switch tab to Section 4 (*Locked Changed-Input Record*). Point cursor at precommit timestamp and prediction table. | Walk through genuine human precommit predictions logged before code run at commit `3125ff9`. Margin helps ($12.12 $\rightarrow$ $14.61), but revenue path shift dominates ($12.12 $\rightarrow$ $19.25), confirming Capacity Energization hierarchy. |
 | **3:35 – 4:05** | Terminal + `visible_output.json` | In terminal, run:<br>`py run_analysis.py`<br>Then switch tab to `visible_output.json`. | Show the clean execution summary in terminal (<2 seconds) and show the generated contract in `visible_output.json`. Conclude cleanly. |
 
 ---
@@ -81,7 +81,7 @@ Follow this chronological sequence:
 > *(Click on tab `docs/Validation-and-AI-Use.md` and scroll to Section 4)*  
 > *"Next, let’s examine my Locked Changed-Input Record in `Validation-and-AI-Use.md`.  
 > Before running the sensitivity suite, I logged human precommit predictions with AI closed at Git commit `3125ff9`.  
-> I predicted that expanding cash gross margin from 70% to 75% would increase operating income and intrinsic value monotonically, but would be secondary to capex. When executed, FCFF value rose from $12.12 to $15.45 per share.  
+> I predicted that expanding cash gross margin from 70% to 75% would increase operating income and intrinsic value monotonically, but would be secondary to capex. When executed, FCFF value rose from $12.12 to $14.61 per share.  
 > I then tested shifting the five-year revenue growth path up by +5 percentage points per year. As predicted, revenue scaled dramatically, raising FCFF value from $12.12 to $19.25 per share, and swinging FCFE from negative $5.31 to positive $0.99.  
 > Both tests confirmed directional monotonicity and established that Capacity Energization is the dominant operating driver, while confirming our overall recommendation remains WATCH-DEFER."*
 
@@ -117,7 +117,7 @@ py run_analysis.py
 - **Lab 10 Double-Entry Articulation Gap:** `0.0000` across all 5 forecast years (FY27E–FY31E)
 - **Refusal Gate Discrepancy Injected:** $+ \$500.0\text{M}$ cash break in FY2028E
 - **Precommit Git Commit Hash:** `3125ff9` (Timestamp: 2026-09-29 14:30 EDT)
-- **Margin Sensitivity Result (+5 pp):** FCFF $12.12 $\rightarrow$ $15.45 / share (+$3.33); FCFE -$5.31 $\rightarrow$ -$2.93 / share
+- **Margin Sensitivity Result (+5 pp):** FCFF $12.12 $\rightarrow$ $14.61 / share (+$2.49); FCFE -$5.31 $\rightarrow$ -$2.93 / share
 - **Revenue Path Sensitivity Result (+5 pp/yr):** FCFF $12.12 $\rightarrow$ $19.25 / share (+$7.13); FCFE -$5.31 $\rightarrow$ +$0.99 / share
 - **Master Engine Execution Time:** $< 2.0$ seconds
 
@@ -129,3 +129,4 @@ py run_analysis.py
 - **Mistake 2: Typing commands too quickly or with typos.** Have the commands typed in a scratchpad or use the terminal history (press Up Arrow) so they run smoothly on camera.
 - **Mistake 3: Inventing fake offline AI timestamps.** Point directly to the authentic precommit timestamp (2026-09-29 14:30 EDT) and commit `3125ff9` in `docs/Validation-and-AI-Use.md`.
 - **Mistake 4: Exceeding 5:00 minutes.** This plan takes approximately 3:55 to 4:10. Stay on schedule and transition promptly between tabs.
+

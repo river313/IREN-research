@@ -88,8 +88,11 @@ st.sidebar.caption("Load-bearing operating assumptions with defensible bounds.")
 
 # Reset Button
 if st.sidebar.button("🔄 Reset to Base Case", use_container_width=True):
-    for key in list(st.session_state.keys()):
-        del st.session_state[key]
+    st.session_state["gm_slider"] = 0.70
+    st.session_state["rev_slider"] = 0.00
+    st.session_state["capex_slider"] = 1.00
+    st.session_state["wacc_slider"] = 0.100
+    st.session_state["g_slider"] = 0.025
     st.rerun()
 
 st.sidebar.markdown("---")
@@ -103,6 +106,7 @@ gm_input = st.sidebar.slider(
     value=0.70,
     step=0.01,
     format="%.2f",
+    key="gm_slider",
     help="Historical band: 53.5% (FY24), 68.3% (FY25), 68.9% (FY26). Bound 60%-80% reflects low-cost PPAs capped by non-power data center operational overhead.",
 )
 
@@ -115,6 +119,7 @@ rev_shift = st.sidebar.slider(
     value=0.00,
     step=0.01,
     format="%+.2f",
+    key="rev_slider",
     help="Base path: [100%, 50%, 30%, 15%, 10%]. Shift reflects substation delivery delays (-10pp) vs. accelerated GB300 cluster energization (+10pp).",
 )
 adjusted_rev_path = [max(0.01, g + rev_shift) for g in ASSUMPTIONS["revenue_growth"]]
@@ -128,6 +133,7 @@ capex_mult = st.sidebar.slider(
     value=1.00,
     step=0.05,
     format="%.2fx",
+    key="capex_slider",
     help="Base capex: $2.5B (FY27) tapering to $600M (FY31). Bounds reflect hardware supply-chain inflation vs. efficiency gains.",
 )
 
@@ -140,6 +146,7 @@ wacc_input = st.sidebar.slider(
     value=0.100,
     step=0.005,
     format="%.3f",
+    key="wacc_slider",
     help="Base WACC = 10.0% (Cost of equity 11.4%, convertible debt 4.5%).",
 )
 g_input = st.sidebar.slider(
@@ -149,6 +156,7 @@ g_input = st.sidebar.slider(
     value=0.025,
     step=0.001,
     format="%.3f",
+    key="g_slider",
     help="Long-run nominal GDP bound (must remain strictly below WACC).",
 )
 
@@ -310,47 +318,35 @@ st.subheader("📊 Five-Year Dynamic Financial Statements (FY2027E – FY2031E)"
 tab_is, tab_cf, tab_bs = st.tabs(["Income Statement", "Cash Flow Statement", "Balance Sheet"])
 
 with tab_is:
-    is_rows = []
-    for r in proforma_out["is_list"]:
-        is_rows.append({
-            "Metric ($M)": "Revenue",
-            "FY2027E": r["revenue"] if r["year"] == 2027 else None,
-            "FY2028E": r["revenue"] if r["year"] == 2028 else None,
-            "FY2029E": r["revenue"] if r["year"] == 2029 else None,
-            "FY2030E": r["revenue"] if r["year"] == 2030 else None,
-            "FY2031E": r["revenue"] if r["year"] == 2031 else None,
-        })
-    # Consolidate into clean table
-    df_is = pd.DataFrame({
-        "Line Item ($M)": ["Total Revenue", "Cost of Revenues (Power)", "Cash Gross Profit", "SG&A Overhead", "Depreciation & Amort.", "Operating Income (EBIT)", "GAAP Net Income"],
-        "FY2027E": [proforma_out["is_list"][0]["revenue"], proforma_out["is_list"][0]["cost_of_rev"], proforma_out["is_list"][0]["gross_profit"], proforma_out["is_list"][0]["sga"], proforma_out["is_list"][0]["depreciation"], proforma_out["is_list"][0]["operating_income"], proforma_out["is_list"][0]["net_income"]],
-        "FY2028E": [proforma_out["is_list"][1]["revenue"], proforma_out["is_list"][1]["cost_of_rev"], proforma_out["is_list"][1]["gross_profit"], proforma_out["is_list"][1]["sga"], proforma_out["is_list"][1]["depreciation"], proforma_out["is_list"][1]["operating_income"], proforma_out["is_list"][1]["net_income"]],
-        "FY2029E": [proforma_out["is_list"][2]["revenue"], proforma_out["is_list"][2]["cost_of_rev"], proforma_out["is_list"][2]["gross_profit"], proforma_out["is_list"][2]["sga"], proforma_out["is_list"][2]["depreciation"], proforma_out["is_list"][2]["operating_income"], proforma_out["is_list"][2]["net_income"]],
-        "FY2030E": [proforma_out["is_list"][3]["revenue"], proforma_out["is_list"][3]["cost_of_rev"], proforma_out["is_list"][3]["gross_profit"], proforma_out["is_list"][3]["sga"], proforma_out["is_list"][3]["depreciation"], proforma_out["is_list"][3]["operating_income"], proforma_out["is_list"][3]["net_income"]],
-        "FY2031E": [proforma_out["is_list"][4]["revenue"], proforma_out["is_list"][4]["cost_of_rev"], proforma_out["is_list"][4]["gross_profit"], proforma_out["is_list"][4]["sga"], proforma_out["is_list"][4]["depreciation"], proforma_out["is_list"][4]["operating_income"], proforma_out["is_list"][4]["net_income"]],
-    })
+    years_labels = [f"FY{y}E" for y in [2027, 2028, 2029, 2030, 2031]]
+    is_data = {
+        "Line Item ($M)": ["Total Revenue", "Cost of Revenues (Power)", "Cash Gross Profit", "SG&A Overhead", "Depreciation & Amort.", "Operating Income (EBIT)", "GAAP Net Income"]
+    }
+    for i, lbl in enumerate(years_labels):
+        r = proforma_out["is_list"][i]
+        is_data[lbl] = [r["revenue"], r["cost_of_revenue"], r["gross_profit"], r["sga"], r["depreciation"], r["operating_income"], r["net_income"]]
+    df_is = pd.DataFrame(is_data)
     st.dataframe(df_is.style.format(precision=1), use_container_width=True, hide_index=True)
 
 with tab_cf:
-    df_cf = pd.DataFrame({
-        "Line Item ($M)": ["GAAP Net Income", "Depreciation & Amort.", "Operating Cash Flow (OCF)", "Capital Expenditures (Capex)", "Scheduled Debt Repayment", "Free Cash Flow to Equity (FCFE)", "Free Cash Flow to Firm (FCFF)", "Ending Cash Balance"],
-        "FY2027E": [proforma_out["cf_list"][0]["net_income"], proforma_out["cf_list"][0]["depreciation"], proforma_out["cf_list"][0]["operating_cash_flow"], proforma_out["cf_list"][0]["capex"], proforma_out["cf_list"][0]["debt_repayment"], proforma_out["cf_list"][0]["fcfe"], fcff_val["fcff_list"][0], proforma_out["cf_list"][0]["ending_cash"]],
-        "FY2028E": [proforma_out["cf_list"][1]["net_income"], proforma_out["cf_list"][1]["depreciation"], proforma_out["cf_list"][1]["operating_cash_flow"], proforma_out["cf_list"][1]["capex"], proforma_out["cf_list"][1]["debt_repayment"], proforma_out["cf_list"][1]["fcfe"], fcff_val["fcff_list"][1], proforma_out["cf_list"][1]["ending_cash"]],
-        "FY2029E": [proforma_out["cf_list"][2]["net_income"], proforma_out["cf_list"][2]["depreciation"], proforma_out["cf_list"][2]["operating_cash_flow"], proforma_out["cf_list"][2]["capex"], proforma_out["cf_list"][2]["debt_repayment"], proforma_out["cf_list"][2]["fcfe"], fcff_val["fcff_list"][2], proforma_out["cf_list"][2]["ending_cash"]],
-        "FY2030E": [proforma_out["cf_list"][3]["net_income"], proforma_out["cf_list"][3]["depreciation"], proforma_out["cf_list"][3]["operating_cash_flow"], proforma_out["cf_list"][3]["capex"], proforma_out["cf_list"][3]["debt_repayment"], proforma_out["cf_list"][3]["fcfe"], fcff_val["fcff_list"][3], proforma_out["cf_list"][3]["ending_cash"]],
-        "FY2031E": [proforma_out["cf_list"][4]["net_income"], proforma_out["cf_list"][4]["depreciation"], proforma_out["cf_list"][4]["operating_cash_flow"], proforma_out["cf_list"][4]["capex"], proforma_out["cf_list"][4]["debt_repayment"], proforma_out["cf_list"][4]["fcfe"], fcff_val["fcff_list"][4], proforma_out["cf_list"][4]["ending_cash"]],
-    })
+    cf_data = {
+        "Line Item ($M)": ["GAAP Net Income", "Depreciation & Amort.", "Operating Cash Flow (OCF)", "Capital Expenditures (Capex)", "Scheduled Debt Repayment", "Free Cash Flow to Equity (FCFE)", "Free Cash Flow to Firm (FCFF)", "Ending Cash Balance"]
+    }
+    for i, lbl in enumerate(years_labels):
+        r = proforma_out["cf_list"][i]
+        cf_data[lbl] = [r["net_income"], r["depreciation"], r["operating_cash_flow"], r["capex"], r["debt_repayment"], r["fcfe"], fcff_val["fcff_list"][i], r["ending_cash"]]
+    df_cf = pd.DataFrame(cf_data)
     st.dataframe(df_cf.style.format(precision=1), use_container_width=True, hide_index=True)
 
 with tab_bs:
-    df_bs = pd.DataFrame({
-        "Line Item ($M)": ["Cash & Equivalents", "PP&E, net", "TOTAL ASSETS", "Customer Prepayments (Def Rev)", "Term Debt & Notes", "Stockholders Equity", "TOTAL LIABILITIES & EQUITY", "Balance Sheet Gap"],
-        "FY2027E": [proforma_out["bs_list"][0]["cash"], proforma_out["bs_list"][0]["ppe_net"], proforma_out["bs_list"][0]["total_assets"], proforma_out["bs_list"][0]["deferred_rev"], proforma_out["bs_list"][0]["term_debt"], proforma_out["bs_list"][0]["equity"], proforma_out["bs_list"][0]["total_liab_equity"], proforma_out["checks"][0]["gap"]],
-        "FY2028E": [proforma_out["bs_list"][1]["cash"], proforma_out["bs_list"][1]["ppe_net"], proforma_out["bs_list"][1]["total_assets"], proforma_out["bs_list"][1]["deferred_rev"], proforma_out["bs_list"][1]["term_debt"], proforma_out["bs_list"][1]["equity"], proforma_out["bs_list"][1]["total_liab_equity"], proforma_out["checks"][1]["gap"]],
-        "FY2029E": [proforma_out["bs_list"][2]["cash"], proforma_out["bs_list"][2]["ppe_net"], proforma_out["bs_list"][2]["total_assets"], proforma_out["bs_list"][2]["deferred_rev"], proforma_out["bs_list"][2]["term_debt"], proforma_out["bs_list"][2]["equity"], proforma_out["bs_list"][2]["total_liab_equity"], proforma_out["checks"][2]["gap"]],
-        "FY2030E": [proforma_out["bs_list"][3]["cash"], proforma_out["bs_list"][3]["ppe_net"], proforma_out["bs_list"][3]["total_assets"], proforma_out["bs_list"][3]["deferred_rev"], proforma_out["bs_list"][3]["term_debt"], proforma_out["bs_list"][3]["equity"], proforma_out["bs_list"][3]["total_liab_equity"], proforma_out["checks"][3]["gap"]],
-        "FY2031E": [proforma_out["bs_list"][4]["cash"], proforma_out["bs_list"][4]["ppe_net"], proforma_out["bs_list"][4]["total_assets"], proforma_out["bs_list"][4]["deferred_rev"], proforma_out["bs_list"][4]["term_debt"], proforma_out["bs_list"][4]["equity"], proforma_out["bs_list"][4]["total_liab_equity"], proforma_out["checks"][4]["gap"]],
-    })
+    bs_data = {
+        "Line Item ($M)": ["Cash & Equivalents", "PP&E, net", "TOTAL ASSETS", "Customer Prepayments (Def Rev)", "Term Debt & Notes", "Stockholders Equity", "TOTAL LIABILITIES & EQUITY", "Balance Sheet Gap"]
+    }
+    for i, lbl in enumerate(years_labels):
+        r = proforma_out["bs_list"][i]
+        chk = proforma_out["checks"][i]
+        bs_data[lbl] = [r["cash"], r["ppe"], r["total_assets"], r["deferred_rev"], r["term_debt"], r["equity"], r["total_liab_equity"], chk["gap"]]
+    df_bs = pd.DataFrame(bs_data)
     st.dataframe(df_bs.style.format(precision=1), use_container_width=True, hide_index=True)
 
 st.markdown("---")
@@ -365,7 +361,7 @@ with s_col1:
     st.markdown("#### Driver Span Comparison ($ per share)")
     span_data = pd.DataFrame([
         {"Driver": "Capacity Energization (Revenue Path ±5pp/yr)", "Min VPS ($)": 4.06, "Max VPS ($)": 19.25, "Span ($)": 15.19},
-        {"Driver": "Power Cost / Gross Margin (65% to 75%)", "Min VPS ($)": 8.79, "Max VPS ($)": 15.45, "Span ($)": 6.66},
+        {"Driver": "Power Cost / Gross Margin (65% to 75%)", "Min VPS ($)": 8.96, "Max VPS ($)": 14.61, "Span ($)": 5.65},
         {"Driver": "Infrastructure Capex Scale (0.8x to 1.2x)", "Min VPS ($)": 10.15, "Max VPS ($)": 14.09, "Span ($)": 3.94},
         {"Driver": "WACC Discount Rate (9.0% to 11.0%)", "Min VPS ($)": 8.42, "Max VPS ($)": 16.58, "Span ($)": 8.16},
     ])

@@ -65,7 +65,7 @@ Keep this one-page checklist on your phone or second monitor when recording your
   1. **[0:00 – 0:40]** Introduce codebase architecture: `run_analysis.py` orchestrates `proforma_iren.py` and exports `visible_output.json`.
   2. **[0:40 – 1:35]** Run `Project-1/dcf.py`. Show -$196.34/share failure. Explain why preserving historical failures demonstrates scientific and modeling integrity.
   3. **[1:35 – 2:45]** Run `py Lab-10/proforma_iren.py --test`. Highlight Test 2 loud refusal error: `MODEL REFUSAL: Balance sheet check failed... Gap = $+500.0M`.
-  4. **[2:45 – 3:35]** Show `Validation-and-AI-Use.md` Section 4. Explain human precommit prediction at commit `3125ff9`: Margin expansion ($12.12 $\rightarrow$ $15.45) is secondary to revenue path shift ($12.12 $\rightarrow$ $19.25), proving Capacity Energization is dominant driver.
+  4. **[2:45 – 3:35]** Show `Validation-and-AI-Use.md` Section 4. Explain human precommit prediction at commit `3125ff9`: Margin expansion ($12.12 $\rightarrow$ $14.61) is secondary to revenue path shift ($12.12 $\rightarrow$ $19.25), proving Capacity Energization is dominant driver.
   5. **[3:35 – 4:05]** Run `py run_analysis.py` and open `visible_output.json`.
 - **Stop Recording at or before 4:20.**
 
@@ -81,7 +81,7 @@ Keep this one-page checklist on your phone or second monitor when recording your
   3. `Decision-Memo.pdf` (PDF Reader, ready on Page 1)
 - **Live Product Demonstration Sequence (First 60–90 Seconds):**
   1. **[0:00 – 0:25]** Greet committee. Point out green badge: **PASS (Gap = 0.0000)** and base value **$12.12 / share**.
-  2. **[0:25 – 0:45]** Drag **Cash Gross Margin slider** from 70% $\rightarrow$ **75%** (show value rises to **$15.45**).
+  2. **[0:25 – 0:45]** Drag **Cash Gross Margin slider** from 70% $\rightarrow$ **75%** (show value rises to **$14.61**).
   3. **[0:45 – 1:05]** Drag **Revenue Growth slider** to **+5.0 pp** (show value rises to **$19.25**).
   4. **[1:05 – 1:15]** Click **"Reset to Base Case"** button (show sliders snap back and value returns to **$12.12**).
 - **Committee Presentation Sequence (Remaining 3–4 Minutes):**
@@ -112,3 +112,4 @@ After Zoom finishes converting the recordings:
    - `transcript-video-3.txt` (or `.vtt`)
 4. **Update Submission Manifest:**  
    In [`project-submission-manifest-template.csv`](../project-submission-manifest-template.csv), fill in the exact video links, titles, durations, and commit hash.
+
