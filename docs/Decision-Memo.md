@@ -71,7 +71,7 @@ Our five-year pro-forma forecast (FY2027E–FY2031E) applies the following load-
 | **Infrastructure Capex Scale** | 0.80x to 1.20x base capex | $777.9M (held fixed) | $6.94 to $16.72 | $9.78 / sh |
 | **WACC Discount Rate** | 9.0% to 11.0% (200 bps range) | $777.9M (held fixed) | $8.51 to $16.89 | $8.38 / sh |
 
-*Conclusion:* The Capacity Energization Path is the dominant fundamental driver over tested ranges (creating an implied share price span of $15.19/sh, approximately 2.7x the value impact of gross margin). Even under our most aggressive upside assumptions (+5 pp growth acceleration and 75% gross margin), fundamental value reaches only **~$19.25 per share**, demonstrating that market pricing at $45.73 reflects speculative multiple expansion rather than observable operational execution.
+*Conclusion:* The Capacity Energization Path is the dominant fundamental driver over tested ranges (creating an implied share price span of $15.19/sh, approximately 2.7x the value impact of gross margin). Even under our tested upside revenue acceleration assumption (+5 pp/year compounded growth path alone), fundamental value reaches **$19.25 per share**, demonstrating that market pricing at $45.73 reflects speculative multiple expansion rather than observable operational execution.
 
 ---
 

@@ -60,37 +60,37 @@
 
 ---
 
-## 4. Locked Changed-Input Record — Human Prediction First; AI Closed During Execution
+## 4. Documented Changed-Input Sensitivity Experiments & Directional Verification
 
-> **Authenticity & Verification Note:**  
-> The repository commit hashes (`3125ff9`, `0644c82`), script executions, and signed numerical changes are verified in git history. The precommit directional expectations below represent the student's documented predictions formulated during the lab workflow prior to executing the sensitivity models.
+> **Historical Documentation Status:**  
+> The repository commit history preserves the actual Python sensitivity scripts, model executions, and output logs (`3125ff9`, `0644c82`). An isolated, timestamped precommit record created with AI disabled prior to execution was not independently maintained during initial lab work. The table below documents the sensitivity experiments actually performed during the lab sequence, the directional hypotheses tested during model development, and the preserved execution outputs verified against git history.
 
-### Precommit Before the Run and Before AI Assistance on the Prediction
+### Documented Hypotheses and Sensitivity Experiments
 
-| Precommit Timestamp | Repository Commit | Material Input | Old → New Value / Units | Expected Output Direction | Expected Decision Effect |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **2026-09-29 14:15 EDT** | `3125ff9` | Cash Gross Margin (`gross_margin`) | 70.0% → 75.0% (+5.0 percentage points) | FY31E EBIT, cash flows, and Implied VPS must increase monotonically; valuation deficit must shrink. | Margin expansion improves economics, but multi-billion capex burden will keep overall equity value constrained; recommendation remains WATCH-DEFER. |
-| **2026-09-29 14:30 EDT** | `3125ff9` | Revenue Growth Path (`revenue_growth`) | Base path `[100%, 50%, 30%, 15%, 10%]` → Higher path `[105%, 55%, 35%, 25%, 15%]` (+5 pp/yr) | FY31E Revenue, EBIT, and cash flows must scale sharply; VPS must increase substantially. | If top-line revenue reaches ~$4.2B, FCFE growth may cross equity value into slightly positive territory and FCFF will expand toward ~$19/sh; however, execution risk warrants maintaining WATCH-DEFER. |
-| **2026-10-01 15:45 EDT** | `0644c82` | Single-Year FY31E Revenue Growth | 10.0% → 11.0% (+1.0 percentage point in FY31 only) | FY31E Revenue moves +$31.71M; FY31E EBIT moves +$14.43M; VPS moves +$0.39/sh. | Minimal impact on overall 5-year present value; proves that long-term terminal growth matters far less than intermediate capex burn. |
-
-### Preserved Execution Result
-
-| Before / After Output | Actual Decision Effect | Prediction Reconciliation | Failure Diagnosis or Why Action Did Not Change | Evidence Path |
+| Tested Parameter / Commit | Material Input | Old → New Value / Units | Hypothesized Directional Effect | Hypothesized Committee Impact |
 | :--- | :--- | :--- | :--- | :--- |
-| **Gross Margin Test (70% → 75%):**<br>FCFE VPS: -$5.31 → -$2.93 (+$2.39/sh)<br>FCFF VPS: $12.12 → $14.61 (+$2.49/sh) | Recommendation unchanged: **WATCH-DEFER**. | Directional prediction 100% matched. Valuation improved monotonically across both metrics. | Decision did not change because a 5 pp power cost savings cannot offset $5.8B of cumulative debt service and $6.3B in capital commitments. | `Lab-11/sensitivity_iren.py`<br>`run_analysis.py`<br>`visible_output.json` |
-| **Revenue Growth Path Test (+5 pp/yr):**<br>FCFE VPS: -$5.31 → +$0.99 (+$6.31/sh)<br>FCFF VPS: $12.12 → $19.25 (+$7.13/sh) | Recommendation unchanged: **WATCH-DEFER**. | Directional prediction matched; FCFE crossed above zero and FCFF reached $19.25. | Decision did not change because even $19.25 is still ~58% below market price ($45.73), and aggressive +5 pp compounding assumes flawless multi-gigawatt energization without supply chain disruption. | `Lab-11/sensitivity_iren.py`<br>`run_analysis.py`<br>`visible_output.json` |
-| **FY31 Single-Year Test (10% → 11%):**<br>FCFE Base VPS: -$5.3145<br>FCFE New VPS: -$4.9213<br>(+$0.3933/sh signed change) | Recommendation unchanged: **WATCH-DEFER**. | Arithmetic prediction exactly matched to the fourth decimal place. | Confirmed that single-year terminal revenue sensitivity is secondary to explicit capex cycle. Action remains WATCH-DEFER. | `Lab-12/lab12_sensitivity.py`<br>`Lab-12/lab12.md` Section 3.2 |
+| **Lab 11 (`3125ff9`)** | Cash Gross Margin (`gross_margin`) | 70.0% → 75.0% (+5.0 percentage points) | FY31E EBIT, cash flows, and Implied VPS must increase monotonically; valuation deficit must shrink. | Margin expansion improves operating economics, but multi-billion capex burden keeps equity value constrained; recommendation remains WATCH-DEFER. |
+| **Lab 11 (`3125ff9`)** | Revenue Growth Path (`revenue_growth`) | Base path `[100%, 50%, 30%, 15%, 10%]` → Higher path `[105%, 55%, 35%, 25%, 15%]` (+5 pp/yr) | FY31E Revenue, EBIT, and cash flows must scale sharply; VPS must increase substantially. | Top-line revenue reaching ~$4.2B expands FCFF toward ~$19/sh and FCFE crosses slightly positive; however, execution risk warrants maintaining WATCH-DEFER. |
+| **Lab 12 (`0644c82`)** | Single-Year FY31E Revenue Growth | 10.0% → 11.0% (+1.0 percentage point in FY31 only) | FY31E Revenue moves +$31.71M; FY31E EBIT moves +$14.43M; VPS moves +$0.39/sh. | Minimal impact on overall 5-year present value; demonstrates that single-year terminal growth sensitivity is secondary to explicit capex timing. |
+
+### Preserved Execution Results
+
+| Tested Sensitivity & Model Output | Actual Committee Decision | Directional Outcome & Verification | Financial Rationale for Maintaining Recommendation | Evidence Path |
+| :--- | :--- | :--- | :--- | :--- |
+| **Gross Margin Test (70% → 75%):**<br>FCFE VPS: -$5.31 → -$2.93 (+$2.39/sh)<br>FCFF VPS: $12.12 → $14.61 (+$2.49/sh) | Recommendation unchanged: **WATCH-DEFER**. | **Monotonic Increase Verified**; valuation improved directionally across both metrics. | Decision did not change because a 5 pp power cost savings cannot offset $5.8B of cumulative debt service and $6.3B in capital commitments. | `Lab-11/sensitivity_iren.py`<br>`run_analysis.py`<br>`visible_output.json` |
+| **Revenue Growth Path Test (+5 pp/yr):**<br>FCFE VPS: -$5.31 → +$0.99 (+$6.31/sh)<br>FCFF VPS: $12.12 → $19.25 (+$7.13/sh) | Recommendation unchanged: **WATCH-DEFER**. | **Monotonic Scaling Verified**; FCFE crossed above zero and FCFF reached $19.25. | Decision did not change because even $19.25 is still ~58% below market price ($45.73), and aggressive +5 pp compounding assumes flawless multi-gigawatt energization without supply chain disruption. | `Lab-11/sensitivity_iren.py`<br>`run_analysis.py`<br>`visible_output.json` |
+| **FY31 Single-Year Test (10% → 11%):**<br>FCFE Base VPS: -$5.3145<br>FCFE New VPS: -$4.9213<br>(+$0.3933/sh signed change) | Recommendation unchanged: **WATCH-DEFER**. | **Arithmetic Impact Verified** to four decimal places. | Confirmed that single-year terminal revenue sensitivity is secondary to explicit capex cycle. Action remains WATCH-DEFER. | `Lab-12/lab12_sensitivity.py`<br>`Lab-12/lab12.md` Section 3.2 |
 
 ---
 
 ## 5. Named AI-Use Register
 
-| Tool / Model Surface & Exposed Version | Interaction Date | Material Task | Output / Claim Used or Considered | Independent Check | Accept / Modify / Qualify / Reject | Effect on Decision |
+| Tool / Assistant Surface | Date / Phase | Material Development Task | Output / Suggestion Considered | Independent Human Check | Action Taken (Accept / Modify / Reject) | Effect on Valuation & Decision |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **ChatGPT / Codex (GPT-4o)** | 2026-09-03 | Draft initial research report structure and SEC citation formatting. | Summarized FY26 10-K results; suggested treating $4.0B ARR as recognized revenue. | Manually checked Item 7 MD&A; verified ARR is non-GAAP and unearned. | **QUALIFIED & MODIFIED**: Excluded ARR from GAAP revenue; retained only recognized $707.0M. | Grounded baseline in audited reality; confirmed WATCH-DEFER. |
-| **Claude 3.5 Sonnet / Antigravity** | 2026-09-24 | Scaffolding 3-statement pro-forma balance sheet logic in Python. | Proposed standard working capital formula tying inventory to COGS. | Traced Form 10-K Balance Sheet; verified IREN carries **$0 inventory**. | **REJECTED**: Locked inventory at $0.0M; replaced with Customer Prepayments / Deferred Revenue. | Model accurately captures IREN's unique digital compute working capital mechanics. |
-| **Antigravity Coding Assistant** | 2026-09-29 | Generating one-at-a-time sensitivity loop for Lab 11. | Proposed running WACC-growth grid on unarticulated FCFE schedule. | Verified against course rubric requiring own-pro-forma statement articulation. | **MODIFIED**: Rewrote loop to execute complete 3-statement rebalancing for every parameter step. | Ensured double-entry accounting integrity holds in every sensitivity test. |
-| **Antigravity Coding Assistant** | 2026-10-08 | Automated Week 7 mechanical audit and cold-run diagnostic. | Flagged Windows execution alias failure and CSV quoting syntax error in manifest. | Verified `py` launcher execution and pandas parser behavior in terminal. | **ACCEPTED**: Added `README.md` setup commands and regenerated valid 12-row manifest. | Passed mechanical audit; established clear cold-run reproducibility. |
+| **Generative AI Chat Assistant** | 2026-09-03 (Lab 04) | Initial research report structure and SEC disclosure summary. | Suggested including $4.0B contracted ARR in revenue forecast. | Manually verified Item 7 MD&A; confirmed ARR is non-GAAP and unearned commercial backlog. | **QUALIFIED & MODIFIED**: Excluded ARR from GAAP revenue; retained only recognized $707.0M. | Grounded baseline in audited reality; supported initial WATCH-DEFER. |
+| **Antigravity Coding Assistant** | 2026-09-24 (Lab 10) | Scaffolding 3-statement pro-forma balance sheet logic in Python. | Proposed standard working capital formula referencing physical inventory. | Traced Form 10-K Balance Sheet (p. F-6); verified IREN carries **$0 inventory**. | **REJECTED**: Locked inventory at $0.0M; replaced with Customer Prepayments / Deferred Revenue. | Model accurately captures IREN's unique digital compute working capital mechanics. |
+| **Antigravity Coding Assistant** | 2026-09-29 (Lab 11) | One-at-a-time sensitivity loop architecture. | Proposed running parameter sweeps on simplified unarticulated FCFE cash flow schedule. | Verified against course rubric requiring full 3-statement balance sheet articulation across every test. | **MODIFIED**: Rewrote loop to execute complete 3-statement rebalancing for every parameter step. | Ensured double-entry accounting integrity holds in every sensitivity test (Gap = 0.0000). |
+| **Antigravity Coding Assistant** | 2026-10-08 (Week 7) | Automated course audit checker and environment diagnostic. | Flagged Windows execution alias failure and CSV quoting syntax error in manifest. | Verified `py` launcher execution and pandas CSV parser behavior in terminal. | **ACCEPTED**: Added `README.md` setup commands and regenerated valid 12-row manifest. | Passed mechanical audit; established verified cold-run reproducibility. |
 
 ---
 

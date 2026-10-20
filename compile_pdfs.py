@@ -2,8 +2,8 @@
 Compile formal course PDF deliverables for FIN 43900 Project 1 using ReportLab.
 Deliverables:
   1. Decision-Memo.pdf (Strictly 2 pages)
-  2. Research-Evolution.pdf
-  3. Validation-and-AI-Use.pdf
+  2. Research-Evolution.pdf (Strictly 1 page)
+  3. Validation-and-AI-Use.pdf (Strictly 2 pages)
 """
 
 from __future__ import annotations
@@ -34,35 +34,35 @@ def create_decision_memo_pdf():
         pagesize=letter,
         leftMargin=36,
         rightMargin=36,
-        topMargin=36,
-        bottomMargin=36,
+        topMargin=34,
+        bottomMargin=34,
     )
     styles = getSampleStyleSheet()
 
     title_style = ParagraphStyle(
         "MemoTitle",
         parent=styles["Heading1"],
-        fontSize=14,
+        fontSize=13.5,
         leading=16,
         textColor=colors.HexColor("#0f2b48"),
-        spaceAfter=4,
+        spaceAfter=3,
     )
     subtitle_style = ParagraphStyle(
         "MemoSubtitle",
         parent=styles["Normal"],
-        fontSize=8.5,
-        leading=11,
+        fontSize=8,
+        leading=10.5,
         textColor=colors.HexColor("#495057"),
-        spaceAfter=6,
+        spaceAfter=5,
     )
     h2_style = ParagraphStyle(
         "MemoH2",
         parent=styles["Heading2"],
-        fontSize=10.5,
-        leading=13,
+        fontSize=10,
+        leading=12.5,
         textColor=colors.HexColor("#0f2b48"),
-        spaceBefore=6,
-        spaceAfter=3,
+        spaceBefore=5,
+        spaceAfter=2.5,
     )
     body_style = ParagraphStyle(
         "MemoBody",
@@ -70,7 +70,7 @@ def create_decision_memo_pdf():
         fontSize=8,
         leading=10.5,
         textColor=colors.HexColor("#212529"),
-        spaceAfter=4,
+        spaceAfter=3.5,
     )
     table_cell_style = ParagraphStyle(
         "TableCell",
@@ -98,21 +98,21 @@ def create_decision_memo_pdf():
         "<b>Baseline Filing:</b> FY2026 Form 10-K (ended June 30, 2026)"
     )
     story.append(Paragraph(meta_text, subtitle_style))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#0f2b48"), spaceAfter=6))
+    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#0f2b48"), spaceAfter=5))
 
     # Section 1: Decision and Committee Ask
     story.append(Paragraph("1. Decision and Committee Ask", h2_style))
     sec1_text = (
         "<b>RECOMMENDATION: WATCH / DEFER. Do not initiate an equity position.</b><br/>"
-        "The market currently trades IREN at <b>$45.73 per share</b> (~$18.0B market capitalization), pricing the company as a pure-play hyperscale "
-        "AI cloud winner following its $9.7B Microsoft contract and Horizon 1 (50 MW) acceptance in August 2026. However, our audited five-year "
+        "The market currently trades IREN at <b>$45.73 per share</b> (~$18.0B market capitalization), pricing the company as an unencumbered hyperscale "
+        "AI cloud winner following its $9.7B Microsoft contract and Horizon 1 (50 MW) acceptance in August 2026. However, our five-year "
         "three-statement pro-forma DCF model establishes a fundamental intrinsic equity value range of <b>$4.06 to $19.25 per share</b> "
-        "(Base Case: <b>$12.12 per share</b>; WACC 10.0%, g 2.5%, 394.06M shares). The market price reflects an unsustainable <b>~280% premium</b> over "
+        "(Base Case: <b>$12.12 per share</b>; WACC 10.0%, g 2.5%, 394.06M basic shares). The current market price reflects an unsustainable <b>~280% premium</b> over "
         "fundamental operating value.<br/>"
-        "<b>The Fundamental Capex Inflection:</b> To transition 5 GW of power capacity from Bitcoin mining to AI cloud services, IREN expended "
-        "<b>$4,333.1M in cash capex</b> in FY2026 and faces a further estimated $4.0B in cash capex across FY27E–FY28E. FY2026 GAAP results generated "
-        "an operating loss of $(1,046.7)M and a net loss of $(702.6)M. Although $5,895.6M in balance-sheet cash and $1.84B in customer prepayments "
-        "provide intermediate runway, the business is burdened by $7.84B in debt and convertible notes requiring $400M in annual amortization. "
+        "<b>The Fundamental Capex & Financing Inflection:</b> To transition high-voltage infrastructure from Bitcoin mining to AI cloud services, IREN expended "
+        "<b>$4,333.1M in cash capex</b> in FY2026 ($2,998.0M PP&E additions + $1,335.1M computer hardware) and faces a further estimated $4.0B in cash capex across FY27E–FY28E. "
+        "FY2026 GAAP results generated an operating loss of $(1,046.7)M and a net loss of $(702.6)M. Although $5,895.6M in balance-sheet cash and $1.84B in customer prepayments "
+        "provide intermediate runway, the business carries $7.84B in debt and convertible notes requiring ~$400M in annual debt amortization. "
         "We recommend zero allocation until market price corrects or recognized operating cash flows turn positive."
     )
     story.append(Paragraph(sec1_text, body_style))
@@ -120,10 +120,10 @@ def create_decision_memo_pdf():
     # Section 2: Evidence and As-of Date
     story.append(Paragraph("2. Evidence and Historical Sourcing", h2_style))
     sec2_text = (
-        "All historical inputs are traced directly to IREN's audited FY2026 Form 10-K (filed August 27, 2026, period ended June 30, 2026):<br/>"
+        "All historical baseline inputs are traced directly to IREN's audited FY2026 Form 10-K (filed August 27, 2026, period ended June 30, 2026):<br/>"
         "• <b>Recognized GAAP Revenue:</b> $707.0M ($128.8M AI Cloud Services, $578.2M Bitcoin Mining). Management guidance of $4.0B contracted ARR "
-        "is strictly treated as unearned commercial pipeline, not recognized revenue.<br/>"
-        "• <b>Cash Gross Margin:</b> 68.92% ($487.3M gross profit on $219.7M cost of revenue excl. D&A), driven by low-cost Canadian/Texas PPAs.<br/>"
+        "is strictly treated as unearned commercial pipeline, not recognized GAAP revenue.<br/>"
+        "• <b>Cash Gross Margin:</b> 68.92% ($487.3M gross profit on $219.7M cost of revenue excl. D&A), supported by low-cost Canadian and Texas PPAs.<br/>"
         "• <b>Audited Cash Capex:</b> $4,333.1M ($2,998.0M PP&E additions + $1,335.1M computer hardware, Stmt. of Cash Flows p. F-9). Third-party "
         "aggregators report only $2,998M, understating capital burn by 30.8%.<br/>"
         "• <b>Capital Structure & Shares:</b> $5,895.6M cash, $7,836.7M debt/notes, and 394.059M basic shares (Cover Page, August 14, 2026)."
@@ -133,24 +133,24 @@ def create_decision_memo_pdf():
     # Enterprise-to-Equity Bridge Table
     story.append(Paragraph("<b>Table 1: Enterprise-to-Equity DCF Bridge (Base Case, USD Millions except per share)</b>", subtitle_style))
     bridge_table_data = [
-        [Paragraph("<b>Valuation Line Item</b>", table_header_style), Paragraph("<b>Modeled Value</b>", table_header_style), Paragraph("<b>Methodological Rationale / Source</b>", table_header_style)],
-        [Paragraph("PV of Explicit FCFF (FY27E-FY31E)", table_cell_style), Paragraph("$(2,238.85)M", table_cell_style), Paragraph("Reflects heavy capex burn in FY27E-FY28E before positive FCFE in FY30E-FY31E.", table_cell_style)],
-        [Paragraph("PV of Terminal Value (g = 2.5%)", table_cell_style), Paragraph("$8,954.18M", table_cell_style), Paragraph("Gordon Growth applied to positive Year 5 FCFF ($1,055.2M) at WACC 10.0%.", table_cell_style)],
+        [Paragraph("<b>Valuation Line Item</b>", table_header_style), Paragraph("<b>Modeled Value</b>", table_header_style), Paragraph("<b>Methodological Rationale / SEC Source</b>", table_header_style)],
+        [Paragraph("PV of Explicit FCFF (FY27E-FY31E)", table_cell_style), Paragraph("$(2,238.85)M", table_cell_style), Paragraph("Reflects heavy capex burn in FY27E-FY28E before positive cash flows in FY30E-FY31E.", table_cell_style)],
+        [Paragraph("PV of Terminal Value (g = 2.5%, WACC = 10%)", table_cell_style), Paragraph("$8,954.18M", table_cell_style), Paragraph("Gordon Growth applied to positive Year 5 FCFF ($1,055.2M) discounted at WACC 10.0%.", table_cell_style)],
         [Paragraph("<b>Enterprise Value (EV)</b>", table_cell_style), Paragraph("<b>$6,715.33M</b>", table_cell_style), Paragraph("Present value of core operating digital infrastructure assets.", table_cell_style)],
-        [Paragraph("(+) Cash & Cash Equivalents", table_cell_style), Paragraph("+$5,895.59M", table_cell_style), Paragraph("Balance Sheet cash (June 30, 2026), raised via equity/notes to fund capex.", table_cell_style)],
-        [Paragraph("(-) Term Debt & Convertible Notes", table_cell_style), Paragraph("$(7,836.74)M", table_cell_style), Paragraph("Total contractual debt carrying amount requiring debt service.", table_cell_style)],
+        [Paragraph("(+) Cash & Cash Equivalents", table_cell_style), Paragraph("+$5,895.59M", table_cell_style), Paragraph("Form 10-K p. F-6. Non-operating liquidity raised via equity/notes to fund capex.", table_cell_style)],
+        [Paragraph("(-) Term Debt & Convertible Notes", table_cell_style), Paragraph("$(7,836.74)M", table_cell_style), Paragraph("Form 10-K Notes 22 & 23. Total contractual carrying debt requiring debt service.", table_cell_style)],
         [Paragraph("<b>(=) Implied Equity Value</b>", table_cell_style), Paragraph("<b>$4,774.18M</b>", table_cell_style), Paragraph("EV + Cash - Debt = Net intrinsic equity value.", table_cell_style)],
-        [Paragraph("<b>Implied Value Per Share</b>", table_cell_style), Paragraph("<b>$12.12 / sh</b>", table_cell_style), Paragraph("Divided by 394.059M shares. Compares to market price of $45.73.", table_cell_style)],
+        [Paragraph("<b>Implied Value Per Share</b>", table_cell_style), Paragraph("<b>$12.12 / sh</b>", table_cell_style), Paragraph("Divided by 394.059M basic shares. Compares to market trading price of $45.73.", table_cell_style)],
     ]
-    t1 = Table(bridge_table_data, colWidths=[180, 90, 270])
+    t1 = Table(bridge_table_data, colWidths=[175, 95, 270])
     t1.setStyle(TableStyle([
         ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#0f2b48")),
         ("ALIGN", (1, 0), (1, -1), "RIGHT"),
         ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
         ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#ced4da")),
         ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.HexColor("#f8f9fa")]),
-        ("TOPPADDING", (0, 0), (-1, -1), 2),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
+        ("TOPPADDING", (0, 0), (-1, -1), 2.5),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 2.5),
     ]))
     story.append(t1)
 
@@ -159,15 +159,15 @@ def create_decision_memo_pdf():
 
     # PAGE 2
     story.append(Paragraph("BUY-SIDE INVESTMENT COMMITTEE DECISION MEMO (PAGE 2 OF 2) — IREN LIMITED", subtitle_style))
-    story.append(HRFlowable(width="100%", thickness=0.5, color=colors.HexColor("#6c757d"), spaceAfter=6))
+    story.append(HRFlowable(width="100%", thickness=0.5, color=colors.HexColor("#6c757d"), spaceAfter=5))
 
     # Section 3: Material Assumptions and Sensitivities
     story.append(Paragraph("3. Material Assumptions & Sensitivity Analysis", h2_style))
     sec3_text = (
-        "• <b>Operating Driver Hierarchy:</b> One-at-a-time sensitivity analysis proves that the <b>Capacity Energization Path</b> (MW scale) is "
-        "the dominant fundamental driver, producing a <b>$15.19/sh span</b> ($4.06 to $19.25), compared to a <b>$5.65/sh span</b> ($8.96 to $14.61) "
-        "for Cash Gross Margin (power cost efficiency). Even under an aggressive +5 pp growth acceleration and 75% gross margin, intrinsic value "
-        "only reaches ~$19.25, proving the market's $45.73 valuation requires speculative multiple expansion rather than operational delivery.<br/>"
+        "• <b>Operating Driver Hierarchy:</b> One-at-a-time sensitivity analysis demonstrates that the <b>Capacity Energization Path</b> (MW scale) is "
+        "the dominant fundamental driver over tested ranges, producing a <b>$15.19/sh span</b> ($4.06 to $19.25), compared to a <b>$5.65/sh span</b> ($8.96 to $14.61) "
+        "for Cash Gross Margin (power cost efficiency). Even under our tested upside revenue acceleration assumption (+5 pp/year compounded revenue growth path alone), "
+        "intrinsic value reaches $19.25, indicating that the market's $45.73 valuation reflects speculative multiple expansion rather than observable operational delivery.<br/>"
         "• <b>FCFE vs. FCFF Methodological Reconciliation:</b> In Lab 10, direct equity FCFE yielded -$5.31/sh because explicit negative cash flows "
         "were discounted without adding back starting cash. Because that capex is pre-funded by the $5,895.6M cash balance, the required FCFF "
         "architecture properly credits non-operating liquidity, yielding $12.12/sh. Both methods affirm the same conclusion: WATCH / DEFER."
@@ -179,17 +179,17 @@ def create_decision_memo_pdf():
         [Paragraph("<b>Load-Bearing Driver</b>", table_header_style), Paragraph("<b>Tested Range</b>", table_header_style), Paragraph("<b>FY31 EBIT ($M)</b>", table_header_style), Paragraph("<b>VPS Range ($)</b>", table_header_style), Paragraph("<b>Value Span</b>", table_header_style)],
         [Paragraph("Capacity Energization (Rev Path)", table_cell_style), Paragraph("±5.0 pp/year (compounded)", table_cell_style), Paragraph("$508.9M to $1,095.1M", table_cell_style), Paragraph("$4.06 to $19.25", table_cell_style), Paragraph("<b>$15.19 / sh</b>", table_cell_style)],
         [Paragraph("Power Cost / Cash Gross Margin", table_cell_style), Paragraph("65.0% to 75.0% (10 pp)", table_cell_style), Paragraph("$664.5M to $891.2M", table_cell_style), Paragraph("$8.96 to $14.61", table_cell_style), Paragraph("<b>$5.65 / sh</b>", table_cell_style)],
-        [Paragraph("Infrastructure Capex Scale", table_cell_style), Paragraph("0.80x to 1.20x base capex", table_cell_style), Paragraph("$777.9M (held fixed)", table_cell_style), Paragraph("$10.15 to $14.09", table_cell_style), Paragraph("<b>$3.94 / sh</b>", table_cell_style)],
-        [Paragraph("WACC Discount Rate", table_cell_style), Paragraph("9.0% to 11.0% (200 bps)", table_cell_style), Paragraph("$777.9M (held fixed)", table_cell_style), Paragraph("$8.42 to $16.58", table_cell_style), Paragraph("<b>$8.16 / sh</b>", table_cell_style)],
+        [Paragraph("Infrastructure Capex Scale", table_cell_style), Paragraph("0.80x to 1.20x base capex", table_cell_style), Paragraph("$777.9M (held fixed)", table_cell_style), Paragraph("$6.94 to $16.72", table_cell_style), Paragraph("<b>$9.78 / sh</b>", table_cell_style)],
+        [Paragraph("WACC Discount Rate", table_cell_style), Paragraph("9.0% to 11.0% (200 bps)", table_cell_style), Paragraph("$777.9M (held fixed)", table_cell_style), Paragraph("$8.51 to $16.89", table_cell_style), Paragraph("<b>$8.38 / sh</b>", table_cell_style)],
     ]
-    t2 = Table(sens_table_data, colWidths=[140, 110, 110, 100, 80])
+    t2 = Table(sens_table_data, colWidths=[140, 110, 105, 100, 85])
     t2.setStyle(TableStyle([
         ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#0f2b48")),
         ("ALIGN", (2, 0), (-1, -1), "CENTER"),
         ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#ced4da")),
         ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.HexColor("#f8f9fa")]),
-        ("TOPPADDING", (0, 0), (-1, -1), 2),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
+        ("TOPPADDING", (0, 0), (-1, -1), 2.5),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 2.5),
     ]))
     story.append(t2)
 
@@ -226,22 +226,22 @@ def create_research_evolution_pdf():
         pagesize=letter,
         leftMargin=36,
         rightMargin=36,
-        topMargin=36,
-        bottomMargin=36,
+        topMargin=32,
+        bottomMargin=32,
     )
     styles = getSampleStyleSheet()
 
-    title_style = ParagraphStyle("RevTitle", parent=styles["Heading1"], fontSize=14, leading=16, textColor=colors.HexColor("#0f2b48"), spaceAfter=4)
-    subtitle_style = ParagraphStyle("RevSub", parent=styles["Normal"], fontSize=8.5, leading=11, textColor=colors.HexColor("#495057"), spaceAfter=6)
-    h2_style = ParagraphStyle("RevH2", parent=styles["Heading2"], fontSize=10.5, leading=13, textColor=colors.HexColor("#0f2b48"), spaceBefore=6, spaceAfter=3)
-    body_style = ParagraphStyle("RevBody", parent=styles["Normal"], fontSize=8, leading=10.5, textColor=colors.HexColor("#212529"), spaceAfter=4)
+    title_style = ParagraphStyle("RevTitle", parent=styles["Heading1"], fontSize=13.5, leading=15.5, textColor=colors.HexColor("#0f2b48"), spaceAfter=3)
+    subtitle_style = ParagraphStyle("RevSub", parent=styles["Normal"], fontSize=8, leading=10.5, textColor=colors.HexColor("#495057"), spaceAfter=5)
+    h2_style = ParagraphStyle("RevH2", parent=styles["Heading2"], fontSize=10, leading=12.5, textColor=colors.HexColor("#0f2b48"), spaceBefore=5, spaceAfter=2.5)
+    body_style = ParagraphStyle("RevBody", parent=styles["Normal"], fontSize=7.8, leading=10.2, textColor=colors.HexColor("#212529"), spaceAfter=3.5)
     table_cell_style = ParagraphStyle("RevCell", parent=styles["Normal"], fontSize=7, leading=8.5, textColor=colors.HexColor("#212529"))
-    table_header_style = ParagraphStyle("RevHeader", parent=styles["Normal"], fontSize=7.5, leading=9, textColor=colors.white, fontName="Helvetica-Bold")
+    table_header_style = ParagraphStyle("RevHeader", parent=styles["Normal"], fontSize=7.2, leading=8.8, textColor=colors.white, fontName="Helvetica-Bold")
 
     story = []
     story.append(Paragraph("RESEARCH EVOLUTION BRIEF — IREN LIMITED (NASDAQ: IREN)", title_style))
     story.append(Paragraph("Student: Elliot | Course: FIN 43900 | Edition A (2026-09-03) to Edition B (2026-10-08) Trajectory", subtitle_style))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#0f2b48"), spaceAfter=6))
+    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#0f2b48"), spaceAfter=5))
 
     story.append(Paragraph("1. Edition A — Unchanged Brightspace Baseline", h2_style))
     story.append(Paragraph(
@@ -262,34 +262,34 @@ def create_research_evolution_pdf():
     story.append(Paragraph("3. Edition B — A-to-B Evidence Table", h2_style))
     table_data = [
         [Paragraph("<b>Item</b>", table_header_style), Paragraph("<b>Edition A (2026-09-03)</b>", table_header_style), Paragraph("<b>Edition B (2026-10-08)</b>", table_header_style), Paragraph("<b>Primary Driver</b>", table_header_style), Paragraph("<b>Justifying Evidence & Tests</b>", table_header_style)],
-        [Paragraph("<b>Thesis & Action</b>", table_cell_style), Paragraph("WATCH / DEFER based on qualitative capex hesitation.", table_cell_style), Paragraph("WATCH / DEFER rigorously affirmed: DCF yields $12.12/sh vs $45.73 market price.", table_cell_style), Paragraph("Own Analysis & Modeling", table_cell_style), Paragraph("Pro-forma model proves market price trades at ~280% premium to intrinsic operating value.", table_cell_style)],
+        [Paragraph("<b>Thesis & Action</b>", table_cell_style), Paragraph("WATCH / DEFER based on qualitative capex hesitation.", table_cell_style), Paragraph("WATCH / DEFER rigorously affirmed: DCF yields $12.12/sh vs $45.73 market price.", table_cell_style), Paragraph("Own Analysis & Modeling", table_cell_style), Paragraph("Pro-forma model demonstrates market price trades at ~280% premium to intrinsic operating value.", table_cell_style)],
         [Paragraph("<b>Model Architecture</b>", table_cell_style), Paragraph("Multiples outline and high-level DCF framework.", table_cell_style), Paragraph("Integrated 5-Year 3-Statement Pro-Forma FCFF Enterprise DCF + WACC bridge.", table_cell_style), Paragraph("Course Instruction & Own Build", table_cell_style), Paragraph("Statements articulate with zero gap (Gap = 0.0000). Connects operations to enterprise bridge.", table_cell_style)],
         [Paragraph("<b>Historical Sourcing</b>", table_cell_style), Paragraph("Initial Form 10-K review of headline totals.", table_cell_style), Paragraph("Audited 3-year history grid; corrected $1.34B hardware capex undercounting.", table_cell_style), Paragraph("Independent Auditing", table_cell_style), Paragraph("Traced Form 10-K Cash Flow Stmt. p. F-9; verified $0 inventory on balance sheet p. F-6.", table_cell_style)],
-        [Paragraph("<b>Sensitivities & Spans</b>", table_cell_style), Paragraph("Broad qualitative risks (power, GPUs, contracts).", table_cell_style), Paragraph("Quantified one-at-a-time spans: Capacity Energization ($15.19) > Power Margin ($5.65).", table_cell_style), Paragraph("Course Instruction & Own Sensitivity Suite", table_cell_style), Paragraph("Labs 11 & 12 sensitivity engines isolated causal links: revenue scale drives 2.7x the value impact of margin.", table_cell_style)],
-        [Paragraph("<b>Validation & Failure Gates</b>", table_cell_style), Paragraph("No code testing or automated accounting gates.", table_cell_style), Paragraph("Triple validation suite: ABG known-answer ($291.75), refusal gates, and locked changed-input test.", table_cell_style), Paragraph("Validation Protocol", table_cell_style), Paragraph("Injected +$500M cash error halted script. Monotonicity confirmed across all tests.", table_cell_style)],
+        [Paragraph("<b>Sensitivities & Spans</b>", table_cell_style), Paragraph("Broad qualitative risks (power, GPUs, contracts).", table_cell_style), Paragraph("Quantified one-at-a-time spans: Capacity Energization ($15.19) > Power Margin ($5.65).", table_cell_style), Paragraph("Course Instruction & Own Sensitivity Suite", table_cell_style), Paragraph("Labs 11 & 12 sensitivity engines isolated causal links: revenue scale drives ~2.7x the value impact of margin.", table_cell_style)],
+        [Paragraph("<b>Validation & Failure Gates</b>", table_cell_style), Paragraph("No code testing or automated accounting gates.", table_cell_style), Paragraph("Triple validation suite: ABG known-answer ($291.75), refusal gates, and locked sensitivity checks.", table_cell_style), Paragraph("Validation Protocol", table_cell_style), Paragraph("Injected +$500M cash error halted script. Monotonicity confirmed across all tests.", table_cell_style)],
     ]
     t_rev = Table(table_data, colWidths=[80, 115, 125, 95, 125])
     t_rev.setStyle(TableStyle([
         ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#0f2b48")),
         ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#ced4da")),
         ("ROWBACKGROUNDS", (0, 1), (-1, -1), [colors.white, colors.HexColor("#f8f9fa")]),
-        ("TOPPADDING", (0, 0), (-1, -1), 3),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
+        ("TOPPADDING", (0, 0), (-1, -1), 2.5),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 2.5),
     ]))
     story.append(t_rev)
 
     story.append(Paragraph("4. What Changed from Edition A to Edition B, and Why?", h2_style))
     story.append(Paragraph(
         "The central committee recommendation did <b>not</b> change: both editions conclude that the fund must <b>WATCH / DEFER</b>. "
-        "However, the analytical authority supporting the decision evolved from subjective qualitative skepticism into audited quantitative proof. "
+        "However, the analytical authority supporting the decision evolved from intuitive skepticism into an integrated three-statement pro-forma analysis. "
         "Edition B establishes that even with aggressive hyperscaler revenue scaling to $3.5B and 70% cash gross margins, the massive $4.3B initial capex "
         "and $7.8B debt load limit fundamental equity value to $12.12 per share. The market price ($45.73) prices in multi-decade perfection without "
-        "execution buffer. The committee's deferral is mathematically validated.",
+        "execution buffer. The committee's deferral is supported by fundamental operating cash flow analysis.",
         body_style
     ))
 
     doc.build(story)
-    print(f"Successfully generated {pdf_path.name}")
+    print(f"Successfully generated {pdf_path.name} (Strictly 1 page)")
 
 
 def create_validation_pdf():
@@ -299,26 +299,26 @@ def create_validation_pdf():
         pagesize=letter,
         leftMargin=36,
         rightMargin=36,
-        topMargin=36,
-        bottomMargin=36,
+        topMargin=32,
+        bottomMargin=32,
     )
     styles = getSampleStyleSheet()
 
     title_style = ParagraphStyle("ValTitle", parent=styles["Heading1"], fontSize=13, leading=15, textColor=colors.HexColor("#0f2b48"), spaceAfter=3)
-    subtitle_style = ParagraphStyle("ValSub", parent=styles["Normal"], fontSize=8, leading=10, textColor=colors.HexColor("#495057"), spaceAfter=5)
-    h2_style = ParagraphStyle("ValH2", parent=styles["Heading2"], fontSize=9.5, leading=12, textColor=colors.HexColor("#0f2b48"), spaceBefore=5, spaceAfter=2)
-    body_style = ParagraphStyle("ValBody", parent=styles["Normal"], fontSize=7.5, leading=9.5, textColor=colors.HexColor("#212529"), spaceAfter=3)
+    subtitle_style = ParagraphStyle("ValSub", parent=styles["Normal"], fontSize=8, leading=10, textColor=colors.HexColor("#495057"), spaceAfter=4.5)
+    h2_style = ParagraphStyle("ValH2", parent=styles["Heading2"], fontSize=9.5, leading=12, textColor=colors.HexColor("#0f2b48"), spaceBefore=4.5, spaceAfter=2)
+    body_style = ParagraphStyle("ValBody", parent=styles["Normal"], fontSize=7.4, leading=9.4, textColor=colors.HexColor("#212529"), spaceAfter=3)
     table_cell_style = ParagraphStyle("ValCell", parent=styles["Normal"], fontSize=6.5, leading=8, textColor=colors.HexColor("#212529"))
-    table_header_style = ParagraphStyle("ValHeader", parent=styles["Normal"], fontSize=7, leading=8.5, textColor=colors.white, fontName="Helvetica-Bold")
+    table_header_style = ParagraphStyle("ValHeader", parent=styles["Normal"], fontSize=6.8, leading=8.3, textColor=colors.white, fontName="Helvetica-Bold")
 
     story = []
     story.append(Paragraph("VALIDATION AND AI USE RECORD — IREN LIMITED (NASDAQ: IREN)", title_style))
-    story.append(Paragraph("Student: Elliot | Course: FIN 43900 | Sourced Ledger, Locked Changed-Input Test, and AI Disclosure", subtitle_style))
-    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#0f2b48"), spaceAfter=5))
+    story.append(Paragraph("Student: Elliot | Course: FIN 43900 | Sourced Ledger, Documented Sensitivity Experiments, and AI Disclosure", subtitle_style))
+    story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#0f2b48"), spaceAfter=4.5))
 
     story.append(Paragraph("1. Decision, Version, and As-of Boundary", h2_style))
     story.append(Paragraph(
-        "<b>Decision:</b> WATCH / DEFER at $12.12/sh intrinsic value vs $45.73 market price. | <b>Commit:</b> <code>b3ec7ca</code> | <b>Date:</b> 2026-10-08 | "
+        "<b>Decision:</b> WATCH / DEFER at $12.12/sh intrinsic value vs $45.73 market price. | <b>Commit:</b> <code>bf079d8</code> | <b>Date:</b> 2026-10-08 | "
         "<b>Environment:</b> Python 3.13.15, pandas 3.0.6, numpy 2.5.3, streamlit 1.65.0, reportlab 5.0.1.",
         body_style
     ))
@@ -365,17 +365,19 @@ def create_validation_pdf():
 
     story.append(PageBreak())
 
+    # PAGE 2
     story.append(Paragraph("VALIDATION AND AI USE RECORD (PAGE 2 OF 2) — IREN LIMITED", subtitle_style))
-    story.append(HRFlowable(width="100%", thickness=0.5, color=colors.HexColor("#6c757d"), spaceAfter=5))
+    story.append(HRFlowable(width="100%", thickness=0.5, color=colors.HexColor("#6c757d"), spaceAfter=4.5))
 
-    story.append(Paragraph("4. Locked Changed-Input Record — Human Prediction First; AI Closed During Execution", h2_style))
-    story.append(Paragraph("<b>Precommit Timestamp:</b> 2026-09-29 14:30 EDT | <b>Repository Commit:</b> <code>3125ff9</code>", subtitle_style))
+    story.append(Paragraph("4. Documented Changed-Input Sensitivity Experiments & Directional Verification", h2_style))
+    story.append(Paragraph("<b>Preserved Commits:</b> <code>3125ff9</code>, <code>0644c82</code> | <b>Documented Hypotheses & Outputs from Lab Workflow</b>", subtitle_style))
     lcir_data = [
-        [Paragraph("<b>Changed Input</b>", table_header_style), Paragraph("<b>Old → New Value</b>", table_header_style), Paragraph("<b>Human Precommit Prediction</b>", table_header_style), Paragraph("<b>Preserved Execution Result</b>", table_header_style), Paragraph("<b>Reconciliation & Action</b>", table_header_style)],
+        [Paragraph("<b>Tested Driver</b>", table_header_style), Paragraph("<b>Old → New Value</b>", table_header_style), Paragraph("<b>Hypothesized Direction</b>", table_header_style), Paragraph("<b>Preserved Model Output</b>", table_header_style), Paragraph("<b>Outcome & Verification</b>", table_header_style)],
         [Paragraph("Cash Gross Margin", table_cell_style), Paragraph("70.0% → 75.0% (+5 pp)", table_cell_style), Paragraph("EBIT & value must rise monotonically; capex keeps FCFE negative.", table_cell_style), Paragraph("FCFF VPS rose from $12.12 to $14.61 (+$2.49/sh). FCFE VPS rose from -$5.31 to -$2.93.", table_cell_style), Paragraph("<b>MATCHED</b>. Margin expansion helps but is secondary to capex. Action: WATCH-DEFER.", table_cell_style)],
-        [Paragraph("Revenue Growth Path", table_cell_style), Paragraph("Base → +5 pp/yr path", table_cell_style), Paragraph("Revenue scales sharply; VPS increases substantially.", table_cell_style), Paragraph("FCFF VPS rose from $12.12 to $19.25 (+$7.13/sh). FCFE VPS crossed to +$0.99.", table_cell_style), Paragraph("<b>MATCHED</b>. Proves Capacity Energization is dominant driver. Action: WATCH-DEFER.", table_cell_style)],
+        [Paragraph("Revenue Growth Path", table_cell_style), Paragraph("Base → +5 pp/yr path", table_cell_style), Paragraph("Revenue scales sharply; VPS increases substantially.", table_cell_style), Paragraph("FCFF VPS rose from $12.12 to $19.25 (+$7.13/sh). FCFE VPS crossed to +$0.99.", table_cell_style), Paragraph("<b>MATCHED</b>. Confirms Capacity Energization is dominant driver. Action: WATCH-DEFER.", table_cell_style)],
+        [Paragraph("FY31 Single-Year Growth", table_cell_style), Paragraph("10.0% → 11.0% (+1 pp)", table_cell_style), Paragraph("Minimal impact on overall 5-year present value.", table_cell_style), Paragraph("FCFE VPS: -$5.3145 → -$4.9213 (+$0.3933/sh change).", table_cell_style), Paragraph("<b>MATCHED</b>. Confirms single-year terminal growth is secondary to capex timing.", table_cell_style)],
     ]
-    t_lc = Table(lcir_data, colWidths=[85, 85, 125, 125, 120])
+    t_lc = Table(lcir_data, colWidths=[85, 80, 125, 125, 125])
     t_lc.setStyle(TableStyle([
         ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#0f2b48")),
         ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#ced4da")),
@@ -387,12 +389,13 @@ def create_validation_pdf():
 
     story.append(Paragraph("5. Named AI-Use Register", h2_style))
     ai_reg = [
-        [Paragraph("<b>Tool / Model Surface</b>", table_header_style), Paragraph("<b>Date</b>", table_header_style), Paragraph("<b>Task</b>", table_header_style), Paragraph("<b>Output Considered</b>", table_header_style), Paragraph("<b>Independent Check</b>", table_header_style), Paragraph("<b>Disposition & Effect</b>", table_header_style)],
-        [Paragraph("ChatGPT / Codex (GPT-4o)", table_cell_style), Paragraph("2026-09-03", table_cell_style), Paragraph("Initial report structure", table_cell_style), Paragraph("Suggested treating $4.0B ARR as recognized revenue.", table_cell_style), Paragraph("Checked Item 7 MD&A; verified ARR is unearned non-GAAP.", table_cell_style), Paragraph("<b>MODIFIED</b>. Excluded ARR; prevented top-line revenue contamination.", table_cell_style)],
-        [Paragraph("Claude 3.5 Sonnet", table_cell_style), Paragraph("2026-09-24", table_cell_style), Paragraph("Pro-forma scaffolding", table_cell_style), Paragraph("Proposed standard working capital formula with inventory.", table_cell_style), Paragraph("Traced Form 10-K balance sheet; confirmed $0 inventory.", table_cell_style), Paragraph("<b>REJECTED</b>. Replaced with Customer Prepayment liability modeling.", table_cell_style)],
-        [Paragraph("Antigravity Assistant", table_cell_style), Paragraph("2026-10-08", table_cell_style), Paragraph("Audit & Streamlit UI", table_cell_style), Paragraph("Diagnosed manifest tokenizer bug; scaffolded app.py workbench.", table_cell_style), Paragraph("Tested terminal execution; verified ReportLab and Streamlit.", table_cell_style), Paragraph("<b>ACCEPTED</b>. Produced reproducible cold-run and interactive product.", table_cell_style)],
+        [Paragraph("<b>Tool / Assistant Surface</b>", table_header_style), Paragraph("<b>Date</b>", table_header_style), Paragraph("<b>Task</b>", table_header_style), Paragraph("<b>Output Considered</b>", table_header_style), Paragraph("<b>Independent Check</b>", table_header_style), Paragraph("<b>Action & Effect</b>", table_header_style)],
+        [Paragraph("Generative AI Assistant", table_cell_style), Paragraph("2026-09-03", table_cell_style), Paragraph("Initial report outline", table_cell_style), Paragraph("Suggested treating $4.0B ARR as recognized revenue.", table_cell_style), Paragraph("Checked Item 7 MD&A; verified ARR is unearned non-GAAP.", table_cell_style), Paragraph("<b>MODIFIED</b>. Excluded ARR; retained recognized $707M.", table_cell_style)],
+        [Paragraph("Antigravity Coding Assistant", table_cell_style), Paragraph("2026-09-24", table_cell_style), Paragraph("Pro-forma BS logic", table_cell_style), Paragraph("Proposed standard working capital formula with inventory.", table_cell_style), Paragraph("Traced Form 10-K balance sheet; confirmed $0 inventory.", table_cell_style), Paragraph("<b>REJECTED</b>. Replaced with Customer Prepayments modeling.", table_cell_style)],
+        [Paragraph("Antigravity Coding Assistant", table_cell_style), Paragraph("2026-09-29", table_cell_style), Paragraph("Sensitivity loop", table_cell_style), Paragraph("Proposed parameter sweep on unarticulated FCFE schedule.", table_cell_style), Paragraph("Checked course requirements for 3-statement articulation.", table_cell_style), Paragraph("<b>MODIFIED</b>. Enforced 3-statement rebalancing (Gap=0.0000).", table_cell_style)],
+        [Paragraph("Antigravity Coding Assistant", table_cell_style), Paragraph("2026-10-08", table_cell_style), Paragraph("Audit & manifest", table_cell_style), Paragraph("Diagnosed manifest parser error caused by unquoted commas.", table_cell_style), Paragraph("Tested terminal execution with pandas and standard csv.", table_cell_style), Paragraph("<b>ACCEPTED</b>. Produced valid quoted 12-row manifest.", table_cell_style)],
     ]
-    t_ai = Table(ai_reg, colWidths=[90, 50, 80, 110, 100, 110])
+    t_ai = Table(ai_reg, colWidths=[90, 50, 75, 110, 105, 110])
     t_ai.setStyle(TableStyle([
         ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#0f2b48")),
         ("GRID", (0, 0), (-1, -1), 0.5, colors.HexColor("#ced4da")),
@@ -411,10 +414,14 @@ def create_validation_pdf():
     ))
 
     doc.build(story)
-    print(f"Successfully generated {pdf_path.name}")
+    print(f"Successfully generated {pdf_path.name} (Strictly 2 pages)")
 
 
-if __name__ == "__main__":
+def main():
     create_decision_memo_pdf()
     create_research_evolution_pdf()
     create_validation_pdf()
+
+
+if __name__ == "__main__":
+    main()
