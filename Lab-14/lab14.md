@@ -40,7 +40,7 @@ The following parameters are course-provided training assumptions for the Meridi
 - **Real Return Target:** 4.0%
 - **Nominal Return Objective:** 6.5% ($\text{CPI} + 4.0\%$)
 - **Reserve-Eligible Sleeves:** Treasury bills and Treasury 10-year note (daily-liquid sovereign obligations)
-- **Mandate Reserve Floor:** 3.0% ($100.0M reserve $\times$ 4 quarters $\times$ $0.75M/quarter)
+- **Mandate Reserve Floor:** 3.0%, calculated as ($0.75M \times 4) / $100M = 3.0% (four quarters of $0.75M distributions on a $100M portfolio)
 
 ---
 
@@ -100,7 +100,7 @@ The Benchmark portfolio (40.0% Investment-Grade Bond Fund, 60.0% Global Equity I
 - **Overall Verdict:** **fails 1 rule(s)**
 
 ### Key Mandate Finding
-**The client's own benchmark breaks the client's mandate.** Although Candidate E represents the strategic policy benchmark specified in Statement S4 and satisfies the 6.50% expected return objective (6.80%), it cannot be adopted as the reserve portfolio because its reserve-eligible allocation is 0.0% against the mandatory 3.0% floor. To make the benchmark compliant with institutional governance, at least 3.0% must be carved out of equities and bonds into Treasury bills or 10-year notes.
+**The client's own benchmark breaks the client's mandate.** Although Candidate E represents the strategic policy benchmark specified in Statement S4 and satisfies the 6.50% expected return objective (6.80%), it cannot be adopted as the reserve portfolio because its reserve-eligible allocation is 0.0% against the mandatory 3.0% floor. While reallocating 3.0% into reserve-eligible assets (Treasury bills or the 10-year Treasury note) may address the reserve requirement, it does not automatically establish full mandate compliance; the revised portfolio must be evaluated by and pass the entire mandate checker.
 
 ---
 
@@ -126,7 +126,8 @@ While this concentration compresses portfolio volatility to an ultra-low **1.05%
 The three baseline portfolios illustrate the trade-offs in institutional portfolio construction:
 
 1. **Benchmark (60/40 Equity/Bond):** Achieves the return objective ($6.80\% \ge 6.50\%$) with moderate volatility ($10.46\%$), but **fails the reserve requirement** ($0.0\% < 3.0\%$).
-2. **Equal Weight (25% each):** Satisfies the reserve mandate ($50.0\% \ge 3.0\%$) and cuts volatility to $5.21\%$, but **fails the return objective** ($5.20\% < 6.50\%$), generating a 1.30% annual purchasing power deficit.
-3. **Inverse Volatility (84.3% Bills):** Provides extreme capital preservation ($\sigma = 1.05\%$) and abundant liquidity ($90.3\%$), but **fails the return objective by 2.73%** ($3.77\% \text{ vs. } 6.50\%$).
+2. **Equal Weight (25% each):** Satisfies the reserve mandate ($50.0\% \ge 3.0\%$) and cuts volatility to $5.21\%$, but **fails the return objective** ($5.20\% < 6.50\%$), generating a 1.30 percentage-point shortfall relative to the 6.5% expected return objective.
+3. **Inverse Volatility (84.3% Bills):** Provides very low modeled volatility ($\sigma = 1.05\%$) and abundant liquidity ($90.3\%$), but **fails the return objective by 2.73%** ($3.77\% \text{ vs. } 6.50\%$).
 
 None of the three naive baselines simultaneously meets both the foundation's 6.50% expected return requirement and its 3.0% reserve mandate constraint.
+
