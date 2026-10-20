@@ -94,6 +94,18 @@ CANDIDATES = {
         "Acme Corp bonds": 0.0,
         "Acme Corp stock": 0.0,
     },
+    # Candidate E: Benchmark Portfolio (40% IG Bonds, 60% Global Equity)
+    # Tested in Lab 14: Breaks the mandate because reserve-eligible allocation is 0.0%
+    "E": {
+        "Cash": 0.0,
+        "Treasury bills": 0.0,
+        "Treasury 10-year note": 0.0,
+        "Global equity index fund": 60.0,
+        "Investment-grade bond fund": 40.0,
+        "Private real estate fund": 0.0,
+        "Acme Corp bonds": 0.0,
+        "Acme Corp stock": 0.0,
+    },
 }
 
 
@@ -234,21 +246,21 @@ def main():
         print(f"  Verdict:                     {results[name]['verdict']}\n")
 
     # 3. Print Side-by-Side Verification Summary Table
-    print("-" * 78)
+    print("-" * 106)
     print("MANDATE DEFENSE VERIFICATION TABLE")
-    print("-" * 78)
-    header = f"{'Rule':<28} | {'A':<12} | {'B':<12} | {'C':<12} | {'D':<12}"
+    print("-" * 106)
+    header = f"{'Rule':<28} | {'A':<12} | {'B':<12} | {'C':<12} | {'D':<12} | {'E':<12}"
     print(header)
     print("-" * len(header))
-    print(f"{'Weights sum to 100':<28} | {results['A']['sum_str']:<12} | {results['B']['sum_str']:<12} | {results['C']['sum_str']:<12} | {results['D']['sum_str']:<12}")
-    print(f"{'Long-only (lowest weight)':<28} | {results['A']['long_only_str']:<12} | {results['B']['long_only_str']:<12} | {results['C']['long_only_str']:<12} | {results['D']['long_only_str']:<12}")
-    print(f"{f'Reserve >= {reserve_min_pct:.1f}%':<28} | {results['A']['reserve_str']:<12} | {results['B']['reserve_str']:<12} | {results['C']['reserve_str']:<12} | {results['D']['reserve_str']:<12}")
-    print(f"{f'Redeemable in 5 days >= {MINIMUM_LIQUID_SHARE:.0f}%':<28} | {results['A']['liquid_str']:<12} | {results['B']['liquid_str']:<12} | {results['C']['liquid_str']:<12} | {results['D']['liquid_str']:<12}")
-    print(f"{f'Largest single company <= {ISSUER_LIMIT:.0f}%':<28} | {results['A']['issuer_str']:<12} | {results['B']['issuer_str']:<12} | {results['C']['issuer_str']:<12} | {results['D']['issuer_str']:<12}")
-    print(f"{'Calendar-year loss':<28} | {'requires CIO clarification':<12} | {'same':<12} | {'same':<12} | {'same':<12}")
+    print(f"{'Weights sum to 100':<28} | {results['A']['sum_str']:<12} | {results['B']['sum_str']:<12} | {results['C']['sum_str']:<12} | {results['D']['sum_str']:<12} | {results['E']['sum_str']:<12}")
+    print(f"{'Long-only (lowest weight)':<28} | {results['A']['long_only_str']:<12} | {results['B']['long_only_str']:<12} | {results['C']['long_only_str']:<12} | {results['D']['long_only_str']:<12} | {results['E']['long_only_str']:<12}")
+    print(f"{f'Reserve >= {reserve_min_pct:.1f}%':<28} | {results['A']['reserve_str']:<12} | {results['B']['reserve_str']:<12} | {results['C']['reserve_str']:<12} | {results['D']['reserve_str']:<12} | {results['E']['reserve_str']:<12}")
+    print(f"{f'Redeemable in 5 days >= {MINIMUM_LIQUID_SHARE:.0f}%':<28} | {results['A']['liquid_str']:<12} | {results['B']['liquid_str']:<12} | {results['C']['liquid_str']:<12} | {results['D']['liquid_str']:<12} | {results['E']['liquid_str']:<12}")
+    print(f"{f'Largest single company <= {ISSUER_LIMIT:.0f}%':<28} | {results['A']['issuer_str']:<12} | {results['B']['issuer_str']:<12} | {results['C']['issuer_str']:<12} | {results['D']['issuer_str']:<12} | {results['E']['issuer_str']:<12}")
+    print(f"{'Calendar-year loss':<28} | {'clarification':<12} | {'same':<12} | {'same':<12} | {'same':<12} | {'same':<12}")
     print("-" * len(header))
-    print(f"{'Verdict':<28} | {results['A']['verdict']:<12} | {results['B']['verdict']:<12} | {results['C']['verdict']:<12} | {results['D']['verdict']:<12}")
-    print("-" * 78)
+    print(f"{'Verdict':<28} | {results['A']['verdict']:<12} | {results['B']['verdict']:<12} | {results['C']['verdict']:<12} | {results['D']['verdict']:<12} | {results['E']['verdict']:<12}")
+    print("-" * 106)
 
     # 4. Optional Probe Test Execution
     if "--probe" in sys.argv:
@@ -257,4 +269,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
