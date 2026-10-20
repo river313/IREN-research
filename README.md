@@ -10,11 +10,15 @@
 
 ## 1. Finance Decision and Intended User
 
-- **Intended User:** Buy-Side Investment Committee (Technology & Infrastructure Fund).
+- **Intended User:** Buy-Side Investment Committee (Technology & Infrastructure Fund / Corporate Finance AI Task Force).
 - **Security:** Ordinary Shares of IREN Limited (NASDAQ: IREN).
-- **Committee Decision:** **WATCH / DEFER**.
-- **Valuation Summary:** Intrinsic equity value of **-$5.31 per share** (primary 394.06M shares; sensitivity span **-$8.28 to +$0.99 per share**) vs. Market Trading Price of **$45.73** (as of September 24, 2026) and **$41.65** (as of September 3, 2026).
-- **Core Thesis:** The market currently prices IREN as a pure-play hyperscale AI cloud winner ($18.0B market capitalization) following its $9.7B Microsoft contract and Horizon 1 delivery. However, our audited five-year three-statement pro-forma DCF demonstrates that IREN faces an acute intermediate **capex and financing inflection**: actual FY2026 GAAP results generated a $(702.6)M net loss, $(1,046.7)M operating loss, and cash capex of $4,333.1M. With $7.84B in carrying debt/convertible notes and deep negative FCFE through FY2029E, intrinsic equity value is negative under fundamental operating forecasts. The committee should not initiate a position until Horizons 2–4 achieve verified customer acceptance and recognized GAAP cash flow from operations inflects positively.
+- **Committee Decision:** **WATCH / DEFER** (Do not initiate a buy position; zero allocation).
+- **Primary Valuation Architecture:** Five-Year Three-Statement Integrated Pro-Forma FCFF Enterprise DCF with Enterprise-to-Equity Bridge.
+  - **Base Implied Intrinsic Equity Value:** **$12.12 per share** (Enterprise Value: **$6,715.33M**; Implied Equity Value: **$4,774.18M** across 394.059M basic ordinary shares).
+  - **Modeled Valuation Range:** **$4.06 to $19.25 per share** (Capacity Energization Path sensitivity span: **$15.19/sh**).
+- **Secondary Methodological Benchmark:** Direct Equity FCFE DCF of **-$5.31 per share** (sensitivity span: **-$8.28 to +$0.99 per share**).
+  - *Methodological Reconciliation:* Direct FCFE produces -$5.31 because explicit multi-billion capex in FY27E–FY28E causes negative cash flows before cash flows recover; however, because that capex is pre-funded from the $5,895.6M cash already sitting on the balance sheet, the FCFF Enterprise DCF properly captures the asset value and yields $12.12/share. Both methods confirm that the current market price of **$45.73** (as of September 24, 2026; ~280% premium over fundamental FCFF value) and **$41.65** (as of September 3, 2026) is substantially overvalued.
+- **Core Thesis:** The market currently prices IREN as an unencumbered hyperscale AI cloud winner ($18.0B market capitalization) following its $9.7B Microsoft contract and Horizon 1 delivery. However, our audited five-year three-statement pro-forma DCF demonstrates that IREN faces an acute intermediate **capex and financing inflection**: actual FY2026 GAAP results generated a $(702.6)M net loss, $(1,046.7)M operating loss, and cash capex of $4,333.1M ($2,998.0M PP&E additions + $1,335.1M computer hardware payments, uncounted by third-party aggregators). With $7.84B in carrying debt/convertible notes and heavy near-term capital expenditure ($4.0B over FY27E–FY28E), fundamental equity value is $12.12 per share. The committee should not initiate an equity position until Horizons 2–4 achieve verified customer acceptance and recognized GAAP cash flow from operations inflects positively.
 
 ---
 
@@ -27,28 +31,77 @@ The primary valuation output is frozen in [`visible_output.json`](visible_output
   "target_company": "IREN Limited",
   "ticker": "NASDAQ: IREN",
   "decision": "WATCH / DEFER",
+  "committee_action": "Do not initiate a buy position. The market prices IREN at $45.73 (~$18.0B market cap), representing a ~280% premium to fundamental operating FCFF DCF value ($12.12/share). Defer position pending customer acceptance of Horizons 2-4 and recognized GAAP operating cash flow inflection.",
   "as_of": "2026-10-08",
+  "valuation_date": "2026-09-24",
+  "filing_source": "FY2026 Form 10-K (ended June 30, 2026; filed August 27, 2026)",
+  "intended_user": "Buy-side Investment Committee (AI Task Force embedded in corporate finance team)",
+  "currency": "USD",
+  "share_counts": {
+    "primary_10k_cover_page": 394.059,
+    "balance_sheet_ending": 380.194,
+    "weighted_average_diluted": 316.123
+  },
   "modeled_valuation": {
-    "methodology": "Five-Year Integrated Three-Statement Pro-Forma FCFE DCF",
-    "cost_of_equity": 0.114,
-    "terminal_growth_rate": 0.025,
-    "value_per_share_primary": -5.31,
-    "value_per_share_bs_ending": -5.51,
-    "value_per_share_weighted": -6.62,
-    "present_value_explicit_fcfe_usd_m": -4647.74,
-    "terminal_value_usd_m": 4380.90,
-    "total_implied_equity_value_usd_m": -2094.23
+    "primary_required_architecture": {
+      "methodology": "Five-Year Pro-Forma Operating FCFF DCF with WACC & Enterprise-to-Equity Bridge",
+      "wacc": 0.1,
+      "terminal_growth_rate": 0.025,
+      "pv_explicit_fcff_usd_m": -2238.85,
+      "terminal_value_fcff_usd_m": 14420.8,
+      "pv_terminal_value_usd_m": 8954.18,
+      "enterprise_value_usd_m": 6715.33,
+      "bridge_cash_usd_m": 5895.59,
+      "bridge_debt_usd_m": 7836.74,
+      "net_debt_usd_m": 1941.15,
+      "implied_equity_value_usd_m": 4774.18,
+      "value_per_share_primary": 12.12,
+      "valuation_range_primary": "$4.06 to $19.25"
+    },
+    "secondary_fcfe_comparison": {
+      "methodology": "Direct Equity FCFE DCF (Unadjusted for Cash Balance)",
+      "cost_of_equity": 0.114,
+      "terminal_growth_rate": 0.025,
+      "value_per_share_primary": -5.31,
+      "reconciliation_explanation": "Direct FCFE yields -$5.31 because explicit capex of $4.0B in FY27E-FY28E causes negative FCFE before cash flows recover; however, because that capex is funded from the $5,895.6M cash already sitting on the balance sheet, the FCFF Enterprise DCF properly captures the asset value and yields $12.12/share. Both methods confirm that the current market price of $45.73 is substantially overvalued."
+    },
+    "market_comparison_prices": {
+      "2026-09-03": 41.65,
+      "2026-09-24": 45.73,
+      "market_premium_over_fcff": 277.3
+    }
+  },
+  "proforma_fy2031e_summary_usd_m": {
+    "total_revenue": 3488.02,
+    "operating_income_ebit": 777.88,
+    "depreciation_amortization": 809.17,
+    "gaap_net_income": 503.09,
+    "operating_cash_flow": 1380.39,
+    "capital_expenditures": 600.0,
+    "free_cash_flow_to_equity_fcfe": 380.39,
+    "free_cash_flow_to_firm_fcff": 1055.18
   },
   "accounting_checks": {
     "balance_sheet_gap_max": 0.0,
     "all_5_years_balanced": true,
-    "cash_buffer_pass": true
+    "cash_buffer_pass": true,
+    "minimum_cash_buffer_usd_m": 500.0
   },
   "sensitivities": {
-    "dominant_driver": "Capacity Energization Path (Revenue Scale) over the tested ranges",
-    "power_cost_gross_margin_span": "$5.35/sh ($-8.28 to $-2.93)",
-    "revenue_growth_path_span": "$13.44/sh ($-12.45 to $0.99)"
-  }
+    "fcff_power_cost_margin_span": {
+      "tested_range": "65.0% to 75.0%",
+      "vps_range": "$8.96 to $14.61",
+      "vps_span": 5.65
+    },
+    "fcff_revenue_path_shift_span": {
+      "tested_range": "-5.0 pp/yr to +5.0 pp/yr across 5 years",
+      "vps_range": "$4.06 to $19.25",
+      "vps_span": 15.19
+    },
+    "dominant_driver": "Capacity Energization Path (Revenue Scale) over the tested ranges"
+  },
+  "reversal_trigger": "Change recommendation from WATCH-DEFER to INITIATE-BUY if: (1) market price corrects toward the fundamental valuation range ($12-$18), OR (2) IREN demonstrates verified customer acceptance and recognized billing for Horizons 2-4 scaling GAAP quarterly revenue above $375M, positive operating cash flow generation before customer prepayments, and capital additions funded without equity dilution exceeding 10%.",
+  "kill_conditions": "Reject valuation model if pro-forma balance sheet does not articulate (Gap > $0.01M), if cash falls below $500.0M liquidity reserve, or if power purchase agreements fail to maintain gross power margin above 50%."
 }
 ```
 
@@ -70,7 +123,7 @@ py -m pip install -r requirements.txt
 ```powershell
 py run_analysis.py
 ```
-*Expected terminal output: Prints summary of IREN pro-forma DCF valuation (-$5.31/sh), checks balance sheet articulation (Gap = 0.0000), and writes fresh `visible_output.json`.*
+*Expected terminal output: Prints summary of IREN pro-forma DCF valuation ($12.12/sh primary FCFF, -$5.31/sh secondary FCFE), checks balance sheet articulation (Gap = 0.0000), and writes fresh `visible_output.json`.*
 
 ### 3. Run Week 7 Submission Manifest Audit Checker
 ```powershell
@@ -105,18 +158,23 @@ IREN-research/
 ├── README.md                                  # Central project documentation, cold-run protocol, and setup
 ├── requirements.txt                           # Frozen Python dependencies (numpy, pandas, yfinance, etc.)
 ├── .gitignore                                 # Git configuration excluding caches, environments, and secrets
+├── app.py                                     # Streamlit interactive valuation workbench application
+├── compile_pdfs.py                            # ReportLab PDF compiler for course deliverables
 ├── run_analysis.py                            # Master analysis runner; executes model and outputs visible_output.json
 ├── visible_output.json                        # Frozen visible executed output and accounting check contracts
 ├── project_audit.py                           # Course mechanical audit script for submission manifest
 ├── project-submission-manifest-template.csv   # Completed 12-row working copy of the submission manifest
 ├── validation_record.md                       # Comprehensive project validation record and AI use register
 ├── sources.md                                 # Source tracking and SEC filing citations
+├── Decision-Memo.pdf                          # Compiled formal 2-page Investment Committee Decision Memo
+├── Research-Evolution.pdf                     # Compiled formal 1-page Research Evolution Brief
+├── Validation-and-AI-Use.pdf                  # Compiled formal 2-page Validation and AI Use Record
 ├── IREN_10-K.pdf                              # Audited Form 10-K filing (period ended June 30, 2026)
 ├── IREN_2026-09-03_report.md                  # Edition A baseline research report (frozen at commit 2710819)
 ├── docs/
-│   ├── Decision-Memo.md                       # Working draft of 2-page Investment Committee Decision Memo
-│   ├── Research-Evolution.md                  # Working draft of Edition A to Edition B trajectory brief
-│   └── Validation-and-AI-Use.md               # Sourced data ledger, cold run logs, and locked changed-input tests
+│   ├── Decision-Memo.md                       # Source Markdown of 2-page Investment Committee Decision Memo
+│   ├── Research-Evolution.md                  # Source Markdown of Edition A to Edition B trajectory brief
+│   └── Validation-and-AI-Use.md               # Source Markdown of data ledger, cold run logs, and tests
 ├── Lab-07/                                    # Lab 07: Comparable-company P/E valuation and peer multiples
 ├── Lab-08/                                    # Lab 08: Precedent transaction screening and valuation triangulation
 ├── Lab-09/                                    # Lab 09: Reference ABG pro-forma engine (known-answer benchmark)
@@ -164,6 +222,10 @@ The repository contains four distinct layers of automated verification:
 
 ## 8. Known Limitations, Monitoring, and Reversal Triggers
 
-- **Limitation:** Project 1 valuation relies on direct equity FCFE modeling due to negative operating cash flows and complex convertible note structures. The WACC-to-FCFF bridge from Week 3 remains partially uncoupled from the pro-forma statements.
-- **Monitoring Trigger:** Monitor customer acceptance milestones for Childress Horizons 2–4 and quarterly operating cash flow before customer prepayments.
-- **Reversal Condition:** Revisit WATCH-DEFER if recognized GAAP quarterly revenue scales above $375M ($1.5B ARR) with two consecutive quarters of positive operating cash flow, and further expansion is financed without dilutive share issuances exceeding 10%.
+- **Modeling Boundary & Valuation Methodology:** The primary required valuation architecture is a Five-Year Three-Statement Pro-Forma FCFF Enterprise DCF with an Enterprise-to-Equity Bridge, fully coupled with the integrated dynamic statements in `run_analysis.py` (0.0000 balance sheet gap). A secondary direct FCFE benchmark (-$5.31/sh) is maintained for comparison. A known modeling boundary is that IREN's $6.30B in convertible senior notes are carried at contract principal debt value on the bridge ($7,836.7M total carrying debt) rather than dynamically bifurcated into straight debt and conversion call-option components under Black-Scholes or lattice models.
+- **Observable Monitoring Triggers:**
+  1. *Horizon Energization & Customer Acceptance:* Formal SEC filing or press release confirming commercial energization and customer acceptance of Childress Horizons 2, 3, and 4 (targeting Q4 2026 / H1 2027).
+  2. *Operating Cash Flow Inflection:* Recognized quarterly Cash Flow from Operations (before customer advances) turning sustainably positive (> $100M/quarter).
+  3. *Gross Power Margin Stability:* Quarterly cost of revenue confirming that gross power margins remain at or above 65–70%.
+- **Reversal Condition:** Revisit the **WATCH / DEFER** recommendation and consider an upgrade to **INITIATE BUY** if: (1) market trading price corrects toward our fundamental valuation band ($12 to $18 per share), OR (2) IREN demonstrates verified customer acceptance and recognized billing for Horizons 2–4 scaling GAAP quarterly revenue above $375M ($1.5B ARR), positive operating cash flow generation before customer prepayments, and capital additions funded without dilutive share issuances exceeding 10%.
+- **Model Refusal / Kill Conditions:** Valuation outputs are automatically refused if the pro-forma balance sheet fails double-entry articulation (Gap > $0.01M), if ending cash violates the $500.0M mandatory liquidity buffer, or if Gordon Growth capitalization is applied to a negative terminal cash flow.
