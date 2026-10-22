@@ -3,7 +3,7 @@
 ================================================================================
 FIN 439: Applied Financial Modeling & Corporate Valuation
 Week 10, Lab 15 — Portfolio Stability Decision & Optimization
-Student: Elliot (one t)
+Student: Elliot
 Script: portfolio.py
 
 Description:
@@ -677,3 +677,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

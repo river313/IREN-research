@@ -3,7 +3,7 @@
 ================================================================================
 FIN 439: Applied Financial Modeling & Corporate Valuation
 Week 10, Lab 15 — Portfolio Stability Decision & Interactive Optimization App
-Student: Elliot (one t)
+Student: Elliot
 Script: app.py
 
 Built with AI help. A learning demonstration, not investment advice.

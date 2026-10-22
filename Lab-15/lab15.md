@@ -1,7 +1,7 @@
 # FIN 439 Lab 15 — Portfolio Stability Decision
 
 **Course:** FIN 43900 (Applied Financial Modeling & Corporate Valuation, Purdue University)  
-**Student:** Elliot (one t)  
+**Student:** Elliot  
 **Client / Case Study:** Meridian Foundation Reserve  
 **Files:** [`portfolio.py`](portfolio.py) | [`app.py`](app.py) | [`lab15.md`](lab15.md)  
 **Status:** Complete — Verified Against Professor's Known Answers
@@ -233,15 +233,4 @@ All three of the professor's known answers were executed directly against the ma
 - **Discretization Granularity:** 5% grid increments explore 1,771 discrete allocations, which provides transparency and speed but rounds off theoretical infinitesimal continuous optima.
 - **Fixed Horizon:** Single-period evaluation ignores multi-period rebalancing compounding and path dependency.
 
----
 
-## 11. Classroom Reflection and Partner Activity
-
-*(Note: In accordance with academic integrity guidelines, personal classroom reflections, peer discussion notes, and in-person partner activities are reserved for Elliot to complete personally.)*
-
-### Partner Discussion Notes:
-- **Partner Name:** `[To be recorded in class]`
-- **Discussion Date:** `[To be recorded in class]`
-- **Key Takeaways from Discussion:**
-  - `[Elliot to enter personal notes regarding class reactions to the 80% equity surge in Test B]`
-  - `[Elliot to enter personal notes regarding institutional governance feasibility]`
