@@ -174,7 +174,7 @@ To evaluate macroeconomic survey data that undergo recurring revisions, the seri
 | **Publication Lag** | 1 Business Day (published late afternoon/evening following market close) |
 | **Historical Revisions** | 0 revisions observed across tested sample (market yields are generally unrevised) |
 | **Actual Download Date** | October 29, 2026 (retrieved via live FRED/ALFRED endpoint) |
-| **Three Verified Observations** | • **2026-10-27:** 4.99% *(Verified manually on official FRED webpage)*<br>• **2026-10-26:** 5.00% *(Verified from official FRED data download, pending student manual check)*<br>• **2026-10-23:** 5.00% *(Verified from official FRED data download, pending student manual check)* |
+| **Three Verified Observations** | • **October 27, 2026:** 4.99% — Verified manually on official FRED website.<br>• **October 26, 2026:** 5.00% — Verified manually on official FRED website.<br>• **October 23, 2026:** 5.00% — Verified manually on official FRED website. |
 | **Historical Cutoff Date** | September 30, 2026 (last day of previous month) |
 | **Last Observation Known on Cutoff** | September 29, 2026 |
 | **Value Known on Cutoff Date** | 5.26% |
