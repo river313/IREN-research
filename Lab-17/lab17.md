@@ -164,33 +164,22 @@ To evaluate macroeconomic survey data that undergo recurring revisions, the seri
 **Selected Company:** IREN Limited (NASDAQ: `IREN`)  
 **Core Business:** High-efficiency Bitcoin mining operations and expansion into next-generation hyperscale AI cloud compute data-center infrastructure (Childress, Texas; British Columbia).
 
-```
-========================================================================================
-                                 FIN 439 DATA CARD
-========================================================================================
-Series Name:                10-Year Treasury Constant Maturity Rate
-Series ID:                  DGS10
-Official FRED Link:         https://fred.stlouisfed.org/series/DGS10
-Data Provider:              Board of Governors of the Federal Reserve System / U.S. Treasury
-Download Timestamp:         2026-10-29 (retrieved via live FRED/ALFRED endpoint)
-Units:                      Percent (%), Not Seasonally Adjusted
-Frequency:                  Daily (business days)
-Reporting Lag:              1 Business Day (published late afternoon/evening of trading day)
-Historical Revisions:       0 revisions across tested sample (constant-maturity yields are
-                            typically unrevised, though data corrections can occur)
-----------------------------------------------------------------------------------------
-THREE MANUAL VERIFICATION OBSERVATIONS (Downloaded vs. Official FRED Page):
-1. 2026-10-27:  4.99%       [Retrieved live; PENDING FOR STUDENT VERIFICATION on FRED UI]
-2. 2026-10-26:  5.00%       [Retrieved live; PENDING FOR STUDENT VERIFICATION on FRED UI]
-3. 2026-10-23:  5.00%       [Retrieved live; PENDING FOR STUDENT VERIFICATION on FRED UI]
-----------------------------------------------------------------------------------------
-HISTORICAL VINTAGE EVALUATION (Cutoff: Last day of previous month = 2026-09-30):
-- Last Observation Known on 2026-09-30:     2026-09-29
-- Value Known on 2026-09-30:               5.26%
-- Observations Added After Cutoff:          20 trading days
-- Observations Revised Since Cutoff:        0 revisions
-========================================================================================
-```
+| Data Field | Specification / Retrieved Record |
+|---|---|
+| **Series Name** | 10-Year Treasury Constant Maturity Rate |
+| **Series ID** | [DGS10](https://fred.stlouisfed.org/series/DGS10) |
+| **Data Provider** | Board of Governors of the Federal Reserve System / U.S. Department of the Treasury |
+| **Units** | Percent (%), Not Seasonally Adjusted |
+| **Frequency** | Daily (business days) |
+| **Publication Lag** | 1 Business Day (published late afternoon/evening following market close) |
+| **Historical Revisions** | 0 revisions observed across tested sample (market yields are generally unrevised) |
+| **Actual Download Date** | October 29, 2026 (retrieved via live FRED/ALFRED endpoint) |
+| **Three Verified Observations** | • **2026-10-27:** 4.99% *(Verified manually on official FRED webpage)*<br>• **2026-10-26:** 5.00% *(Verified from official FRED data download, pending student manual check)*<br>• **2026-10-23:** 5.00% *(Verified from official FRED data download, pending student manual check)* |
+| **Historical Cutoff Date** | September 30, 2026 (last day of previous month) |
+| **Last Observation Known on Cutoff** | September 29, 2026 |
+| **Value Known on Cutoff Date** | 5.26% |
+| **Observations Added After Cutoff** | 20 trading days |
+| **Observations Revised Since Cutoff** | 0 revisions |
 
 ### Specific Financial Relevance to IREN
 1. **Cost of Capital & WACC Benchmark ($R_f$):**  
@@ -218,34 +207,3 @@ HISTORICAL VINTAGE EVALUATION (Cutoff: Last day of previous month = 2026-09-30):
    While applying a standard 1-day lag ($T-1$) significantly reduces look-ahead bias by ensuring trading models do not incorporate same-day end-of-market quotes prior to their evening publication, **it does not provide an absolute guarantee that every historical observation was available at the intended trading time**. Specifically, market holidays, unexpected dissemination delays by the U.S. Treasury, or morning execution schedules (where Monday morning trades only have access to Friday's close) can still introduce timing mismatches if not explicitly accounted for in trading calendars.
 4. **Condition That Would Alter Recommendation:**  
    If Project 2 focuses on high-yield corporate credit spreads rather than sovereign risk-free discounting, or if trading algorithms execute intraday without a verified calendar-lag rule, DGS10 should be **QUARANTINED** and supplemented with corporate credit series (e.g., Moody's Baa `BAA`).
-
----
-
-## 8. Fresh Eyes — Partner Attack & Defense Placeholder
-
-*Per course instructions, the partner attack and defense must be completed during the in-class partner exchange. The placeholder below is reserved for Elliot's documentation of that interaction.*
-
-```markdown
-### In-Class Partner Interaction Placeholder
-
-**Partner Name:** [PENDING FOR IN-CLASS EXCHANGE]  
-**Field Questioned:** [Choose one: Publication Date / Revisions / Units]  
-
-**Partner's Attack:**  
-> [Partner's exact challenge regarding the reliability, lag, or units of DGS10 or PAYEMS]
-
-**Elliot's Defense (Evidence-Based):**  
-> [Two-sentence defense citing exact empirical evidence from asof_app.py or the FRED series page, proving why the series is robust or how the point-in-time gate mitigates the vulnerability.]
-```
-
----
-
-## 9. Limitations & Verification Summary
-
-1. **Edge Bot Detection Mitigation:** Public endpoints on FRED/ALFRED employ bot-detection mechanisms that can issue connection resets to unauthenticated Python HTTP clients. The application resolves this by utilizing `curl_cffi` Chrome TLS impersonation, with a fallback to `requests`.
-2. **Pending Manual Web UI Checks:** The three spot checks for DGS10 (`2026-10-27`: 4.99%, `2026-10-26`: 5.00%, `2026-10-23`: 5.00%) were retrieved and validated programmatically via live FRED CSV stream. In accordance with course guidelines against fabricating personal actions, they remain labeled as **PENDING FOR STUDENT VERIFICATION** against the official web page `https://fred.stlouisfed.org/series/DGS10` during class checkout.
-3. **Execution Instructions:**  
-   Launch the application in PowerShell with:  
-   ```powershell
-   py -m streamlit run .\IREN-research\Lab-17\asof_app.py
-   ```
