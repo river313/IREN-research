@@ -1,10 +1,10 @@
 # FIN 439 Lab 17 — Point-in-Time Audit
 
 **Course:** FIN 43900 (Applied Financial Modeling & Corporate Valuation, Purdue University)  
-**Student:** Elliot (ONE T)  
+**Student:** Elliot  
 **Repository:** `river313/IREN-research`  
 **Files:** [`asof_app.py`](asof_app.py) | [`lab17.md`](lab17.md) | [`requirements.txt`](requirements.txt)  
-**Status:** Complete — All Known Answers & PAYEMS Revisions Empirically Verified (100% Pass)
+**Status:** Complete — Empirically Verified Against Professor Targets and PAYEMS Vintage
 
 ---
 
@@ -39,10 +39,15 @@ The application retrieves live time series data directly from the Federal Reserv
   `https://alfred.stlouisfed.org/graph/alfredgraph.csv?id=SERIES&vintage_date=YYYY-MM-DD`  
   Retrieves the historical vintage of the series exactly as it existed and was knowable on the specified cutoff date `YYYY-MM-DD`.
 
+### Distinction Between Download Date and Observation Date
+It is critical to distinguish between two different timestamps:
+* **Actual Download Date (Execution Time):** The calendar date and time when the application requested and ingested data from the St. Louis Fed servers (e.g., October 29, 2026).
+* **Latest Observation Date (Measured Period):** The most recent calendar date or period measured by the economic data series (e.g., September 2026 for monthly series BAA and FEDFUNDS; October 27, 2026 for daily series DGS10; October 22, 2026 for weekly series MORTGAGE30US).
+
 ### Data Cleaning & Caching Pipeline
 * **Missing Value Filtering:** Missing observation days recorded as `.` are filtered out before calculating time-series metrics.
 * **Cached Ingestion:** Data downloads are encapsulated in two dedicated Streamlit functions—`download_fred_current()` and `download_alfred_vintage()`—decorated with `@st.cache_data(ttl=3600)` to optimize performance, prevent redundant HTTP round-trips, and maintain session persistence.
-* **Resilient Connection Handling:** To prevent transient transport-layer disconnects and bot-management connection resets (HTTP/TLS handshakes from Akamai edge servers), requests utilize `curl_cffi` with browser fingerprint impersonation, gracefully falling back to standard `requests.Session` with a standard User-Agent header.
+* **Resilient Connection Handling:** To prevent transient transport-layer disconnects and bot-management connection resets (HTTP/TLS handshakes from edge servers), requests utilize `curl_cffi` with browser fingerprint impersonation, gracefully falling back to standard `requests.Session` with a standard User-Agent header.
 
 ---
 
@@ -110,20 +115,20 @@ The live retrieval engine matched the professor's exact expected results across 
 ### Empirical Verification Analysis
 1. **BAA (Moody's Baa Corporate Bond Yield):**  
    * Monthly frequency. As of October 5, 2026, Moody's had published the full monthly average for September 2026 (`2026-09-01`) at **6.47%**.  
-   * Because current data also reflects through September 2026, 0 observations have been added, and 0 historical values were revised.
+   * In the current dataset, the latest available month remains September 2026, meaning 0 observations have been added post-cutoff and 0 historical values were revised.
 2. **FEDFUNDS (Effective Federal Funds Rate):**  
    * Monthly frequency. On October 5, 2026, the Federal Reserve had finalized the September 2026 monthly effective federal funds rate at **3.75%**.  
    * As with BAA, 0 observations have been added post-cutoff and 0 historical values have been revised.
 3. **DGS10 (10-Year Treasury Constant Maturity Yield):**  
    * Daily business-day frequency with a 1-day reporting lag. October 5, 2026 was a Monday. Treasury yields for Friday, October 2, 2026 were published and knowable at **5.28%** (October 5 yields close after market trading).  
    * As of current data (October 29, 2026), 17 additional business-day observations have been published (latest on October 27, 2026 at **4.99%**).  
-   * Crucially, the count of revised observations is **0**, verifying that secondary market Treasury yields are not restated once recorded.
+   * The count of revised observations between the historical vintage and current data is **0**, indicating that published secondary market constant-maturity yields on FRED/ALFRED were unchanged over this sample window.
 4. **MORTGAGE30US (Freddie Mac 30-Year Fixed Mortgage Rate):**  
    * Weekly survey frequency (released every Thursday). On Monday, October 5, 2026, the latest available release was Thursday, October 1, 2026 at **7.28%**.  
    * In current data, 3 weekly surveys have been added (October 8, 15, and 22, latest at **7.32%**).  
-   * Survey rates are unrevised (**0 revisions**).
+   * Survey rates show **0 revisions** between the vintage date and current data.
 
-All four values match the professor's validation targets with 100% precision.
+All four retrieved values match the professor's validation targets.
 
 ---
 
@@ -145,19 +150,19 @@ To evaluate macroeconomic survey data that undergo recurring revisions, the seri
 | **Latest Observation Date Today** | N/A | **September 2026** (159,044) | Verified |
 
 ### Economic and Quantitative Implications of PAYEMS Revisions
-1. **The Magnitude of Look-Ahead Bias:**  
-   On January 15, 2025, an equity trader or macroeconomic strategist reading the Employment Situation report observed total nonfarm payrolls for December 2024 at **159,536,000**. In current data, the Bureau of Labor Statistics (BLS) has revised the December 2024 print down to **158,316,000**—a net reduction of **1.22 million jobs**.
+1. **The Magnitude of Revision:**  
+   On January 15, 2025, an equity trader or macroeconomic analyst reviewing the Employment Situation report observed total nonfarm payrolls for December 2024 at **159,536,000**. In current data, the Bureau of Labor Statistics (BLS) has revised the December 2024 print down to **158,316,000**—a net downward adjustment of **1.22 million jobs**.
 2. **Revision Mechanisms:**  
-   The BLS publishes an initial estimate based on incomplete survey returns, followed by two regular monthly revisions. Furthermore, every February, the BLS performs an annual benchmark adjustment to comprehensive state unemployment insurance tax records (Quarterly Census of Employment and Wages - QCEW) and updates seasonal adjustment factors extending back five years. Across the 1,032 overlapping historical months, **381 observations were subsequently revised**.
-3. **Backtesting Fallacy:**  
-   If a trading model backtested on today's FRED data had used the revised 158,316 number for decisions in January 2025, it would have operated on synthetic information that no market participant could have possessed. Testing against current-state data creates artificially inflated Sharpe ratios and false statistical significance.
+   The BLS publishes an initial estimate based on incomplete survey returns, followed by two regular monthly revisions. Furthermore, every February, the BLS performs an annual benchmark adjustment to comprehensive state unemployment insurance tax records (Quarterly Census of Employment and Wages - QCEW) and updates seasonal adjustment factors extending back several years. Across the 1,032 overlapping historical months, **381 observations were subsequently revised**.
+3. **Potential Backtest Distortion:**  
+   If a quantitative model backtested on today's FRED data had used the revised 158,316 figure for decisions in January 2025, it would have operated on information that was unavailable to market participants at that time. Depending on whether revisions adjust past figures upward or downward and whether a strategy is long or short, backtesting against current revised data distorts historical performance metrics, obscuring true real-time signal accuracy and risking spurious backtest results.
 
 ---
 
 ## 6. IREN-Specific Data Card: DGS10
 
 **Selected Company:** IREN Limited (NASDAQ: `IREN`)  
-**Core Business:** High-efficiency Bitcoin mining operations and rapid expansion into next-generation hyperscale AI cloud compute infrastructure (Childress, Texas; British Columbia).
+**Core Business:** High-efficiency Bitcoin mining operations and expansion into next-generation hyperscale AI cloud compute data-center infrastructure (Childress, Texas; British Columbia).
 
 ```
 ========================================================================================
@@ -167,11 +172,12 @@ Series Name:                10-Year Treasury Constant Maturity Rate
 Series ID:                  DGS10
 Official FRED Link:         https://fred.stlouisfed.org/series/DGS10
 Data Provider:              Board of Governors of the Federal Reserve System / U.S. Treasury
-Download Timestamp:         2026-10-29 09:44 EDT
+Download Timestamp:         2026-10-29 (retrieved via live FRED/ALFRED endpoint)
 Units:                      Percent (%), Not Seasonally Adjusted
 Frequency:                  Daily (business days)
 Reporting Lag:              1 Business Day (published late afternoon/evening of trading day)
-Historical Revisions:       NO (0 revisions recorded across entire history)
+Historical Revisions:       0 revisions across tested sample (constant-maturity yields are
+                            typically unrevised, though data corrections can occur)
 ----------------------------------------------------------------------------------------
 THREE MANUAL VERIFICATION OBSERVATIONS (Downloaded vs. Official FRED Page):
 1. 2026-10-27:  4.99%       [Retrieved live; PENDING FOR STUDENT VERIFICATION on FRED UI]
@@ -188,30 +194,30 @@ HISTORICAL VINTAGE EVALUATION (Cutoff: Last day of previous month = 2026-09-30):
 
 ### Specific Financial Relevance to IREN
 1. **Cost of Capital & WACC Benchmark ($R_f$):**  
-   IREN's valuation is driven by discounted cash flows from long-life physical assets, including multi-year data-center leaseholds, electrical substations, and high-performance computing (HPC) facilities. In the Capital Asset Pricing Model (CAPM):
+   IREN's valuation is driven by discounted cash flows from long-life physical infrastructure assets, including data-center leaseholds, electrical substations, and high-performance computing facilities. In the Capital Asset Pricing Model (CAPM):
    $$r_e = R_f + \beta \times \text{ERP}$$
-   The 10-year Treasury yield serves as the foundational risk-free rate ($R_f$). Because IREN exhibits a high equity beta ($\beta \approx 2.5 - 3.2$) due to cryptocurrency volatility and high operating leverage, a 50 bps shift in DGS10 produces a substantial change in IREN's Weighted Average Cost of Capital (WACC), directly impacting the enterprise value of planned gigawatt-scale expansions.
-2. **Corporate Financing & Equipment Facilities:**  
-   IREN finances capital-intensive hardware acquisitions (Nvidia H100/H200/B200 GPU clusters and latest-generation Antminer ASICs) using equipment financing, convertible senior notes, and debt facilities. Lenders benchmark corporate borrowing spreads directly over the 10-year Treasury curve.
+   The 10-year Treasury yield serves as the primary risk-free rate ($R_f$). Because data-center development is highly capital-intensive and cash flows extend across multi-year operational horizons, changes in DGS10 alter the baseline discount rate applied to projected cash flows, directly impacting enterprise valuation.
+2. **Corporate Financing & Credit Conditions:**  
+   Broader debt terms and corporate borrowing costs for capital-intensive digital infrastructure developers are commonly benchmarked against the 10-year Treasury curve. Shifts in Treasury yields influence general borrowing rates and capital availability across the technology infrastructure sector.
 3. **Macro Opportunity Cost vs. Bitcoin Holdings:**  
-   Rising long-term risk-free yields increase the hurdle rate for holding zero-yielding digital assets, historically correlating with downward pressure on Bitcoin valuations and impacting IREN's mining margins.
+   Higher risk-free yields increase the opportunity cost of holding non-yielding speculative assets such as Bitcoin, which can affect Bitcoin valuations and IREN's mining profitability margins.
 
 ---
 
 ## 7. Preliminary Project 2 Decision
 
-> **Preliminary Recommendation:** **ADMIT (with Strict $T-1$ Publication Lag Enforcement)**  
+> **Preliminary Recommendation:** **ADMIT (with Explicit $T-1$ Publication Lag Enforcement)**  
 > *Note: This recommendation is an AI-supported preliminary analysis prepared for student review and class evaluation, not an autonomous or final decision made personally by the student.*
 
 ### Justification
 1. **Suitability for Project 2:**  
-   DGS10 is highly suitable for Project 2 asset pricing, risk-factor modeling, and valuation. Unlike macroeconomic aggregates (e.g. GDP or PAYEMS), secondary market Treasury yields represent executed financial market prices that are **never revised** after initial publication (`Observations Revised Since = 0`).
+   DGS10 is well-suited for Project 2 valuation and discount-rate modeling. Unlike macroeconomic survey aggregates (such as PAYEMS or GDP), daily market-derived Treasury yields exhibited **0 revisions** across our tested vintages, minimizing historical revision risk.
 2. **Information Set on Historical Decision Dates:**  
-   On any decision date $T$, the yield knowable during morning trading hours is the closing yield of $T-1$ (or Friday's close if $T$ is a Monday). When the historical cutoff was set to September 30, 2026, the latest knowable observation was September 29, 2026 (5.26%), exactly matching the operational reality of financial markets.
-3. **Look-Ahead Bias Prevention:**  
-   Because DGS10 has zero revisions, the only look-ahead leak arises from same-day publication timing. If a backtest executes trades at the market open (09:30 EDT) on day $T$ but consumes the DGS10 yield of day $T$ (which is calculated from 15:30 EDT bid quotes and published in the evening), look-ahead bias is introduced. By enforcing a mandatory 1-day lag ($T-1$), the series is completely free of look-ahead bias.
+   On any decision date $T$, the yield knowable during morning trading hours is the closing constant-maturity yield of $T-1$ (or Friday's close if $T$ is a Monday). When the historical cutoff was set to September 30, 2026, the latest knowable observation was September 29, 2026 (5.26%), reflecting the operational structure of financial markets.
+3. **Look-Ahead Bias Considerations:**  
+   While applying a standard 1-day lag ($T-1$) significantly reduces look-ahead bias by ensuring trading models do not incorporate same-day end-of-market quotes prior to their evening publication, **it does not provide an absolute guarantee that every historical observation was available at the intended trading time**. Specifically, market holidays, unexpected dissemination delays by the U.S. Treasury, or morning execution schedules (where Monday morning trades only have access to Friday's close) can still introduce timing mismatches if not explicitly accounted for in trading calendars.
 4. **Condition That Would Alter Recommendation:**  
-   If Project 2 incorporates intraday trading strategies that cannot tolerate a 1-day reporting lag, or if an analyst models high-yield corporate credit risk rather than sovereign risk-free discounting, DGS10 should be **QUARANTINED** and replaced by Moody's Baa Corporate Bond Yield (`BAA`) or an intraday credit ETF proxy (`HYG`).
+   If Project 2 focuses on high-yield corporate credit spreads rather than sovereign risk-free discounting, or if trading algorithms execute intraday without a verified calendar-lag rule, DGS10 should be **QUARANTINED** and supplemented with corporate credit series (e.g., Moody's Baa `BAA`).
 
 ---
 
@@ -236,10 +242,10 @@ HISTORICAL VINTAGE EVALUATION (Cutoff: Last day of previous month = 2026-09-30):
 
 ## 9. Limitations & Verification Summary
 
-1. **Akamai Edge Bot Mitigation:** Public endpoints on FRED/ALFRED employ Akamai bot-detection mechanisms that occasionally issue connection resets to unauthenticated Python HTTP clients. The application resolves this by utilizing `curl_cffi` Chrome TLS impersonation.
+1. **Edge Bot Detection Mitigation:** Public endpoints on FRED/ALFRED employ bot-detection mechanisms that can issue connection resets to unauthenticated Python HTTP clients. The application resolves this by utilizing `curl_cffi` Chrome TLS impersonation, with a fallback to `requests`.
 2. **Pending Manual Web UI Checks:** The three spot checks for DGS10 (`2026-10-27`: 4.99%, `2026-10-26`: 5.00%, `2026-10-23`: 5.00%) were retrieved and validated programmatically via live FRED CSV stream. In accordance with course guidelines against fabricating personal actions, they remain labeled as **PENDING FOR STUDENT VERIFICATION** against the official web page `https://fred.stlouisfed.org/series/DGS10` during class checkout.
 3. **Execution Instructions:**  
    Launch the application in PowerShell with:  
    ```powershell
-   streamlit run asof_app.py
+   py -m streamlit run .\IREN-research\Lab-17\asof_app.py
    ```

@@ -1,6 +1,6 @@
 """
 FIN 43900 — Lab 17: Point-in-Time Audit Streamlit Application
-Student: Elliot (ONE T)
+Student: Elliot
 Institution: Purdue University
 
 Description:
@@ -137,6 +137,7 @@ st.markdown(
     "Data from FRED and ALFRED, Federal Reserve Bank of St. Louis, downloaded today; "
     "built with AI help, a learning demonstration, not investment advice."
 )
+st.caption(f"App execution timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} (actual download time, distinct from latest observation dates).")
 st.write("---")
 
 # ============================================================================
@@ -314,3 +315,4 @@ st.markdown(
     "**Run this application locally:**  \n"
     "`streamlit run asof_app.py`"
 )
+
