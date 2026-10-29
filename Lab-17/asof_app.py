@@ -4,9 +4,9 @@ Student: Elliot
 Institution: Purdue University
 
 Description:
-A Streamlit web application providing point-in-time data provenance audits for
-macroeconomic and interest rate time series using live public FRED and ALFRED
-downloads from the Federal Reserve Bank of St. Louis.
+A Bloomberg-inspired institutional financial dashboard providing point-in-time
+data provenance audits for macroeconomic and interest rate time series using
+live public FRED and ALFRED downloads from the Federal Reserve Bank of St. Louis.
 """
 
 import io
@@ -121,8 +121,18 @@ def format_numeric_value(val: float) -> str:
     return f"{val:.2f}"
 
 
+# Visual Palette: Bloomberg Dark Institutional Theme
+SERIES_COLORS = {
+    "BAA": "#F59E0B",           # Moody's Baa: Warm Amber / Gold
+    "FEDFUNDS": "#10B981",      # Fed Funds: Central Bank Emerald Green
+    "DGS10": "#38BDF8",         # 10-Yr Treasury: Benchmark Cyan / Sky Blue
+    "MORTGAGE30US": "#A855F7",  # Mortgage: Deep Purple / Violet
+    "PAYEMS": "#F43F5E",        # Payrolls: Vibrant Rose
+}
+
+
 # ============================================================================
-# STREAMLIT UI SETUP
+# STREAMLIT UI SETUP & INSTITUTIONAL THEME INJECTION
 # ============================================================================
 
 st.set_page_config(
@@ -131,7 +141,148 @@ st.set_page_config(
     layout="wide",
 )
 
-# Page Title & Attribution
+# Custom Institutional CSS: Dark Navy (#0B1220), Sidebar (#111C2E), Cards (#1E293B), Accents (#38BDF8)
+st.markdown(
+    """
+    <style>
+    /* Main Canvas Background */
+    .stApp {
+        background-color: #0B1220;
+        color: #94A3B8;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    /* Sidebar Background & Borders */
+    section[data-testid="stSidebar"] {
+        background-color: #111C2E !important;
+        border-right: 1px solid #1E293B !important;
+    }
+
+    section[data-testid="stSidebar"] label,
+    section[data-testid="stSidebar"] p,
+    section[data-testid="stSidebar"] span {
+        color: #CBD5E1 !important;
+    }
+
+    /* Headings */
+    h1, h2, h3, h4, h5, h6 {
+        color: #F8FAFC !important;
+        font-weight: 600 !important;
+        letter-spacing: -0.02em !important;
+    }
+
+    /* Subtle Divider */
+    hr {
+        border: none !important;
+        height: 1px !important;
+        background-color: #1E293B !important;
+        margin: 20px 0 !important;
+    }
+
+    /* Native Metric Cards */
+    div[data-testid="stMetric"] {
+        background-color: #1E293B !important;
+        border: 1px solid #334155 !important;
+        border-radius: 8px !important;
+        padding: 12px 16px !important;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3) !important;
+    }
+
+    div[data-testid="stMetricLabel"] p {
+        color: #94A3B8 !important;
+        font-size: 0.75rem !important;
+        font-weight: 600 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        margin-bottom: 2px !important;
+    }
+
+    div[data-testid="stMetricValue"] div {
+        color: #F8FAFC !important;
+        font-size: 1.35rem !important;
+        font-weight: 700 !important;
+    }
+
+    /* Markdown Table Dark Styling */
+    div[data-testid="stMarkdownContainer"] table {
+        width: 100% !important;
+        border-collapse: separate !important;
+        border-spacing: 0 !important;
+        background-color: #0F172A !important;
+        border: 1px solid #334155 !important;
+        border-radius: 8px !important;
+        overflow: hidden !important;
+        margin: 16px 0 !important;
+    }
+
+    div[data-testid="stMarkdownContainer"] th {
+        background-color: #1E293B !important;
+        color: #38BDF8 !important;
+        font-size: 0.78rem !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.05em !important;
+        padding: 12px 14px !important;
+        border-bottom: 1px solid #334155 !important;
+        text-align: left !important;
+    }
+
+    div[data-testid="stMarkdownContainer"] td {
+        padding: 12px 14px !important;
+        color: #E2E8F0 !important;
+        font-size: 0.85rem !important;
+        border-bottom: 1px solid #1E293B !important;
+    }
+
+    div[data-testid="stMarkdownContainer"] tr:hover td {
+        background-color: #1E293B !important;
+    }
+
+    div[data-testid="stMarkdownContainer"] tr:last-child td {
+        border-bottom: none !important;
+    }
+
+    /* Hyperlinks */
+    a {
+        color: #38BDF8 !important;
+        text-decoration: none !important;
+        font-weight: 500 !important;
+    }
+
+    a:hover {
+        text-decoration: underline !important;
+    }
+
+    /* Series Banner Card */
+    .series-banner {
+        background-color: #1E293B;
+        border: 1px solid #334155;
+        border-left: 4px solid #38BDF8;
+        border-radius: 6px;
+        padding: 10px 16px;
+        margin-top: 18px;
+        margin-bottom: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .series-title {
+        color: #F8FAFC;
+        font-weight: 600;
+        font-size: 1.05rem;
+    }
+
+    .series-desc {
+        color: #94A3B8;
+        font-size: 0.82rem;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# Page Header
 st.title("Point-in-Time Interest Rate Audit")
 st.markdown(
     "Data from FRED and ALFRED, Federal Reserve Bank of St. Louis, downloaded today; "
@@ -139,6 +290,7 @@ st.markdown(
 )
 st.caption(f"App execution timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} (actual download time, distinct from latest observation dates).")
 st.write("---")
+
 
 # ============================================================================
 # SIDEBAR CONFIGURATION
@@ -151,7 +303,7 @@ DEFAULT_SERIES = {
     "MORTGAGE30US": "30-year fixed mortgage rate",
 }
 
-st.sidebar.header("Data & Vintage Controls")
+st.sidebar.markdown("### **Data & Vintage Controls**")
 
 selected_default_keys = st.sidebar.multiselect(
     "Select Series",
@@ -245,6 +397,9 @@ for series_id in active_series:
             "Latest Value (Today)": format_numeric_value(last_curr_val),
             "Observations Added After": added_after_count,
             "Observations Revised Since": revised_count,
+            "_raw_hist_val": last_hist_val,
+            "_raw_curr_val": last_curr_val,
+            "_is_monthly": is_monthly,
         })
         
     except Exception as exc:
@@ -252,48 +407,12 @@ for series_id in active_series:
 
 
 # ============================================================================
-# LINE CHARTS SECTION
-# ============================================================================
-
-st.subheader("Historical & Current Time Series")
-
-if valid_series_data:
-    for series_id, sdata in valid_series_data.items():
-        desc = DEFAULT_SERIES.get(series_id, "Custom Series")
-        st.markdown(f"#### **{series_id}** — {desc}")
-        
-        df_curr = sdata["current"]
-        df_hist = sdata["vintage"]
-        is_monthly = is_monthly_series(df_curr, series_id)
-        
-        # Filter chart from selected start date
-        chart_df = df_curr[df_curr["observation_date"] >= start_datetime].copy()
-        if not chart_df.empty:
-            chart_data = chart_df.set_index("observation_date")["value"]
-            st.line_chart(chart_data)
-        else:
-            st.info(f"No current observations available after start date {start_date_input}.")
-            
-        last_hist_row = df_hist.iloc[-1]
-        last_hist_date_str = format_observation_date(last_hist_row["observation_date"], is_monthly)
-        last_hist_val_str = format_numeric_value(last_hist_row["value"])
-        
-        st.caption(
-            f"**Last date in the data known on {as_of_date_input.strftime('%B %d, %Y')}:** "
-            f"**{last_hist_date_str}** (Value: **{last_hist_val_str}**)"
-        )
-        st.write("")
-
-
-# ============================================================================
-# COMPARISON TABLE SECTION
+# COMPARISON TABLE SECTION (PROMINENT AT TOP)
 # ============================================================================
 
 st.subheader("Point-in-Time Audit & Revision Summary")
 
 if audit_results:
-    table_df = pd.DataFrame(audit_results)
-    
     # Display clean GitHub-style markdown table with clickable FRED links
     md_lines = [
         "| Series | Last date known | Value known | Latest date today | Latest value today | Observations added after cutoff | Observations revised since |",
@@ -309,10 +428,100 @@ if audit_results:
 else:
     st.warning("No audit records available to display.")
 
+st.write("---")
+
+
+# ============================================================================
+# LINE CHARTS & METRIC CARDS SECTION
+# ============================================================================
+
+st.subheader("Historical & Current Time Series")
+
+if valid_series_data:
+    for series_id, sdata in valid_series_data.items():
+        desc = DEFAULT_SERIES.get(series_id, "Custom Series")
+        color = SERIES_COLORS.get(series_id, "#38BDF8")
+        
+        # Styled Banner Header with Series Color Accent
+        st.markdown(
+            f"""
+            <div class="series-banner" style="border-left: 4px solid {color};">
+                <div>
+                    <span class="series-title">{series_id}</span>
+                    <span style="color: #64748B; margin: 0 8px;">•</span>
+                    <span class="series-desc">{desc}</span>
+                </div>
+                <div style="font-size: 0.75rem; color: {color}; font-weight: 600; text-transform: uppercase;">
+                    FRED • ALFRED
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        
+        df_curr = sdata["current"]
+        df_hist = sdata["vintage"]
+        is_monthly = is_monthly_series(df_curr, series_id)
+        
+        last_hist_row = df_hist.iloc[-1]
+        last_hist_date_str = format_observation_date(last_hist_row["observation_date"], is_monthly)
+        last_hist_val_str = format_numeric_value(last_hist_row["value"])
+        
+        last_curr_row = df_curr.iloc[-1]
+        last_curr_date_str = format_observation_date(last_curr_row["observation_date"], is_monthly)
+        last_curr_val_str = format_numeric_value(last_curr_row["value"])
+        
+        # Find corresponding audit record
+        rec = next((r for r in audit_results if r["Series_ID"] == series_id), None)
+        added_count = rec["Observations Added After"] if rec else 0
+        rev_count = rec["Observations Revised Since"] if rec else 0
+        
+        # 4-Column Rounded Metric Card Grid
+        c1, c2, c3, c4 = st.columns(4)
+        with c1:
+            st.metric(
+                label=f"Value Known ({as_of_date_input.strftime('%b %d, %Y')})",
+                value=last_hist_val_str,
+                help=f"Last observation available on {as_of_date_input.strftime('%Y-%m-%d')}: {last_hist_date_str}",
+            )
+        with c2:
+            st.metric(
+                label=f"Latest Value Today ({last_curr_date_str})",
+                value=last_curr_val_str,
+                help="Most recent observation in current FRED dataset",
+            )
+        with c3:
+            st.metric(
+                label="Observations Added",
+                value=f"+{added_count}" if added_count > 0 else "0",
+                help="Observations published after historical cutoff date",
+            )
+        with c4:
+            st.metric(
+                label="Revised Observations",
+                value=f"{rev_count}",
+                help="Historical observations on matching dates revised since the cutoff",
+            )
+        
+        # Line chart with series-specific distinct color
+        chart_df = df_curr[df_curr["observation_date"] >= start_datetime].copy()
+        if not chart_df.empty:
+            chart_data = chart_df.set_index("observation_date")["value"]
+            st.line_chart(chart_data, color=color)
+        else:
+            st.info(f"No current observations available after start date {start_date_input}.")
+            
+        # Required Under-Chart Caption
+        st.caption(
+            f"**Last date in the data known on {as_of_date_input.strftime('%B %d, %Y')}:** "
+            f"**{last_hist_date_str}** (Value: **{last_hist_val_str}**)"
+        )
+        st.write("")
+
+
 # Footer note with execution command
 st.write("---")
 st.markdown(
     "**Run this application locally:**  \n"
-    "`streamlit run asof_app.py`"
+    "`py -m streamlit run .\\IREN-research\\Lab-17\\asof_app.py`"
 )
-
