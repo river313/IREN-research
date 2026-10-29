@@ -127,7 +127,7 @@ def format_numeric_value(val: float) -> str:
 # BRAND PALETTE & SERIES COLOR SYSTEM
 # ============================================================================
 
-# User specifications:
+# Color specifications:
 # Background: #0B1220, Sidebar: #111827, Cards: #1E293B, Borders: #334155
 # BAA: Cyan (#38BDF8), FEDFUNDS: Indigo (#818CF8), DGS10: Emerald (#34D399), MORTGAGE30US: Amber (#FBBF24)
 SERIES_PALETTE = {
@@ -189,86 +189,6 @@ st.markdown(
         height: 1px !important;
         background-color: #1E293B !important;
         margin: 22px 0 !important;
-    }
-
-    /* Top KPI Cards */
-    .kpi-container {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 14px;
-        margin: 16px 0 24px 0;
-    }
-
-    .kpi-card {
-        background-color: #1E293B;
-        border: 1px solid #334155;
-        border-radius: 8px;
-        padding: 14px 16px;
-        position: relative;
-        overflow: hidden;
-        transition: transform 0.15s ease, border-color 0.15s ease;
-    }
-
-    .kpi-card:hover {
-        border-color: #475569;
-        transform: translateY(-1px);
-    }
-
-    .kpi-stripe {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 3px;
-    }
-
-    .kpi-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 6px;
-    }
-
-    .kpi-symbol {
-        font-size: 0.82rem;
-        font-weight: 700;
-        color: #F8FAFC;
-        letter-spacing: 0.04em;
-    }
-
-    .kpi-badge {
-        font-size: 0.68rem;
-        font-weight: 600;
-        padding: 2px 6px;
-        border-radius: 4px;
-        background-color: rgba(51, 65, 85, 0.4);
-        color: #94A3B8;
-        text-transform: uppercase;
-    }
-
-    .kpi-value {
-        font-size: 1.55rem;
-        font-weight: 700;
-        color: #F8FAFC;
-        line-height: 1.2;
-        margin-bottom: 4px;
-    }
-
-    .kpi-name {
-        font-size: 0.72rem;
-        color: #94A3B8;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        margin-bottom: 6px;
-    }
-
-    .kpi-asof {
-        font-size: 0.70rem;
-        color: #64748B;
-        border-top: 1px solid rgba(51, 65, 85, 0.5);
-        padding-top: 6px;
-        margin-top: 4px;
     }
 
     /* Comparison Table Styling */
@@ -355,15 +275,15 @@ st.markdown(
         background-color: #1E293B;
         border: 1px solid #334155;
         border-radius: 8px;
-        padding: 18px 20px 14px 20px;
-        margin-bottom: 22px;
+        padding: 14px 18px 10px 18px;
+        margin-top: 14px;
+        margin-bottom: 12px;
     }
 
     .chart-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 12px;
     }
 
     .chart-title-left {
@@ -441,7 +361,7 @@ st.write("---")
 
 
 # ============================================================================
-# SIDEBAR CONFIGURATION (PRESERVED EXACT STRUCTURE)
+# SIDEBAR CONFIGURATION (ORGANIZED CONTROLS)
 # ============================================================================
 
 DEFAULT_SERIES = {
@@ -451,13 +371,13 @@ DEFAULT_SERIES = {
     "MORTGAGE30US": "30-year fixed mortgage rate",
 }
 
+# 1. Data Selection
 st.sidebar.markdown(
     """
-    <div style="margin-bottom: 16px;">
-        <span style="color: #38BDF8; font-weight: 700; font-size: 0.82rem; letter-spacing: 0.08em; text-transform: uppercase;">
-            Audit Configuration
+    <div style="margin-bottom: 10px;">
+        <span style="color: #38BDF8; font-weight: 700; font-size: 0.80rem; letter-spacing: 0.08em; text-transform: uppercase;">
+            1. Data Selection
         </span>
-        <p style="color: #64748B; font-size: 0.75rem; margin: 2px 0 0 0;">Point-in-Time Temporal Gate</p>
     </div>
     """,
     unsafe_allow_html=True,
@@ -477,6 +397,20 @@ additional_series_input = st.sidebar.text_input(
     help="Enter any valid FRED series ID to include in the audit.",
 ).strip()
 
+st.sidebar.write("---")
+
+# 2. Date Controls
+st.sidebar.markdown(
+    """
+    <div style="margin-bottom: 10px;">
+        <span style="color: #818CF8; font-weight: 700; font-size: 0.80rem; letter-spacing: 0.08em; text-transform: uppercase;">
+            2. Date Controls
+        </span>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
 start_date_input = st.sidebar.date_input(
     "Start Date",
     value=date(2020, 1, 1),
@@ -489,9 +423,47 @@ as_of_date_input = st.sidebar.date_input(
     help="Historical date cutoff: shows values as knowable on this vintage date.",
 )
 
+st.sidebar.write("---")
+
+# 3. Chart Controls
+st.sidebar.markdown(
+    """
+    <div style="margin-bottom: 10px;">
+        <span style="color: #34D399; font-weight: 700; font-size: 0.80rem; letter-spacing: 0.08em; text-transform: uppercase;">
+            3. Chart Controls
+        </span>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
+date_range_option = st.sidebar.selectbox(
+    "Chart Date Range",
+    options=["All (From Start Date)", "1 Year", "3 Years", "5 Years"],
+    index=0,
+    help="Quick filter for timeline zoom without affecting historical audit metrics.",
+)
+
+show_individual_charts = st.sidebar.checkbox(
+    "Show Individual Series Charts",
+    value=True,
+    help="Display individual charts for each selected series directly below the comparison chart.",
+)
+
 vintage_date_str = as_of_date_input.strftime("%Y-%m-%d")
 start_datetime = pd.to_datetime(start_date_input)
 as_of_datetime = pd.to_datetime(as_of_date_input)
+
+# Calculate chart display filter start based on date range control
+today_dt = pd.to_datetime(date.today())
+if date_range_option == "1 Year":
+    chart_view_start = max(start_datetime, today_dt - pd.DateOffset(years=1))
+elif date_range_option == "3 Years":
+    chart_view_start = max(start_datetime, today_dt - pd.DateOffset(years=3))
+elif date_range_option == "5 Years":
+    chart_view_start = max(start_datetime, today_dt - pd.DateOffset(years=5))
+else:
+    chart_view_start = start_datetime
 
 # Combine active series list preserving order
 active_series = list(selected_default_keys)
@@ -567,22 +539,29 @@ for series_id in active_series:
         st.error(f"Error loading series **{series_id}**: {exc}")
 
 
+# Sidebar Multiselect specifically for Combined Chart series
+available_for_combined = [s for s in active_series if s in valid_series_data]
+combined_selected_series = st.sidebar.multiselect(
+    "Combined Chart Series",
+    options=available_for_combined,
+    default=available_for_combined,
+    help="Select which series appear on the combined Interest Rate Comparison chart.",
+)
+
+
 # ============================================================================
-# TOP KPI CARDS (LATEST RETRIEVED VALUES OF 4 DEFAULT SERIES)
+# 1. FIXED TOP KPI CARDS (RELIABLE NATIVE STREAMLIT COLUMNS)
 # ============================================================================
 
-# Pre-fetch default series for top cards if available
 kpi_items = ["BAA", "FEDFUNDS", "DGS10", "MORTGAGE30US"]
 kpi_data = {}
 
 for k_id in kpi_items:
-    # Check if already downloaded
     if k_id in valid_series_data:
         rec = next((r for r in audit_results if r["Series_ID"] == k_id), None)
         if rec:
             kpi_data[k_id] = rec
     else:
-        # Fetch current and historical for card display
         try:
             k_curr = download_fred_current(k_id)
             k_hist = download_alfred_vintage(k_id, vintage_date_str)
@@ -598,9 +577,9 @@ for k_id in kpi_items:
             pass
 
 if kpi_data:
-    st.markdown('<div class="kpi-container">', unsafe_allow_html=True)
-    cards_html = []
-    for k_id in kpi_items:
+    st.markdown("### **Market Overview**")
+    kpi_cols = st.columns(4)
+    for idx, k_id in enumerate(kpi_items):
         if k_id in kpi_data:
             c_info = SERIES_PALETTE.get(k_id, {})
             c_color = c_info.get("color", DEFAULT_COLOR)
@@ -612,33 +591,133 @@ if kpi_data:
             hist_val = rec["Value Known (As Of)"]
             hist_date = rec["Last Date Known (As Of)"]
             
-            card_html = f"""
-            <div class="kpi-card">
-                <div class="kpi-stripe" style="background-color: {c_color};"></div>
-                <div class="kpi-header">
-                    <span class="kpi-symbol" style="color: {c_color};">{k_id}</span>
-                    <span class="kpi-badge">{c_freq}</span>
-                </div>
-                <div class="kpi-value">{curr_val}%</div>
-                <div class="kpi-name" title="{c_name}">{c_name}</div>
-                <div class="kpi-asof">
-                    As-Of {as_of_date_input.strftime('%b %d, %Y')}: <strong style="color: #E2E8F0;">{hist_val}%</strong> ({hist_date})
-                </div>
-            </div>
-            """
-            cards_html.append(card_html)
-            
-    st.markdown('<div class="kpi-container">' + "".join(cards_html) + '</div>', unsafe_allow_html=True)
+            with kpi_cols[idx]:
+                # Single-line HTML without indentation to avoid Markdown code-block parsing
+                card_html = (
+                    f"<div style='background-color:#1E293B;border:1px solid #334155;border-top:3px solid {c_color};"
+                    f"border-radius:8px;padding:12px 14px;margin-bottom:12px;min-height:130px;display:flex;"
+                    f"flex-direction:column;justify-content:space-between;box-shadow:0 1px 3px rgba(0,0,0,0.3);'>"
+                    f"<div style='display:flex;justify-content:space-between;align-items:center;'>"
+                    f"<span style='font-size:0.85rem;font-weight:700;color:{c_color};letter-spacing:0.04em;'>{k_id}</span>"
+                    f"<span style='font-size:0.68rem;font-weight:600;padding:2px 6px;border-radius:4px;background-color:rgba(51,65,85,0.5);color:#94A3B8;text-transform:uppercase;'>{c_freq}</span>"
+                    f"</div>"
+                    f"<div style='font-size:1.60rem;font-weight:700;color:#F8FAFC;margin:4px 0;line-height:1.2;'>{curr_val}%</div>"
+                    f"<div style='font-size:0.72rem;color:#94A3B8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:6px;' title='{c_name}'>{c_name}</div>"
+                    f"<div style='font-size:0.68rem;color:#64748B;border-top:1px solid rgba(51,65,85,0.5);padding-top:5px;margin-top:auto;'>"
+                    f"As-Of {as_of_date_input.strftime('%b %d, %Y')}: <strong style='color:#E2E8F0;'>{hist_val}%</strong> ({hist_date})"
+                    f"</div>"
+                    f"</div>"
+                )
+                st.markdown(card_html, unsafe_allow_html=True)
+
+st.write("---")
 
 
 # ============================================================================
-# COMPARISON TABLE SECTION (ONE CLEAN TABLE WITH REQUIRED COLUMNS)
+# 2. COMBINED INTERACTIVE CHART: INTEREST RATE COMPARISON
+# ============================================================================
+
+st.markdown("### **Interest Rate Comparison**")
+st.markdown(
+    "<p style='color: #94A3B8; font-size: 0.85rem; margin-top: -6px; margin-bottom: 12px;'>"
+    "Interactive multi-series comparison across benchmark bond yields, policy rates, and mortgage costs. "
+    "Click on legend items to toggle series. Hover to inspect precise dates and values."
+    "</p>",
+    unsafe_allow_html=True,
+)
+
+if combined_selected_series:
+    fig_combined = go.Figure()
+    
+    for s_id in combined_selected_series:
+        if s_id in valid_series_data:
+            s_pal = SERIES_PALETTE.get(s_id, {})
+            color = s_pal.get("color", DEFAULT_COLOR)
+            df_series = valid_series_data[s_id]["current"]
+            
+            # Apply chart view date filter
+            c_df = df_series[df_series["observation_date"] >= chart_view_start].copy()
+            if not c_df.empty:
+                y_fmt = ",.0f" if (c_df["value"].abs().max() > 1000) else ".2f"
+                suffix = "" if (c_df["value"].abs().max() > 1000) else "%"
+                
+                fig_combined.add_trace(
+                    go.Scatter(
+                        x=c_df["observation_date"],
+                        y=c_df["value"],
+                        mode="lines",
+                        name=f"{s_id} ({c_df.iloc[-1]['value']:.2f}{suffix})" if suffix else f"{s_id}",
+                        line=dict(color=color, width=2.2),
+                        hovertemplate=f"<b>{s_id}</b>: %{{y:{y_fmt}}}{suffix}<br>Date: %{{x|%b %d, %Y}}<extra></extra>",
+                    )
+                )
+    
+    # As-Of Cutoff reference line
+    if as_of_datetime >= chart_view_start and as_of_datetime <= today_dt:
+        fig_combined.add_vline(
+            x=as_of_datetime,
+            line_width=1.5,
+            line_dash="dash",
+            line_color="#94A3B8",
+            annotation_text=f"As-Of ({as_of_date_input.strftime('%b %d, %Y')})",
+            annotation_position="top left",
+            annotation_font=dict(size=10, color="#CBD5E1"),
+        )
+    
+    fig_combined.update_layout(
+        paper_bgcolor="#1E293B",
+        plot_bgcolor="#1E293B",
+        margin=dict(l=40, r=25, t=35, b=35),
+        height=400,
+        xaxis=dict(
+            showgrid=True,
+            gridcolor="rgba(51, 65, 85, 0.4)",
+            color="#94A3B8",
+            tickfont=dict(size=10, color="#94A3B8"),
+            zeroline=False,
+            title=dict(text="Observation Date", font=dict(size=11, color="#64748B")),
+        ),
+        yaxis=dict(
+            showgrid=True,
+            gridcolor="rgba(51, 65, 85, 0.4)",
+            color="#94A3B8",
+            tickfont=dict(size=10, color="#94A3B8"),
+            zeroline=False,
+            title=dict(text="Yield / Rate (%)", font=dict(size=11, color="#64748B")),
+        ),
+        hoverlabel=dict(
+            bgcolor="#0F172A",
+            font_size=12,
+            font_family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto",
+            bordercolor="#334155",
+        ),
+        legend=dict(
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1,
+            font=dict(size=11, color="#CBD5E1"),
+            bgcolor="rgba(30, 41, 59, 0.8)",
+            bordercolor="#334155",
+            borderwidth=1,
+        ),
+    )
+    
+    st.plotly_chart(fig_combined, use_container_width=True, config={"displayModeBar": False})
+else:
+    st.info("Select at least one series in 'Combined Chart Series' from the sidebar to display the comparison.")
+
+st.write("---")
+
+
+# ============================================================================
+# 3. COMPARISON TABLE SECTION (ONE CLEAN TABLE WITH REQUIRED COLUMNS)
 # ============================================================================
 
 st.markdown("### **Point-in-Time Audit & Revision Summary**")
 
 if audit_results:
-    # Custom HTML table matching Bloomberg institutional styling
     table_rows_html = []
     for row in audit_results:
         s_id = row["Series_ID"]
@@ -690,113 +769,116 @@ st.write("---")
 
 
 # ============================================================================
-# LINE CHARTS SECTION (ONE INTERACTIVE PLOTLY CHART PER SELECTED SERIES)
+# 4. INDIVIDUAL CHARTS SECTION (REQUIRED BY PROFESSOR)
 # ============================================================================
 
-st.markdown("### **Historical & Current Time Series Analysis**")
-
-if valid_series_data:
-    for series_id, sdata in valid_series_data.items():
-        s_palette = SERIES_PALETTE.get(series_id, {})
-        color = s_palette.get("color", DEFAULT_COLOR)
-        desc = DEFAULT_SERIES.get(series_id, s_palette.get("name", "Custom Series"))
-        
-        df_curr = sdata["current"]
-        df_hist = sdata["vintage"]
-        is_monthly = is_monthly_series(df_curr, series_id)
-        
-        last_hist_row = df_hist.iloc[-1]
-        last_hist_date_str = format_observation_date(last_hist_row["observation_date"], is_monthly)
-        last_hist_val_str = format_numeric_value(last_hist_row["value"])
-        
-        # Filter chart from selected start date
-        chart_df = df_curr[df_curr["observation_date"] >= start_datetime].copy()
-        
-        # Card container
-        st.markdown(
-            f"""
-            <div class="chart-card">
-                <div class="chart-header">
-                    <div class="chart-title-left">
-                        <span class="chart-dot" style="background-color: {color};"></span>
-                        <span class="chart-title">{series_id}</span>
-                        <span class="chart-subtitle">— {desc}</span>
+if show_individual_charts:
+    st.markdown("### **Individual Series Analysis**")
+    
+    if valid_series_data:
+        for series_id in active_series:
+            if series_id not in valid_series_data:
+                continue
+                
+            sdata = valid_series_data[series_id]
+            s_palette = SERIES_PALETTE.get(series_id, {})
+            color = s_palette.get("color", DEFAULT_COLOR)
+            desc = DEFAULT_SERIES.get(series_id, s_palette.get("name", "Custom Series"))
+            
+            df_curr = sdata["current"]
+            df_hist = sdata["vintage"]
+            is_monthly = is_monthly_series(df_curr, series_id)
+            
+            last_hist_row = df_hist.iloc[-1]
+            last_hist_date_str = format_observation_date(last_hist_row["observation_date"], is_monthly)
+            last_hist_val_str = format_numeric_value(last_hist_row["value"])
+            
+            # Filter chart view from calculated chart_view_start
+            chart_df = df_curr[df_curr["observation_date"] >= chart_view_start].copy()
+            
+            # Card container
+            st.markdown(
+                f"""
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div class="chart-title-left">
+                            <span class="chart-dot" style="background-color: {color};"></span>
+                            <span class="chart-title">{series_id}</span>
+                            <span class="chart-subtitle">— {desc}</span>
+                        </div>
+                        <span class="chart-meta">FRED • CURRENT VINTAGE</span>
                     </div>
-                    <span class="chart-meta">FRED • CURRENT VINTAGE</span>
                 </div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-        
-        if not chart_df.empty:
-            # Build interactive Plotly chart with institutional dark styling
-            fig = go.Figure()
-            
-            # Value formatting for tooltip
-            y_hover_fmt = ",.0f" if (chart_df["value"].abs().max() > 1000) else ".2f"
-            
-            fig.add_trace(
-                go.Scatter(
-                    x=chart_df["observation_date"],
-                    y=chart_df["value"],
-                    mode="lines",
-                    name=series_id,
-                    line=dict(color=color, width=2.5),
-                    hovertemplate=f"<b>%{{x|%b %d, %Y}}</b><br>Value: <b>%{{y:{y_hover_fmt}}}</b><extra></extra>",
-                )
+                """,
+                unsafe_allow_html=True,
             )
             
-            # Visual Historical Cutoff Marker (Vertical Dashed Line)
-            if chart_df["observation_date"].min() <= as_of_datetime <= chart_df["observation_date"].max():
-                fig.add_vline(
-                    x=as_of_datetime,
-                    line_width=1.5,
-                    line_dash="dash",
-                    line_color="#94A3B8",
-                    annotation_text=f"As-Of ({as_of_date_input.strftime('%b %d, %Y')})",
-                    annotation_position="top left",
-                    annotation_font=dict(size=10, color="#CBD5E1"),
+            if not chart_df.empty:
+                fig_ind = go.Figure()
+                y_hover_fmt = ",.0f" if (chart_df["value"].abs().max() > 1000) else ".2f"
+                suffix = "" if (chart_df["value"].abs().max() > 1000) else "%"
+                
+                fig_ind.add_trace(
+                    go.Scatter(
+                        x=chart_df["observation_date"],
+                        y=chart_df["value"],
+                        mode="lines",
+                        name=series_id,
+                        line=dict(color=color, width=2.4),
+                        hovertemplate=f"<b>%{{x|%b %d, %Y}}</b><br>Value: <b>%{{y:{y_hover_fmt}}}{suffix}</b><extra></extra>",
+                    )
                 )
-            
-            fig.update_layout(
-                paper_bgcolor="#1E293B",
-                plot_bgcolor="#1E293B",
-                margin=dict(l=35, r=25, t=15, b=35),
-                height=320,
-                xaxis=dict(
-                    showgrid=True,
-                    gridcolor="rgba(51, 65, 85, 0.4)",
-                    color="#94A3B8",
-                    tickfont=dict(size=10, color="#94A3B8"),
-                    zeroline=False,
-                ),
-                yaxis=dict(
-                    showgrid=True,
-                    gridcolor="rgba(51, 65, 85, 0.4)",
-                    color="#94A3B8",
-                    tickfont=dict(size=10, color="#94A3B8"),
-                    zeroline=False,
-                ),
-                hoverlabel=dict(
-                    bgcolor="#0F172A",
-                    font_size=12,
-                    font_family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto",
-                    bordercolor="#334155",
-                ),
-                showlegend=False,
+                
+                # As-Of Cutoff reference line
+                if as_of_datetime >= chart_view_start and as_of_datetime <= today_dt:
+                    fig_ind.add_vline(
+                        x=as_of_datetime,
+                        line_width=1.5,
+                        line_dash="dash",
+                        line_color="#94A3B8",
+                        annotation_text=f"As-Of ({as_of_date_input.strftime('%b %d, %Y')})",
+                        annotation_position="top left",
+                        annotation_font=dict(size=10, color="#CBD5E1"),
+                    )
+                
+                fig_ind.update_layout(
+                    paper_bgcolor="#1E293B",
+                    plot_bgcolor="#1E293B",
+                    margin=dict(l=35, r=25, t=15, b=35),
+                    height=280,
+                    xaxis=dict(
+                        showgrid=True,
+                        gridcolor="rgba(51, 65, 85, 0.4)",
+                        color="#94A3B8",
+                        tickfont=dict(size=10, color="#94A3B8"),
+                        zeroline=False,
+                    ),
+                    yaxis=dict(
+                        showgrid=True,
+                        gridcolor="rgba(51, 65, 85, 0.4)",
+                        color="#94A3B8",
+                        tickfont=dict(size=10, color="#94A3B8"),
+                        zeroline=False,
+                    ),
+                    hoverlabel=dict(
+                        bgcolor="#0F172A",
+                        font_size=12,
+                        font_family="-apple-system, BlinkMacSystemFont, Segoe UI, Roboto",
+                        bordercolor="#334155",
+                    ),
+                    showlegend=False,
+                )
+                
+                st.plotly_chart(fig_ind, use_container_width=True, config={"displayModeBar": False})
+            else:
+                st.info(f"No current observations available after start date {chart_view_start.strftime('%Y-%m-%d')}.")
+                
+            # Required Under-Chart Caption (Preserved Word-for-Word for Professor Grading)
+            st.caption(
+                f"**Last date in the data known on {as_of_date_input.strftime('%B %d, %Y')}:** "
+                f"**{last_hist_date_str}** (Value: **{last_hist_val_str}**)"
             )
-            
-            st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
-        else:
-            st.info(f"No current observations available after start date {start_date_input}.")
-            
-        # Required Under-Chart Caption (Preserved Word-for-Word)
-        st.caption(
-            f"**Last date in the data known on {as_of_date_input.strftime('%B %d, %Y')}:** "
-            f"**{last_hist_date_str}** (Value: **{last_hist_val_str}**)"
-        )
-        st.write("")
+            st.write("")
 
 
 # ============================================================================
@@ -808,7 +890,7 @@ st.markdown(
     """
     <div style="display: flex; justify-content: space-between; align-items: center; color: #64748B; font-size: 0.78rem;">
         <div>
-            VINTAGE Analytics • FIN 439 Applied Financial Modeling
+            VINTAGE Analytics • FIN 439 Applied Financial Modeling & Corporate Valuation
         </div>
         <div>
             Launch locally: <code>py -m streamlit run .\\IREN-research\\Lab-17\\asof_app.py</code>
