@@ -3,20 +3,20 @@
 **Course:** FIN 43900 (Applied Financial Modeling & Corporate Valuation, Purdue University)  
 **Student:** Elliot  
 **Repository:** `river313/IREN-research`  
-**Files:** [`buffett_sec.py`](buffett_sec.py) | [`app.py`](app.py) | [`costco_buffett_memo.md`](costco_buffett_memo.md) | [`verification_report.md`](verification_report.md) | [`run_tests.py`](run_tests.py) | [`skills/warren-buffett/SKILL.md`](skills/warren-buffett/SKILL.md)  
-**Status:** Complete — 100% Empirically Verified Against Professor Target Reference
+**Files:** [`buffett_sec.py`](buffett_sec.py) | [`app.py`](app.py) | [`costco_buffett_memo.md`](costco_buffett_memo.md) | [`run_tests.py`](run_tests.py) | [`requirements.txt`](requirements.txt) | [`skills/warren-buffett/SKILL.md`](skills/warren-buffett/SKILL.md)  
+**Status:** Complete — Verified against Costco reference data and SEC EDGAR filings
 
 ---
 
 ## 1. Objective & Architectural Philosophy
 
-The objective of FIN 439 Lab 18 is to construct a production-grade, reusable AI skill that embodies Warren Buffett's investment philosophy to evaluate corporate business quality using actual financial filings from the **U.S. Securities and Exchange Commission (SEC) EDGAR API**.
+The objective of FIN 439 Lab 18 is to construct a reusable AI skill that embodies Warren Buffett's investment philosophy to evaluate corporate business quality using audited financial data from the **SEC EDGAR API**.
 
 The guiding principle of this laboratory is:
 > **Python computes every financial number from SEC filings. AI interprets those numbers using Buffett's investment philosophy.**
 > Do not invent, estimate, or fabricate financial figures, validation results, test outcomes, or student actions.
 
-In traditional quantitative modeling and corporate valuation, LLMs often suffer from mathematical hallucinations, inconsistent definitions of accounting line items, and look-ahead period alignment errors. This lab addresses that vulnerability by decoupling **numerical computation** (enforced deterministically in Python via SEC XBRL filings) from **qualitative synthesis** (AI interpretation of franchise moats, capital allocation discipline, and owner earnings durability).
+In corporate valuation and financial research, large language models often hallucinate financial figures, misapply accounting definitions, or mix fiscal year dates. This system solves that problem by decoupling **numerical calculation** (enforced in Python from official SEC XBRL filings) from **qualitative interpretation** (AI analysis of economic moats, competitive durability, and owner earnings compounding).
 
 ---
 
@@ -26,25 +26,25 @@ All financial data is pulled dynamically from the official SEC EDGAR public endp
 * **Company Ticker Lookup:** `https://www.sec.gov/files/company_tickers.json`
 * **XBRL Company Facts:** `https://data.sec.gov/api/xbrl/companyfacts/CIK##########.json` (where `##########` is the zero-padded, ten-digit CIK).
 
-### Compliance & Header Standards
-* All requests pass an SEC-compliant `User-Agent` identifying Elliot: `User-Agent: Elliot river313@purdue.edu`.
-* Contact details can be dynamically specified via the `SEC_EDGAR_EMAIL` environment variable or the Streamlit sidebar without exposing personal credentials in public source control.
+### Request Standards & Privacy
+* Requests pass an SEC-compliant `User-Agent` identifying Elliot: `User-Agent: Elliot river313@purdue.edu`.
+* Contact details can be configured via the `SEC_EDGAR_EMAIL` environment variable or the Streamlit sidebar without committing personal credentials to public source control.
 
-### Strict Accounting Filters & Hierarchy
-1. **10-K Filings Only:** Ingests only annual 10-K filings (`form == '10-K'`); excludes quarterly 10-Q forms, 8-K disclosures, or unverified amendments.
-2. **One-Year Duration Constraints:** Income statement and cash flow metrics enforce duration boundaries `350 <= (end - start).days <= 375` to accommodate 52/53-week fiscal retail calendars while rejecting multi-year or quarterly chunks.
-3. **Latest Filing Precedence:** When subsequent 10-Ks restate or re-report earlier fiscal periods, the engine selects the filing with the latest `filed` date.
+### Strict Accounting Filters
+1. **10-K Filings Only:** Ingests only annual 10-K filings (`form == '10-K'`); ignores quarterly 10-Q forms and 8-K disclosures.
+2. **One-Year Duration Constraints:** Income statement and cash flow items enforce duration boundaries `350 <= (end - start).days <= 375` to accommodate 52/53-week fiscal retail calendars while rejecting multi-year or quarterly periods.
+3. **Latest Filing Precedence:** When subsequent 10-Ks report earlier fiscal periods, the engine selects the filing with the latest `filed` date.
 4. **Five Fiscal Years Grouping:** Aligns data strictly by the actual fiscal-year-end date (`end`), taking the five most recent fiscal years.
 5. **No Synthetic Proxies:** If an XBRL tag is absent, the metric displays `"not found"`; checks depending on it output `"NOT KNOWN"`.
 
-### Taxonomy Mapping
+### XBRL Taxonomy Mapping
 Metric | Primary XBRL Tag | Fallback XBRL Tag | Type
 :--- | :--- | :--- | :---
 **Revenue** | `RevenueFromContractWithCustomerExcludingAssessedTax` | `Revenues` | Duration (1 Year)
 **Net Income** | `NetIncomeLoss` | — | Duration (1 Year)
 **Operating Cash Flow** | `NetCashProvidedByUsedInOperatingActivities` | — | Duration (1 Year)
 **CapEx (Capital Spending)** | `PaymentsToAcquirePropertyPlantAndEquipment` | `PaymentsToAcquireProductiveAssets` | Duration (1 Year)
-**Stockholders' Equity** | `StockholdersEquity` | — | Instant (Year-End)
+**Stockholders' Equity** | `StockholdersEquity` | — | Instant (Fiscal Year-End)
 
 ### Core Formulas
 $$\text{Return on Equity (ROE)} = \frac{\text{Net Income}}{\text{Year-End Stockholders' Equity}}$$
@@ -67,7 +67,7 @@ Check | Hurdle Rate | Costco (COST) | JPMorgan (JPM)
 
 ## 4. Costco (COST) Reference Reconciliation
 
-The retrieved SEC numbers were compared against the professor's reference table. All 35 financial figures matched with zero variance.
+The retrieved SEC numbers were tested against the professor's reference table. All 35 financial figures matched with zero variance.
 
 | Fiscal Year End | Revenue ($M) | Net Income ($M) | Operating Cash Flow ($M) | CapEx ($M) | Equity ($M) | ROE | Owner Earnings ($M) |
 | :--- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -86,29 +86,52 @@ All figures represent audited SEC facts:
 
 ---
 
-## 5. Streamlit Application & Unsupported-Number Detection
+## 5. Required Tests & Findings
 
-The dashboard (`app.py`) delivers an institutional financial research interface:
-* **Dark Navy / Charcoal Aesthetic:** Styling using deep slate backgrounds (`#0B0F19`), high-contrast typography, and glowing status pills.
-* **Buffett Check KPI Badges:** Interactive cards displaying status (`PASS`, `FAIL`, `NOT KNOWN`) and granular rationale.
-* **Five-Year Financial Plotly Chart:** Visualizes GAAP Net Income against Buffett Owner Earnings across all five fiscal periods.
-* **Audited Metrics & XBRL Inspector:** Formatted table of all seven metrics with an expander detailing exact XBRL taxonomy tags.
-* **Fabricated-Number Detector:** Audits the investment memo against the script's canonical output set. When clean, it confirms zero hallucinations. When tested with a fabricated figure (e.g., `"ROE was 40.0%"`), it immediately triggers a warning banner and flags the exact line and token.
+### Test A: JPMorgan Chase (JPM) Missing-Data Test
+* Commercial banks do not report conventional capital expenditures under `PaymentsToAcquirePropertyPlantAndEquipment` or `PaymentsToAcquireProductiveAssets`.
+* CapEx is reported as `"not found"`, causing Owner Earnings to display `"not found"`.
+* Check 1 (ROE $\ge 15\%$): `FAIL` (2022 ROE was 12.9%).
+* Checks 2 and 3: `NOT KNOWN`.
+* The investment memo generator acknowledges that owner earnings cannot be evaluated with the available inputs.
+
+### Test B: Unsupported / Fabricated Number Detection
+* The script indexes all numbers printed during retrieval (currencies, percentages, integers).
+* When scanning a clean investment memo, the detector reports `0` flags.
+* When tested with an unverified claim (`"Costco's ROE was 40.0% in 2024"`), the detector flags `40.0%` with the exact line number and surrounding context.
+
+### Test C: Independent Comparison Protocol (For Student Execution)
+To complete the comparison required by the professor:
+1. Submit this prompt to an unaugmented AI chat (ChatGPT, Claude, or Gemini Web):
+   > *"Act as legendary investor Warren Buffett and evaluate Costco Wholesale Corporation (COST) as a long-term investment. What are Costco's Return on Equity and Owner Earnings over the last five fiscal years, what are your three quality checks, and what is your investment recommendation?"*
+2. Compare whether the unaugmented AI invents numbers, miscalculates owner earnings, uses calendar years instead of Costco's August/September fiscal ends, or violates the quality-only mandate by citing stock price.
 
 ---
 
-## 6. How to Run the Assignment
+## 6. Streamlit Dashboard Features
+
+The dashboard (`app.py`) provides an investment research interface:
+* **Attribution:** `"Data from SEC EDGAR; built with AI help, a learning demonstration, not investment advice."`
+* **Ticker Input:** Supports looking up any publicly traded US stock symbol via SEC CIK mapping.
+* **Buffett Check Cards:** Visual badges showing `PASS`, `FAIL`, or `NOT KNOWN` alongside underlying details.
+* **Five-Year Financial Chart:** Plotly chart comparing GAAP Net Income to Buffett Owner Earnings.
+* **Audited Financial Table:** Displays all seven metrics with an expander showing the source XBRL tags.
+* **Investment Memo & Active Detector:** Includes an interactive memo editor and real-time scanner that flags unsupported financial numbers.
+
+---
+
+## 7. Execution Commands
 
 ```powershell
-# 1. Run the Buffett SEC analysis script from terminal
+# 1. Run Buffett SEC analysis from command line (Costco)
 & "C:\Users\ellio\Documents\FIN439\Python-3.13.15\python.exe" Lab-18/buffett_sec.py --ticker COST
 
-# 2. Run the missing-data test on JPMorgan Chase
+# 2. Run missing-data analysis (JPMorgan Chase)
 & "C:\Users\ellio\Documents\FIN439\Python-3.13.15\python.exe" Lab-18/buffett_sec.py --ticker JPM
 
-# 3. Execute all automated validation tests
+# 3. Execute automated test suite
 & "C:\Users\ellio\Documents\FIN439\Python-3.13.15\python.exe" Lab-18/run_tests.py
 
-# 4. Launch the Streamlit dashboard
+# 4. Launch the Streamlit application
 & "C:\Users\ellio\Documents\FIN439\Python-3.13.15\python.exe" -m streamlit run Lab-18/app.py
 ```

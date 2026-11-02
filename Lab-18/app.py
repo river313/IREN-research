@@ -364,7 +364,7 @@ if ticker_input == "COST" and os.path.exists(memo_file_path):
     with open(memo_file_path, "r", encoding="utf-8") as f:
         default_memo_text = f.read()
 else:
-    default_memo_text = buffett_sec.generate_costco_investment_memo(rows, tags_used, checks)
+    default_memo_text = buffett_sec.generate_investment_memo(ticker_input, title, rows, tags_used, checks)
 
 tab_view, tab_editor = st.tabs(["📄 Investment Memo View", "🛡️ Fabricated Number Audit & Editor"])
 
@@ -377,7 +377,7 @@ with tab_editor:
     col_btn1, col_btn2 = st.columns([1, 1])
     with col_btn1:
         if st.button("🚨 Inject Unsupported Number ('ROE was 40.0%')", use_container_width=True):
-            st.session_state["memo_editor_content"] = default_memo_text + "\n\nIn addition, Costco reported ROE was 40.0% according to unverified market commentary.\n"
+            st.session_state["memo_editor_content"] = default_memo_text + f"\n\nIn addition, {title} reported ROE was 40.0% according to unverified market commentary.\n"
     with col_btn2:
         if st.button("🔄 Reset to Official Audited Memo", use_container_width=True):
             st.session_state["memo_editor_content"] = default_memo_text
@@ -415,3 +415,4 @@ with tab_editor:
 # -----------------------------------------------------------------------------
 st.markdown("---")
 st.caption(f"FIN 439 Lab 18 | Student: Elliot | CIK: {cik} ({title}) | Data Source: SEC EDGAR API")
+

@@ -128,6 +128,14 @@ def test_jpmorgan_missing_data():
 
     assert checks["check2"]["status"] == "NOT KNOWN", f"Expected Check 2 NOT KNOWN, got {checks['check2']['status']}"
     assert checks["check3"]["status"] == "NOT KNOWN", f"Expected Check 3 NOT KNOWN, got {checks['check3']['status']}"
+
+    # Verify JPM memo acknowledges missing Owner Earnings and contains no fabricated figures
+    jpm_memo = buffett_sec.generate_investment_memo("JPM", title, rows, tags, checks)
+    assert "owner earnings cannot be evaluated" in jpm_memo.lower(), "JPM memo must acknowledge owner earnings cannot be evaluated"
+    jpm_flags = buffett_sec.detect_unsupported_numbers(jpm_memo, rows)
+    assert len(jpm_flags) == 0, f"JPM memo contained unexpected unsupported numbers: {jpm_flags}"
+    print(f"JPM Memo Check: Successfully generated ticker-specific memo with 0 unsupported flags.")
+
     print("\n>>> TEST 2 RESULT: JPMORGAN MISSING-DATA HANDLING VERIFIED (PASS)\n")
 
 
@@ -165,3 +173,4 @@ if __name__ == "__main__":
     print("=" * 70)
     print("ALL FIN 439 LAB 18 AUTOMATED TESTS PASSED SUCCESSFULLY!")
     print("=" * 70)
+
