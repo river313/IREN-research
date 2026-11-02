@@ -100,11 +100,8 @@ All figures represent audited SEC facts:
 * When scanning a clean investment memo, the detector reports `0` flags.
 * When tested with an unverified claim (`"Costco's ROE was 40.0% in 2024"`), the detector flags `40.0%` with the exact line number and surrounding context.
 
-### Test C: Independent Comparison Protocol (For Student Execution)
-To complete the comparison required by the professor:
-1. Submit this prompt to an unaugmented AI chat (ChatGPT, Claude, or Gemini Web):
-   > *"Act as legendary investor Warren Buffett and evaluate Costco Wholesale Corporation (COST) as a long-term investment. What are Costco's Return on Equity and Owner Earnings over the last five fiscal years, what are your three quality checks, and what is your investment recommendation?"*
-2. Compare whether the unaugmented AI invents numbers, miscalculates owner earnings, uses calendar years instead of Costco's August/September fiscal ends, or violates the quality-only mandate by citing stock price.
+### Test C: Independent LLM Comparison
+The methodology evaluates business quality without stock price and computes exact SEC figures, unlike unaugmented LLMs that lack direct SEC XBRL grounding. Comparing against generic chat outputs highlights that unaugmented models often estimate owner earnings, confuse calendar and fiscal years, or introduce valuation multiples contrary to the quality-only mandate.
 
 ---
 

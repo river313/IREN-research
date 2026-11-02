@@ -105,10 +105,11 @@ When generating an investment memo using this skill:
    * `WATCH`
    * `PASS`
 7. **Exclude Valuation & Market Price:** Do not include stock price, P/E ratio, market capitalization, or valuation multiples. Evaluate the *business*, not the market ticker.
-8. **Student Reflection Placeholder:** Leave a clearly marked space for the student's personal one-sentence verdict. Never fabricate student opinions.
+8. **Student Verdict:** Include the student's personal one-sentence verdict evaluating business quality. Never fabricate student opinions.
 
 ---
 
 ## 6. Philosophical Reference
 
 Consult [`references/buffett_philosophy.md`](./references/buffett_philosophy.md) for detailed background on Buffett's mental models, moat typology, circle of competence, and Berkshire Hathaway shareholder letter principles.
+

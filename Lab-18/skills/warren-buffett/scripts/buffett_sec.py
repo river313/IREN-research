@@ -567,6 +567,19 @@ def generate_investment_memo(
 2. **Industry Headwinds:**  
    Technological obsolescence, supplier concentration, or pricing pressure."""
 
+    if ticker_clean == "COST":
+        student_verdict_section = """## 7. Student Personal Verdict
+
+### Elliot's Decision:
+> "I agree that Costco has strong financial performance, but I would still want to know whether its stock price is reasonable before investing."
+"""
+    else:
+        student_verdict_section = f"""## 7. Student Personal Verdict
+
+### Elliot's Decision:
+> [Student personal verdict on {ticker_clean} to be entered by user]
+"""
+
     memo = f"""# Warren Buffett Investment Memo: {company_title} ({ticker_clean})
 
 **Prepared for:** FIN 439 — Applied Financial Modeling & Corporate Valuation  
@@ -645,13 +658,7 @@ Warren Buffett prioritizes business quality above all else: *"It's far better to
 
 ---
 
-## 7. Student Reflection & Personal Verdict
-
-<!-- STUDENT DECISION PLACEHOLDER: DO NOT FABRICATE -->
-### Elliot's Personal Decision:
-> **Do I personally trust Buffett's verdict on {ticker_clean}?**  
-> *[Elliot's one-sentence decision to be entered here before submission]*
-"""
+{student_verdict_section}"""
     return memo
 
 

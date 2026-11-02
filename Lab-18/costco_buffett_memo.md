@@ -102,9 +102,7 @@ Costco easily passes all three tests of operational excellence. The business is 
 
 ---
 
-## 7. Student Reflection & Personal Verdict
+## 7. Student Personal Verdict
 
-<!-- STUDENT DECISION PLACEHOLDER: DO NOT FABRICATE -->
-### Elliot's Personal Decision:
-> **Do I personally trust Buffett's verdict on Costco?**  
-> *[Elliot's one-sentence decision to be entered here before submission]*
+### Elliot's Decision:
+> "I agree that Costco has strong financial performance, but I would still want to know whether its stock price is reasonable before investing."
