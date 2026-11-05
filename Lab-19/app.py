@@ -119,7 +119,7 @@ st.markdown("""
 # Sidebar Configuration & Controls
 # -----------------------------------------------------------------------------
 st.sidebar.markdown("## 🏛️ Legend Panel Controls")
-st.sidebar.markdown("**Student:** Elliot (one 't')  \n**Course:** FIN 43900 | Purdue University")
+st.sidebar.markdown("**Student:** Elliot  \n**Course:** FIN 43900 | Purdue University")
 
 st.sidebar.markdown("---")
 email_input = st.sidebar.text_input(
@@ -232,7 +232,7 @@ def render_verdict_card(col, investor_name, verdict, passed, total, philosophy):
         "VALUE LONG": ("#34D399", "rgba(16, 185, 129, 0.15)", "#059669"),
         "ENTERPRISING / WATCH": ("#FBBF24", "rgba(245, 158, 11, 0.15)", "#D97706"),
         "HIGH RISK / SKEPTICAL": ("#FBBF24", "rgba(245, 158, 11, 0.15)", "#D97706"),
-        "PASS / DEFICIENT": ("#F87171", "rgba(239, 68, 68, 0.15)", "#DC2626"),
+        "REJECT / DEFICIENT": ("#F87171", "rgba(239, 68, 68, 0.15)", "#DC2626"),
         "SHORT CANDIDATE / AVOID": ("#F87171", "rgba(239, 68, 68, 0.15)", "#DC2626"),
     }
     text_color, bg_color, border_color = color_map.get(verdict, ("#94A3B8", "rgba(148, 163, 184, 0.15)", "#475569"))
@@ -496,15 +496,18 @@ col_b, col_g, col_m = st.columns(3)
 
 with col_b:
     st.markdown("#### 🎯 Warren Buffett Memo")
-    st.markdown(f'<div class="memo-container">{st.markdown(buffett_memo)}</div>', unsafe_allow_html=True)
+    with st.container(height=650):
+        st.markdown(buffett_memo)
 
 with col_g:
     st.markdown("#### 🛡️ Benjamin Graham Memo")
-    st.markdown(f'<div class="memo-container">{st.markdown(graham_memo)}</div>', unsafe_allow_html=True)
+    with st.container(height=650):
+        st.markdown(graham_memo)
 
 with col_m:
     st.markdown("#### 🔍 Michael Burry Memo")
-    st.markdown(f'<div class="memo-container">{st.markdown(burry_memo)}</div>', unsafe_allow_html=True)
+    with st.container(height=650):
+        st.markdown(burry_memo)
 
 
 # -----------------------------------------------------------------------------
@@ -531,22 +534,36 @@ else:
 # -----------------------------------------------------------------------------
 st.markdown("<br>", unsafe_allow_html=True)
 st.markdown("### 🔬 Graham Threshold Probe & Design Choice Synthesis")
+
+# Dynamically calculate outcomes at 2.0 and 1.0 for the currently loaded company
+g_standard = legend_sec.evaluate_graham_checks(rows, current_ratio_threshold=2.0)
+g_probed = legend_sec.evaluate_graham_checks(rows, current_ratio_threshold=1.0)
+
+latest_cr = rows[-1].get("current_ratio")
+latest_cr_str = f"{latest_cr:.2f}" if isinstance(latest_cr, (int, float)) else str(latest_cr)
+
+probe_note_display = (
+    '"I kept Graham\'s original 2.0 threshold because lowering it to 1.0 makes Costco pass but weakens the liquidity standard, showing how a screening decision depends on the threshold chosen."'
+    if ticker_input == "COST"
+    else f"Screening threshold probe for {ticker_input}: At 2.0x, Check 1 is {g_standard['check1']['status']}; at 1.0x, Check 1 is {g_probed['check1']['status']}. Active slider threshold: {graham_thresh:.1f}x (Check 1: {graham_checks['check1']['status']})."
+)
+
 st.markdown(
-    """
+    f"""
     <div class="metric-card">
-        <h4 style="color: #F8FAFC; margin-bottom: 8px;">Thresholds as Analytical Design Choices</h4>
+        <h4 style="color: #F8FAFC; margin-bottom: 8px;">Thresholds as Analytical Design Choices: {company_title} ({ticker_input})</h4>
         <p style="color: #CBD5E1; font-size: 0.9rem; line-height: 1.6;">
-            In quantitative screening and security analysis, financial thresholds are human design decisions rather than physical laws. 
-            Benjamin Graham formulated his 2.0 current ratio rule in 1934 for asset-heavy industrial, rail, and manufacturing firms that required substantial inventories and receivables to survive trade shocks.
+            In quantitative security screening, financial thresholds represent deliberate design choices rather than immutable laws. 
+            Benjamin Graham formulated his 2.0 current ratio rule in 1934 for asset-heavy industrial, rail, and manufacturing firms requiring substantial inventory and trade receivable cushions.
         </p>
         <p style="color: #CBD5E1; font-size: 0.9rem; line-height: 1.6;">
-            <strong>Costco Wholesale (COST) Empirical Case:</strong><br>
-            • Under Graham's standard <strong>2.0 threshold</strong>, Costco's latest current ratio of <strong>1.06 fails</strong> (Check 1 = FAIL, Verdict = ENTERPRISING / WATCH 2/3).<br>
-            • When probed at a <strong>1.0 threshold</strong>, Costco's latest current ratio of <strong>1.06 passes</strong> (Check 1 = PASS, Verdict = DEFENSIVE BUY 3/3).<br>
-            • Costco collects cash immediately at point-of-sale while enjoying 30-day supplier credit terms, effectively financing working capital via float.
+            <strong>Empirical Threshold Comparison for {ticker_input}:</strong><br>
+            • <strong>Standard 2.0 Threshold:</strong> Latest current ratio of <strong>{latest_cr_str}</strong> &rarr; <strong>{g_standard['check1']['status']}</strong> (Overall: {g_standard['passed_count']}/3 passed, Verdict: <em>{g_standard['verdict']}</em>).<br>
+            • <strong>Probed 1.0 Threshold:</strong> Latest current ratio of <strong>{latest_cr_str}</strong> &rarr; <strong>{g_probed['check1']['status']}</strong> (Overall: {g_probed['passed_count']}/3 passed, Verdict: <em>{g_probed['verdict']}</em>).<br>
+            • <strong>Active Slider Setting ({graham_thresh:.1f}x):</strong> Check 1 is <strong>{graham_checks['check1']['status']}</strong> (Overall: {graham_checks['passed_count']}/3 passed, Verdict: <em>{graham_checks['verdict']}</em>).
         </p>
         <p style="color: #38BDF8; font-size: 0.9rem; font-weight: 600; margin-top: 12px;">
-            Recorded Design Choice: "I kept Graham's original 2.0 threshold because lowering it to 1.0 makes Costco pass but weakens the liquidity standard, showing how a screening decision depends on the threshold chosen."
+            Recorded Design Choice: {probe_note_display}
         </p>
     </div>
     """,

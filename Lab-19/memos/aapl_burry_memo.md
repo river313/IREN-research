@@ -5,7 +5,7 @@
 ---
 
 ### Executive Summary & Verdict
-**Conclusion:** **PASS / SHORT CANDIDATE** (0/2 Checks Passed)
+**Conclusion:** **SHORT CANDIDATE / AVOID** (0/2 Checks Passed)
 
 Dr. Michael Burry focuses on deep-value fundamentals, forensic cash flow conversion (rejecting paper earnings not backed by real cash), and balance sheet leverage constraints.
 

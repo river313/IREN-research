@@ -333,13 +333,16 @@ def evaluate_buffett_checks(rows: List[Dict[str, Any]]) -> Dict[str, Dict[str, A
 
     # Check 1: ROE >= 15%
     roe_vals = [r["roe"] for r in rows]
-    if any(r == "not known" or r is None for r in roe_vals):
+    if len(rows) < 5:
+        c1_status = "NOT KNOWN"
+        c1_details = f"Fewer than 5 fiscal years available ({len(rows)} found)."
+    elif any(r == "not known" or r is None for r in roe_vals):
         c1_status = "NOT KNOWN"
         c1_details = "One or more fiscal years have unknown ROE (missing net income or negative/zero equity)."
     elif all(isinstance(r, (int, float)) and r >= 0.15 for r in roe_vals):
         c1_status = "PASS"
         pct_list = [f"{r*100:.1f}%" for r in roe_vals]
-        c1_details = f"ROE exceeded 15.0% in all {len(rows)} fiscal years: {', '.join(pct_list)}."
+        c1_details = f"ROE exceeded 15.0% in all 5 fiscal years: {', '.join(pct_list)}."
     else:
         c1_status = "FAIL"
         failed_years = [f"{rows[i]['fiscal_year_end']} ({roe_vals[i]*100:.1f}%)" for i, r in enumerate(roe_vals) if r < 0.15]
@@ -347,22 +350,25 @@ def evaluate_buffett_checks(rows: List[Dict[str, Any]]) -> Dict[str, Dict[str, A
 
     # Check 2: Owner Earnings > 0
     oe_vals = [r["owner_earnings"] for r in rows]
-    if any(oe == "not found" or oe is None for oe in oe_vals):
+    if len(rows) < 5:
+        c2_status = "NOT KNOWN"
+        c2_details = f"Fewer than 5 fiscal years available ({len(rows)} found)."
+    elif any(oe == "not found" or oe is None for oe in oe_vals):
         c2_status = "NOT KNOWN"
         c2_details = "Owner earnings cannot be computed because CapEx or Operating Cash Flow is not found."
     elif all(isinstance(oe, (int, float)) and oe > 0 for oe in oe_vals):
         c2_status = "PASS"
         oe_millions = [f"${oe/1e6:,.0f}M" for oe in oe_vals]
-        c2_details = f"Owner earnings were positive in all {len(rows)} fiscal years: {', '.join(oe_millions)}."
+        c2_details = f"Owner earnings were positive in all 5 fiscal years: {', '.join(oe_millions)}."
     else:
         c2_status = "FAIL"
         failed_oe = [f"{rows[i]['fiscal_year_end']} (${oe_vals[i]/1e6:,.0f}M)" for i, oe in enumerate(oe_vals) if oe <= 0]
         c2_details = f"Owner earnings non-positive in: {', '.join(failed_oe)}."
 
     # Check 3: Owner Earnings Growth (final year > first year)
-    if len(rows) < 2 or oe_vals[0] == "not found" or oe_vals[-1] == "not found":
+    if len(rows) < 5 or oe_vals[0] == "not found" or oe_vals[-1] == "not found" or oe_vals[0] is None or oe_vals[-1] is None:
         c3_status = "NOT KNOWN"
-        c3_details = "Owner earnings growth cannot be determined because initial or final owner earnings is not found."
+        c3_details = "Owner earnings growth cannot be determined due to missing data or incomplete 5-year history."
     elif isinstance(oe_vals[0], (int, float)) and isinstance(oe_vals[-1], (int, float)):
         oe_initial = oe_vals[0]
         oe_final = oe_vals[-1]
@@ -382,9 +388,9 @@ def evaluate_buffett_checks(rows: List[Dict[str, Any]]) -> Dict[str, Dict[str, A
     if passed_count == 3:
         verdict = "OWN THE BUSINESS"
     elif any(c == "FAIL" for c in [c1_status, c2_status, c3_status]):
-        verdict = "PASS"
+        verdict = "REJECT / DEFICIENT"
     else:
-        verdict = "WATCH"
+        verdict = "WATCHLIST"
 
     return {
         "check1": {"name": "ROE >= 15% every year", "status": c1_status, "details": c1_details},
@@ -429,22 +435,25 @@ def evaluate_graham_checks(rows: List[Dict[str, Any]], current_ratio_threshold: 
 
     # Check 2: Net Income Positive Every Year
     ni_vals = [r["net_income"] for r in rows]
-    if any(ni is None for ni in ni_vals):
+    if len(rows) < 5:
+        c2_status = "NOT KNOWN"
+        c2_details = f"Fewer than 5 fiscal years available ({len(rows)} found)."
+    elif any(ni is None or ni == "not found" for ni in ni_vals):
         c2_status = "NOT KNOWN"
         c2_details = "Net income missing for one or more fiscal years."
     elif all(isinstance(ni, (int, float)) and ni > 0 for ni in ni_vals):
         c2_status = "PASS"
         ni_millions = [f"${ni/1e6:,.0f}M" for ni in ni_vals]
-        c2_details = f"Net income was positive in all {len(rows)} fiscal years: {', '.join(ni_millions)}."
+        c2_details = f"Net income was positive in all 5 fiscal years: {', '.join(ni_millions)}."
     else:
         c2_status = "FAIL"
         failed_ni = [f"{rows[i]['fiscal_year_end']} (${ni_vals[i]/1e6:,.0f}M)" for i, ni in enumerate(ni_vals) if ni <= 0]
         c2_details = f"Net income non-positive in: {', '.join(failed_ni)}."
 
     # Check 3: Net Income Growth (final year > first year)
-    if len(rows) < 2 or ni_vals[0] is None or ni_vals[-1] is None:
+    if len(rows) < 5 or ni_vals[0] is None or ni_vals[-1] is None or ni_vals[0] == "not found" or ni_vals[-1] == "not found":
         c3_status = "NOT KNOWN"
-        c3_details = "Net income growth cannot be determined due to missing initial or final net income."
+        c3_details = "Net income growth cannot be determined due to missing data or incomplete 5-year history."
     elif isinstance(ni_vals[0], (int, float)) and isinstance(ni_vals[-1], (int, float)):
         ni_initial = ni_vals[0]
         ni_final = ni_vals[-1]
@@ -466,7 +475,7 @@ def evaluate_graham_checks(rows: List[Dict[str, Any]], current_ratio_threshold: 
     elif passed_count == 2:
         verdict = "ENTERPRISING / WATCH"
     else:
-        verdict = "PASS"
+        verdict = "REJECT / DEFICIENT"
 
     return {
         "check1": {"name": f"Current ratio >= {current_ratio_threshold:.1f} (latest year)", "status": c1_status, "details": c1_details, "value": latest_cr},
@@ -495,12 +504,15 @@ def evaluate_burry_checks(rows: List[Dict[str, Any]]) -> Dict[str, Dict[str, Any
     ocf_vals = [r["operating_cash_flow"] for r in rows]
     ni_vals = [r["net_income"] for r in rows]
 
-    if any(ocf is None or ni is None for ocf, ni in zip(ocf_vals, ni_vals)):
+    if len(rows) < 5:
+        c1_status = "NOT KNOWN"
+        c1_details = f"Fewer than 5 fiscal years available ({len(rows)} found)."
+    elif any(ocf is None or ni is None or ocf == "not found" or ni == "not found" for ocf, ni in zip(ocf_vals, ni_vals)):
         c1_status = "NOT KNOWN"
         c1_details = "Operating cash flow or net income missing for one or more fiscal years."
     elif all(isinstance(ocf, (int, float)) and isinstance(ni, (int, float)) and ocf >= ni for ocf, ni in zip(ocf_vals, ni_vals)):
         c1_status = "PASS"
-        c1_details = f"Operating cash flow exceeded net income in all {len(rows)} fiscal years, confirming high earnings quality and cash backing."
+        c1_details = f"Operating cash flow exceeded net income in all 5 fiscal years, confirming high earnings quality and cash backing."
     else:
         c1_status = "FAIL"
         failed_years = []
@@ -535,7 +547,7 @@ def evaluate_burry_checks(rows: List[Dict[str, Any]]) -> Dict[str, Dict[str, Any
     elif passed_count == 1:
         verdict = "NEUTRAL / CAUTION"
     else:
-        verdict = "PASS / SHORT CANDIDATE"
+        verdict = "SHORT CANDIDATE / AVOID"
 
     return {
         "check1": {"name": "Operating cash flow >= net income every year", "status": c1_status, "details": c1_details},
@@ -647,21 +659,24 @@ def detect_unsupported_numbers(memo_text: str, rows: List[Dict[str, Any]]) -> Li
     lines = memo_text.splitlines()
     for line_num, line in enumerate(lines, 1):
         stripped = line.strip()
-        if stripped.startswith(("#", "```", "http://", "https://", "<!--")):
+        if not stripped or stripped.startswith(("```", "http://", "https://", "<!--")):
             continue
+
+        # Strip markdown heading characters so headings are actively audited
+        scanned_line = stripped.lstrip("#").strip()
 
         tokens = []
         matched_spans = []
 
-        for m in pct_pattern.finditer(line):
+        for m in pct_pattern.finditer(scanned_line):
             tokens.append(m.group(0))
             matched_spans.append((m.start(), m.end()))
 
-        for m in curr_pattern.finditer(line):
+        for m in curr_pattern.finditer(scanned_line):
             tokens.append(m.group(0))
             matched_spans.append((m.start(), m.end()))
 
-        for m in num_pattern.finditer(line):
+        for m in num_pattern.finditer(scanned_line):
             span = (m.start(), m.end())
             if not any(s <= span[0] and span[1] <= e for s, e in matched_spans):
                 tokens.append(m.group(0))

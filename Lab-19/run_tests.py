@@ -170,13 +170,28 @@ def test_unsupported_number_detector():
     assert len(u_m) == 0, f"Burry memo has unsupported numbers: {u_m}"
     print("Clean Memos Audit: 0 unsupported numbers detected across all 3 memos.")
 
-    # Injected hallucination test
-    fake_memo = "Costco reported an operating margin of 42.7% and a target valuation of $999.5B."
-    caught = legend_sec.detect_unsupported_numbers(fake_memo, rows)
-    caught_tokens = [c["token"] for c in caught]
-    print(f"Injected Test Caught Tokens: {caught_tokens}")
+    # Injected hallucination tests
+    fake_body = "Costco reported an operating margin of 42.7% and a target valuation of $999.5B."
+    caught_body = legend_sec.detect_unsupported_numbers(fake_body, rows)
+    caught_tokens = [c["token"] for c in caught_body]
+    print(f"Injected Body Test Caught Tokens: {caught_tokens}")
     assert "42.7%" in caught_tokens
     assert "$999.5B" in caught_tokens
+
+    # Injected heading test (ensures detector actively audits headers)
+    fake_heading = "### Projected Valuation of $888.8B and 33.3% Free Cash Flow Margin"
+    caught_head = legend_sec.detect_unsupported_numbers(fake_heading, rows)
+    caught_head_tokens = [c["token"] for c in caught_head]
+    print(f"Injected Heading Test Caught Tokens: {caught_head_tokens}")
+    assert "$888.8B" in caught_head_tokens
+    assert "33.3%" in caught_head_tokens
+
+    # Injected bullet ratio test (4.73 is not in Costco's filings)
+    fake_bullet = "* Check 1: Current ratio of 4.73 exceeded threshold."
+    caught_bullet = legend_sec.detect_unsupported_numbers(fake_bullet, rows)
+    caught_bullet_tokens = [c["token"] for c in caught_bullet]
+    print(f"Injected Bullet Test Caught Tokens: {caught_bullet_tokens}")
+    assert "4.73" in caught_bullet_tokens
 
     print(">>> TEST 4 RESULT: UNSUPPORTED NUMBER DETECTOR HIGHLY EFFECTIVE (PASS)\n")
 

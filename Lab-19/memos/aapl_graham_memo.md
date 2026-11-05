@@ -34,4 +34,4 @@ Benjamin Graham, the father of value investing, insists on rigorous balance-shee
 
 ### Graham Threshold Probe & Design Choice
 > **Threshold Recorded:** 2.0  
-> **Rationale:** Graham's working capital threshold of 2.0 tests whether current assets provide a substantial cushion over short-term obligations.
+> **Rationale:** Screening threshold probe recorded at 2.0x.

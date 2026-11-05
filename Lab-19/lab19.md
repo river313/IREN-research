@@ -1,7 +1,7 @@
 # FIN 439 Lab 19 — Legend Panel
 
 **Course:** FIN 43900 (Applied Financial Modeling & Corporate Valuation, Purdue University)  
-**Student:** Elliot (one "t")  
+**Student:** Elliot  
 **Repository:** `river313/IREN-research`  
 **Folder:** `Lab-19/`  
 **Files:** [`legend_sec.py`](legend_sec.py) | [`app.py`](app.py) | [`run_tests.py`](run_tests.py) | [`requirements.txt`](requirements.txt) | [`memos/`](memos/) | [`skills/`](skills/)  
@@ -99,11 +99,11 @@ When applied to a high-turnover modern retailer like Costco Wholesale:
 ## 5. Project 2 Company Analysis: Apple Inc. (AAPL)
 
 ### Fund Identification & Universe Lineage
-In Labs 13–15, Elliot constructed an institutional portfolio universe governed by the Meridian Foundation training case and the draft Project 2 mandate (Lab 13, Section 13):
+In Labs 13–15, the portfolio universe was structured around the Meridian Foundation and Project 2 draft mandate (Lab 13, Section 13):
 * **Strategic Policy Benchmark:** 65% MSCI World All-Country Equity Index, 35% Bloomberg Global Aggregate Bond Index.
 * **Eligible Fund Sleeve:** The equity sleeve is the **Global Equity Index Fund**, indexed to the MSCI All-Country World Index and tracked in public markets by the **iShares MSCI ACWI ETF (`ACWI`)** and the **SPDR S&P 500 ETF Trust (`SPY`)**.
-* **Largest Holding:** The verified #1 largest equity holding inside this global fund universe is **Apple Inc. (ticker: `AAPL`, CIK: `0000320193`)**.
-* *Note on Non-Selection:* We do not invent an existing portfolio allocation or claim Elliot previously selected a fund; rather, Apple Inc. is evaluated as the verified largest constituent holding of the benchmark global equity sleeve established in Labs 13–15.
+* **Largest Holding:** The verified #1 largest equity holding inside this global benchmark index is **Apple Inc. (ticker: `AAPL`, CIK: `0000320193`)**.
+* **Verification Note & Missing Information:** No customized fund constituent holdings file exists yet in the repository. Apple Inc. is evaluated here as the verified largest constituent holding of the benchmark global equity sleeve established in Labs 13–15. If a different fund or company is selected during the upcoming Project 2 Studio, the panel can be re-run on that ticker using `python legend_sec.py --ticker <TICKER>`.
 
 ### Audited Financial Foundation (USD Millions) — Apple Inc. (AAPL)
 | Fiscal Year End | Revenue ($M) | Net Income ($M) | Operating CF ($M) | CapEx ($M) | Equity ($M) | Current Ratio | Liab / Eq | ROE | Owner Earnings ($M) |
@@ -129,7 +129,7 @@ In Labs 13–15, Elliot constructed an institutional portfolio universe governed
 * **Panel Verdicts on AAPL:**
   - **Warren Buffett:** **OWN THE BUSINESS** (3/3 Passed)
   - **Benjamin Graham:** **ENTERPRISING / WATCH** (2/3 Passed — Current ratio 1.02 fails 2.0 hurdle)
-  - **Michael Burry:** **PASS / SHORT CANDIDATE** (0/2 Passed — Cash conversion slippage in FY25 and balance sheet leverage 2.61 exceeds 2.0 limit)
+  - **Michael Burry:** **SHORT CANDIDATE / AVOID** (0/2 Passed — Cash conversion slippage in FY25 and balance sheet leverage 2.61 exceeds 2.0 limit)
 
 ---
 
@@ -214,3 +214,4 @@ To satisfy the merit criteria, `legend_sec.py` implements an active audit functi
   - Buffett: [`Lab-19/skills/warren-buffett/SKILL.md`](skills/warren-buffett/SKILL.md)
   - Graham: [`Lab-19/skills/ben-graham/SKILL.md`](skills/ben-graham/SKILL.md)
   - Burry: [`Lab-19/skills/michael-burry/SKILL.md`](skills/michael-burry/SKILL.md)
+
